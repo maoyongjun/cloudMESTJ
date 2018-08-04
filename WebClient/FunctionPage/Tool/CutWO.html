@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cut WO</title>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../css/font-awesome.css" rel="stylesheet" />
+    <link href="../../css/animate.css" rel="stylesheet" />
+    <link href="../../css/style.css" rel="stylesheet" />
+    <link href="../../css/plugins/bootstrapTable/bootstrap-table.min.css" rel="stylesheet" />
+    <style>
+        .fixed-table-container {
+            clear: right;
+        }
+
+        td ol {
+            padding: 0;
+            margin: 0;
+            list-style: decimal inside;
+        }
+
+            td ol li:not(:last-child) {
+                border-bottom: 1px solid #ddd;
+            }
+
+        .tabs-container .tabs-left > .nav-tabs,
+        .tabs-container .tabs-right > .nav-tabs {
+            width: 200px;
+        }
+        
+        .file-outline {
+            padding: 4px 0 0 0;
+            margin-left: -4px !important;
+            z-index: 0;
+            height: 34px;
+            position: absolute !important;
+            clip: rect(0px 400px 34px 75px);
+        }
+
+        #tableWo {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+
+        #tableWo tbody {
+            height: 200px;
+            overflow-y: scroll;
+            display: block;
+        }
+
+        #tableWo thead,#tableWo tbody tr{
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+         }        
+            
+        #tableWo tbody tr td:first-child, #tableWo thead tr th:first-child{
+            width: 36px;            
+        }  
+
+        #tableWo thead {
+            width: calc( 100% - 0.4em );
+        }
+    </style>
+</head>
+<body class="full-height">
+    <div class="panel-heading bg-primary">
+        <h3><i class="glyphicon glyphicon-tags"></i><span style="padding-left:10px;" set-lan="html:CutWo">Cut WO</span></h3>
+    </div>
+    <div class="panel-body full-height row form-horizontal"> 
+        <div id="divCutWoContent">
+            <div id="divLeft" class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding-top:10px;">
+                <div>
+                    <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label text-right" set-lan="html:labelCustomerName">WO:</label>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <input type="text" id="" class="form-control" set-lan="attr:placeholder=placeholderCutWo" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label text-right" set-lan="html:labelCustomerName">Num:</label>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <input type="text" id="" class="form-control" set-lan="attr:placeholder=placeholderCutNum" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3 control-label text-right" set-lan="html:labelCustomerName">SN:</label>
+                        <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <textarea class="form-control" id="textareaSn" rows="6" set-lan="attr:placeholder=placeholderCutSn" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></label>
+                        <div  class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                            <!--<div class="btn-group">
+                                <button type="button" class="btn btn-outline btn-primary" id="DownloadTemplateFile">
+                                    <i class="glyphicon glyphicon-cloud-download" aria-hidden="true"></i><lan set-lan="html:Template"> Template File</lan>
+                                </button>
+                            </div>
+                            <div class="btn-group" style="padding-right:200px">
+                                <label class="btn btn-outline btn-primary input-group" for="KPFileUpload" style="z-index:1;"><lan set-lan="html:Upload"> Upload</lan></label>
+                                <input id="inputSNFileUpload" type="file" class="btn btn-outline btn-primary file-outline" accept=".xlsx,.xlsm,.xlsb,.xls,.xltx,.xltm,.xlt,.xlam,.xla">
+                            </div>-->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline btn-primary" id="btnCutWoSubmit" style="width:150px;">
+                                    <lan set-lan="html:">Submit</lan>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <table id="Table_layer"></table>
+                    </div>
+                    <div id="table_box1"></div>
+                    <div class="table_box hidden"></div>
+                    <div class="hidden" id="excel_box"></div>
+                </div>               
+            </div>
+            <div id="divRight" class="col-xs-6 col-sm-6 col-md-6 col-lg-6">               
+                <div id="divWoSn" style="max-height:300px;overflow-y: scroll;">
+                    <table id="tableWo" class="table  table-bordered">                       
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="divMessage">
+
+        </div>       
+    </div>
+    <script src="../../Scripts/jquery-1.9.1.min.js"></script>
+    <script src="../../Scripts/bootstrap.min.js"></script>
+    <script src="../../Scripts/plugins/JSON/json2.js"></script>
+    <script src="../../Scripts/plugins/layer/layer.min.js"></script>
+    <script src="../../Scripts/plugins/bootstrapTable/bootstrap-table.min.js"></script>
+    <script src="../../Scripts/plugins/bootstrapTable/tableExport.min.js"></script>
+    <script src="../../Scripts/plugins/bootstrapTable/bootstrap-table-export.js"></script>
+    <script src="../../Scripts/plugins/excel/xlsx.full.min.js"></script>
+    <!--<script src="../../Scripts/Setting/KeyPartSetting.js"></script>-->
+    <script type="text/javascript">
+        var testData = [
+            { "WO": "002332000006", "SN": "21021309912186210001", "STATION": "SILOADING" },
+            { "WO": "002332000006", "SN": "21021309912186210002", "STATION": "SILOADING" },
+            { "WO": "002332000006", "SN": "21021309912186210003", "STATION": "FI" },
+            { "WO": "002332000006", "SN": "21021309912186210004", "STATION": "FI" },
+            { "WO": "002332000006", "SN": "21021309912186210005", "STATION": "FI" },
+            { "WO": "002332000006", "SN": "21021309912186210006", "STATION": "ASSY" },
+            { "WO": "002332000006", "SN": "21021309912186210007", "STATION": "ASSY" },
+            { "WO": "002332000006", "SN": "21021309912186210008", "STATION": "ASSY" },
+            { "WO": "002332000006", "SN": "21021309912186210009", "STATION": "CARTON" },
+            { "WO": "002332000006", "SN": "2102130991218621000A", "STATION": "CARTON" },
+            { "WO": "002332000006", "SN": "2102130991218621000B", "STATION": "CARTON" },
+            { "WO": "002332000006", "SN": "2102130991218621000C", "STATION": "CARTON" },
+            { "WO": "002332000006", "SN": "2102130991218621000D", "STATION": "OBA" },
+            { "WO": "002332000006", "SN": "2102130991218621000E", "STATION": "OBA" }
+        ]; 
+        var textarea = "";
+        $(document).ready(function () {
+            ShowWoData(testData);
+        });
+
+        function CheckRow(row) {
+            textarea = $("#textareaSn").val();
+            if (row.select && textarea.indexOf(row.SN)<0)
+            {
+                if (textarea == undefined || textarea == "")
+                {
+                    textarea = row.SN;
+                }
+                else
+                {
+                    textarea = textarea + "," + row.SN;
+                }
+            }
+            else if (!row.select)
+            {
+                if(textarea.lastIndexOf(row.SN) > 0)
+                {
+                    textarea = textarea.replace("," + row.SN, "");
+                } 
+                else if (textarea.indexOf(row.SN) == 0 && textarea.indexOf(",") < 0) {
+                    textarea = textarea.replace(row.SN, "");
+                } else if (textarea.indexOf(row.SN) == 0 && textarea.indexOf(",") > 0) {
+                    textarea = textarea.replace(row.SN + ",", "");
+                } else if (textarea.indexOf(row.SN) > 0) {
+                    textarea = textarea.replace(row.SN + ",", "");
+                }
+            }
+            $("#textareaSn").val(textarea);
+        }
+
+        function CheckAllRow(rows) {            
+            textarea = $("#textareaSn").val();            
+            $.each(rows, function () {               
+                if (this.select && textarea.indexOf(this.SN) < 0) {
+                    if (textarea == undefined || textarea == "") {
+                        textarea = this.SN;
+                    }
+                    else {
+                        textarea = textarea + "," + this.SN;
+                    }
+                }
+                else if (!this.select) {
+                    if (textarea.lastIndexOf(this.SN) > 0) {
+                        textarea = textarea.replace("," + this.SN, "");
+                    }
+                    else if (textarea.indexOf(this.SN) == 0 && textarea.indexOf(",") < 0) {
+                        textarea = textarea.replace(this.SN, "");
+                    } else if (textarea.indexOf(this.SN) == 0 && textarea.indexOf(",") > 0) {
+                        textarea = textarea.replace(this.SN + ",", "");
+                    } else if (textarea.indexOf(this.SN) > 0) {
+                        textarea = textarea.replace(this.SN + ",", "");
+                    }
+                }
+            });
+            $("#textareaSn").val(textarea);         
+        }
+
+        function ShowWoData(Data)
+        {
+            //var localeLan = $.cookie($.MES.CK_LAN_NAME);
+            var localeLan = "CHINESE";
+            if (localeLan == "CHINESE") {
+                localeLan = "zh-CN"
+            }
+            else if (localeLan == "CHINESE_TW") {
+                localeLan = "zh-TW"
+            }
+            else {
+                localeLan = "en"
+            }
+
+            $('#tableWo').bootstrapTable({
+                data: Data,
+                striped: false,                    //是否显示行间隔色
+                cache: false,                      //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                sortable: false,                   //是否启用排序
+                sortOrder: "asc",                  //排序方式
+                pagination: false,                  //是否显示分页（*）
+                sidePagination: "client",          //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                     //初始化加载第一页，默认第一页
+                pageSize: 5,                       //每页的记录行数（*）
+                pageList: [5, 20, 60, 100],        //可供选择的每页的行数（*）
+                showColumns: false,                 //是否显示 内容列下拉框
+                showRefresh: true,                 //是否显示刷新按钮   
+                maintainSelected: true, 
+                minimumCountColumns: 2,            //最少允许的列数
+                clickToSelect: true,               //是否启用点击选中行
+                singleSelect: false,                //单选checkbox
+                showToggle: false,                  //是否显示详细视图和列表视图的切换按钮               
+                cardView: false,                   //是否显示详细视图
+                detailView: false,                 //是否显示父子表
+                search: true,                      //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，
+                strictSearch: false,               //设置为 true启用 全匹配搜索，否则为模糊搜索   
+                searchOnEnterKey: false,            //回车搜索
+                searchTimeOut: 500,                //设置搜索超时时间  
+                trimOnSearch: true,                //设置为 true 将允许空字符搜索
+                searchAlign: "left",              //查询框对齐方式
+                toolbar: "#tableEventsToolbar",    //指定工具栏
+                toolbarAlign: "left",              //工具栏对齐方式
+                buttonsAlign: "right",             //按钮对齐方式
+                showExport: false,                  //是否显示导出按钮
+                exportDataType: 'all',             //'basic', 'all', 'selected'  exportDataType表示导出的模式是当前页、所有数据还是选中数据
+                exportTypes: ['excel', 'csv'],     //导出文件类型   
+                Icons: 'glyphicon-export',
+                exportOptions: {
+                    ignoreColumn: [0],             //忽略某一列的索引   
+                    fileName: 'CustomerList',     //文件名称设置   
+                    worksheetName: 'sheet1',       //表格工作区名称 
+                },
+                onCheck: function (row) {
+                    CheckRow(row);
+                },
+                onUncheck: function (row) {
+                    CheckRow(row);
+                },
+                onCheckAll: function (rows) {
+                    CheckAllRow(rows);
+                },
+                onUncheckAll: function (rows) {
+                    CheckAllRow(rows);
+                },
+                locale: localeLan,
+                columns: [{
+                    field: 'select',
+                    title: 'select',
+                    checkbox: true
+                }, 
+                {
+                    field: 'WO',
+                    title: 'WO',
+                    rowspan: 1,
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    visible: true
+                }, {
+                    field: 'SN',
+                    title: 'SN',
+                    rowspan: 1,
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    visible: true
+                }, {
+                    field: 'STATION',
+                    title: 'STATION',
+                    rowspan: 1,
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: true,
+                    visible: true
+                }]
+            });
+        }
+   
+        $('#inputSNFileUpload').change(function (e) {
+            //reset();
+            var filename = $(this).val();
+            if ((filename.indexOf(".xlsx") >= 0) || (filename.indexOf(".xlsm") >= 0) || (filename.indexOf(".xlsb") >= 0) || (filename.indexOf(".xls") >= 0) || (filename.indexOf(".xltx") >= 0) || (filename.indexOf(".xltm") >= 0) || (filename.indexOf(".xlt") >= 0) || (filename.indexOf(".xlam") >= 0) || (filename.indexOf(".xla") >= 0)) {
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(e.target.files[0]);
+                reader.onload = function (e) {
+                    var data = new Uint8Array(reader.result);
+                    var wb = XLSX.read(data, { type: 'array' });
+                    var shitname = wb.SheetNames;
+                    HTMLOUT.innerHTML = XLSX.write(wb, { sheet: shitname[0], type: 'binary', bookType: 'html' });
+                }
+            }
+            else {                
+                alert('Please select excel file with xlsx/xlsm/xlsb/xls/xltx/xltm/xlt/xlam/xla formats');
+            }
+        });
+     </script>
+</body>
+</html>
