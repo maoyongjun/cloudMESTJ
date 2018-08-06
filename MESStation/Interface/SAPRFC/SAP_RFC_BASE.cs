@@ -48,6 +48,27 @@ namespace MESStation.Interface.SAPRFC
                 return RFCMDT;
             }
         }
+        public SAP_RFC_BASE()
+        {
+            RfcPara.Clear();
+            RfcPara = new RfcConfigParameters();
+
+            RfcConfigParameters configParams = new RfcConfigParameters();
+
+            RfcPara.Add(RfcConfigParameters.SystemNumber, "02");
+            RfcPara.Add(RfcConfigParameters.User, "SFC_USER");
+            RfcPara.Add(RfcConfigParameters.Password, "yhpwd");
+            RfcPara.Add(RfcConfigParameters.Client, "801");
+            RfcPara.Add(RfcConfigParameters.Name, "LH1");
+            RfcPara.Add(RfcConfigParameters.Language, "en");
+            RfcPara.Add(RfcConfigParameters.PoolSize, "5");
+            RfcPara.Add(RfcConfigParameters.MaxPoolSize, "10");
+            RfcPara.Add(RfcConfigParameters.GatewayHost, "10.134.28.85");
+            RfcPara.Add(RfcConfigParameters.LogonGroup, "PUBLIC");
+
+            RfcDest = RfcDestinationManager.GetDestination(RfcPara);
+        }
+
         /// <summary>
         /// 初始化RFC對象,連接參數從配置文件中取得
         /// </summary>

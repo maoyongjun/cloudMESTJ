@@ -82,6 +82,13 @@ namespace MESDBHelper
                                     "Unicode=True;Provider=OraOLEDB.Oracle.1";
 
 
+                //dr["ConnString"] = "Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.67.38.39)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=CLOUDMESTEST.CESBG.FOXCONN)));" +
+                //                    "Persist Security Info=True;" +
+                //                    "User ID=TEST;" +
+                //                    "Password=SFCTEST;" +
+                //                    "Unicode=True;Provider=OraOLEDB.Oracle.1";
+
+                dr["ConnString"] = "OraOLEDB.Oracle.1; Password =SFCTEST;User ID=TEST;Data Source=TJCLOUDMES;Persist Security Info=True";
 
                 dt.Rows.Add(dr);
                 dr = dt.NewRow();

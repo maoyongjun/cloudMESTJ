@@ -36,8 +36,14 @@ namespace MESStation.SNMaker
             return ret;
         }
 
-        
         public static string GetNextSN(string RuleName, OleExec DB)
+        {
+            return GetNextSN(RuleName, DB, "");
+
+        }
+
+
+        public static string GetNextSN(string RuleName, OleExec DB, string WO)
         {
             Row_C_SN_RULE root = null;
             List<Row_C_SN_RULE_DETAIL> detail = null;
@@ -114,6 +120,20 @@ namespace MESStation.SNMaker
                     }
                     SN += detail[i].CURVALUE;
                 }
+                else if (detail[i].INPUTTYPE == "WK")
+                {
+                    string wk = detail[i].CODETYPE;
+                    string sql = $@"SELECT TO_CHAR(SYSDATE,'{wk}') FROM DUAL";
+                    string currentWK = (string)DB.ExecSelectOneValue(sql);
+                    SN += currentWK;
+                }
+                else if (detail[i].INPUTTYPE == "SQL")
+                {
+                    string sql = detail[i].CURVALUE;
+                    sql = sql.Replace("{WO}", WO);
+                    string value = (string)DB.ExecSelectOneValue(sql);
+                    SN += value;
+                }
                 else if (detail[i].INPUTTYPE == "SN")
                 {
                     if (ResetFlag)
@@ -150,7 +170,7 @@ namespace MESStation.SNMaker
                     sn = CodeMapping[curValue].CODEVALUE + sn;
                     if (sn.Length < detail[i].CURVALUE.Length)
                     {
-                        for (int k = 0;  detail[i].CURVALUE.Length != sn.Length; k++)
+                        for (int k = 0; detail[i].CURVALUE.Length != sn.Length; k++)
                         {
                             sn = "0" + sn;
                         }
@@ -166,7 +186,7 @@ namespace MESStation.SNMaker
                 int T1 = 0;
                 detail[i].EDIT_TIME = DateTime.Now;
                 string ret = DB.ExecSQL(detail[i].GetUpdateString(DB_TYPE_ENUM.Oracle));
-                if (! Int32.TryParse(ret, out T1))
+                if (!Int32.TryParse(ret, out T1))
                 {
                     throw new Exception("更新序列值出錯!" + ret);
                 }
@@ -181,10 +201,8 @@ namespace MESStation.SNMaker
             return SN;
         }
 
-        
     }
-
-    public class SNRuleItem
+        public class SNRuleItem
     {
         Row_C_SN_RULE_DETAIL Value;
         //public string GetNextValue

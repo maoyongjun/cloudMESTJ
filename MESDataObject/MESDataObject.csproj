@@ -178,7 +178,9 @@
     <Compile Include="Module\R_TO_HEAD.cs" />
     <Compile Include="Module\R_WO_BASE.cs" />
     <Compile Include="Module\R_WO_HEADER.cs" />
+    <Compile Include="Module\R_WO_HEADER_TJ.cs" />
     <Compile Include="Module\R_WO_ITEM.cs" />
+    <Compile Include="Module\R_WO_ITEM_TJ.cs" />
     <Compile Include="Module\R_WO_KP_Repalce.cs" />
     <Compile Include="Module\R_WO_REGION.cs" />
     <Compile Include="Module\R_WO_TEXT.cs" />
