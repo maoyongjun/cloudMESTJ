@@ -179,7 +179,7 @@
             this.txt_MESServer.Name = "txt_MESServer";
             this.txt_MESServer.Size = new System.Drawing.Size(275, 22);
             this.txt_MESServer.TabIndex = 7;
-            this.txt_MESServer.Text = "10.120.115.142:2130";
+            this.txt_MESServer.Text = "10.67.38.39";
             // 
             // label15
             // 
@@ -551,31 +551,31 @@
             this.ts_Exit});
             this.MenuStrip_RightBnt.Name = "MenuStrip_RightBnt";
             this.MenuStrip_RightBnt.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.MenuStrip_RightBnt.Size = new System.Drawing.Size(101, 92);
+            this.MenuStrip_RightBnt.Size = new System.Drawing.Size(95, 92);
             this.MenuStrip_RightBnt.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuStrip_RightBnt_ItemClicked);
             // 
             // ts_Option
             // 
             this.ts_Option.Name = "ts_Option";
-            this.ts_Option.Size = new System.Drawing.Size(100, 22);
+            this.ts_Option.Size = new System.Drawing.Size(94, 22);
             this.ts_Option.Text = "設置";
             // 
             // ts_Start
             // 
             this.ts_Start.Name = "ts_Start";
-            this.ts_Start.Size = new System.Drawing.Size(100, 22);
+            this.ts_Start.Size = new System.Drawing.Size(94, 22);
             this.ts_Start.Text = "開始";
             // 
             // ts_Stop
             // 
             this.ts_Stop.Name = "ts_Stop";
-            this.ts_Stop.Size = new System.Drawing.Size(100, 22);
+            this.ts_Stop.Size = new System.Drawing.Size(94, 22);
             this.ts_Stop.Text = "停止";
             // 
             // ts_Exit
             // 
             this.ts_Exit.Name = "ts_Exit";
-            this.ts_Exit.Size = new System.Drawing.Size(100, 22);
+            this.ts_Exit.Size = new System.Drawing.Size(94, 22);
             this.ts_Exit.Text = "退出";
             // 
             // Helper
