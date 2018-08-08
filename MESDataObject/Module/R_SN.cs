@@ -1640,15 +1640,46 @@ namespace MESDataObject.Module
                 return null;
             }
         }
-        public string addStartSNRecords(string workorderno, string trsn, OleExec DB)
+        public string addStartSNRecords(string workorderno, Row_R_WO_HEADER_TJ row_R_WO_HEADER, string trsn, OleExec DB)
         {
             T_R_SN SnDetailTable = new T_R_SN(DB, this.DBType);
             Row_R_SN r_sn = (Row_R_SN)SnDetailTable.NewRow();
+            //R_WO_HEADER中获取数据
+
+
             string result = string.Empty;
             r_sn.ID = SnDetailTable.GetNewID("TJ", DB);
             r_sn.SN = trsn;
             r_sn.EDIT_TIME = DateTime.Now;
             r_sn.WORKORDERNO = workorderno;
+            r_sn.SKUNO = row_R_WO_HEADER.MATNR;
+            r_sn.PLANT = row_R_WO_HEADER.WERKS;
+            r_sn.ROUTE_ID = "";
+            r_sn.STARTED_FLAG = "0";
+            r_sn.START_TIME = DateTime.Now;
+            r_sn.PACKED_FLAG = "0";
+            r_sn.PACKDATE = DateTime.Parse("1990-01-01 00:00:00.000");
+            r_sn.COMPLETED_FLAG ="0";
+            r_sn.COMPLETED_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
+            r_sn.SHIPPED_FLAG = "0";
+            r_sn.SHIPDATE = DateTime.Parse("1990-01-01 00:00:00.000");
+            r_sn.REPAIR_FAILED_FLAG = "0";
+            r_sn.CURRENT_STATION = "STARTED";
+            r_sn.NEXT_STATION = "Assy";
+            r_sn.KP_LIST_ID = "";
+            r_sn.PO_NO = "";
+            r_sn.CUST_ORDER_NO = "";
+            r_sn.CUST_PN = "";
+            r_sn.BOXSN = "";
+            r_sn.SCRAPED_FLAG = "0";
+            r_sn.SCRAPED_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
+            r_sn.PRODUCT_STATUS = "FRESH";
+            r_sn.REWORK_COUNT = 0;
+            r_sn.VALID_FLAG ="0";
+            r_sn.STOCK_STATUS = "0";
+            r_sn.STOCK_IN_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
+            r_sn.EDIT_EMP = "system";
+            r_sn.EDIT_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
             string sql = r_sn.GetInsertString(this.DBType);
             result = DB.ExecSQL(sql);
 

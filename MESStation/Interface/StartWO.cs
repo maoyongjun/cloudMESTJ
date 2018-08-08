@@ -41,7 +41,7 @@ namespace MESStation.Interface
                 String nextSN = SNmaker.GetNextSN("TEST", Sfcdb, WO);
                 Console.Out.WriteLine(nextSN);
                 T_R_SN t_r_sn = new T_R_SN(Sfcdb, this.DBTYPE);
-                t_r_sn.addStartSNRecords(WO, nextSN, Sfcdb);
+                t_r_sn.addStartSNRecords(WO, row_R_WO_HEADER, nextSN, Sfcdb);
             }
 
 
