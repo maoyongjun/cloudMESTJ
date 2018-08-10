@@ -53,6 +53,10 @@ namespace MESDataObject.Module
 
             return R_Sn;
         }
+        public void deleteSNByWO(string wo, OleExec DB) {
+            string strSql =$@"UPDATE R_SN SET valid_flag=0 WHERE workorderno={wo}";
+            DB.ExecSQL(strSql);
+        }
 
         public List<R_SN> GETSN(string _WO, OleExec DB)
         {
@@ -1640,6 +1644,12 @@ namespace MESDataObject.Module
                 return null;
             }
         }
+        public string findOneSNByWO(string wo, OleExec DB) {
+            string strSql = $@" select * from r_sn  where workorderno={wo} and valid_flag=1";
+            string id = DB.ExecSelectOneValue(strSql)?.ToString();
+            return id;
+        }
+
         public string addStartSNRecords(string workorderno, Row_R_WO_HEADER_TJ row_R_WO_HEADER, string trsn, OleExec DB)
         {
             T_R_SN SnDetailTable = new T_R_SN(DB, this.DBType);
@@ -1675,11 +1685,11 @@ namespace MESDataObject.Module
             r_sn.SCRAPED_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
             r_sn.PRODUCT_STATUS = "FRESH";
             r_sn.REWORK_COUNT = 0;
-            r_sn.VALID_FLAG ="0";
+            r_sn.VALID_FLAG ="1";
             r_sn.STOCK_STATUS = "0";
             r_sn.STOCK_IN_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
             r_sn.EDIT_EMP = "system";
-            r_sn.EDIT_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
+            r_sn.EDIT_TIME = DateTime.Now;
             string sql = r_sn.GetInsertString(this.DBType);
             result = DB.ExecSQL(sql);
 

@@ -23,15 +23,42 @@ namespace MESStation.Interface
             },
             Permissions = new List<MESPermission>()//不需要任何權限
         };
+
+        protected APIInfo unstart = new APIInfo()
+        {
+            FunctionName = "unstartWO",
+            Description = "unstartWO For TjL5",
+            Parameters = new List<APIInputInfo>()
+            {
+                new APIInputInfo() {InputName = "WO", InputType = "STRING", DefaultValue = "WO"}
+            },
+            Permissions = new List<MESPermission>()//不需要任何權限
+        };
+
         public StartWO()
         {
             this.Apis.Add(info.FunctionName, info);
+            this.Apis.Add(unstart.FunctionName, unstart);
+        }
+        public void unstartWO(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn) {
+            OleExec Sfcdb = this.DBPools["SFCDB"].Borrow();
+            string WO = Data["WO"].ToString();
+            T_R_SN t_r_sn = new T_R_SN(Sfcdb, this.DBTYPE);
+            t_r_sn.deleteSNByWO(WO, Sfcdb);
+            StationReturn.Status = StationReturnStatusValue.Pass;
         }
 
         public void startWO(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             OleExec Sfcdb = this.DBPools["SFCDB"].Borrow();
             string WO = Data["WO"].ToString();
+            T_R_SN t_r_sn = new T_R_SN(Sfcdb, this.DBTYPE);
+            string id = t_r_sn.findOneSNByWO(WO, Sfcdb);
+            if (!string.IsNullOrEmpty(id)) {
+                StationReturn.Status = StationReturnStatusValue.Fail;
+                StationReturn.Message = "工单已展开,不能重复展开";
+                return;
+            }
             T_R_WO_HEADER_TJ t_R_WO_HEADER_TJ = new T_R_WO_HEADER_TJ(Sfcdb, this.DBTYPE);
             Row_R_WO_HEADER_TJ row_R_WO_HEADER = t_R_WO_HEADER_TJ.GetWo(WO, Sfcdb);
             T_C_SKU table_sku = new T_C_SKU(Sfcdb, this.DBTYPE);
@@ -42,7 +69,7 @@ namespace MESStation.Interface
             {
                 String nextSN = SNmaker.GetNextSN(SkuObject.SnRule, Sfcdb, WO);
                 Console.Out.WriteLine(nextSN);
-                T_R_SN t_r_sn = new T_R_SN(Sfcdb, this.DBTYPE);
+                
                 t_r_sn.addStartSNRecords(WO, row_R_WO_HEADER, nextSN, Sfcdb);
             }
 
