@@ -1650,21 +1650,20 @@ namespace MESDataObject.Module
             return id;
         }
 
-        public string addStartSNRecords(string workorderno, Row_R_WO_HEADER_TJ row_R_WO_HEADER, string trsn, OleExec DB)
+        public string addStartSNRecords(string bu,string user,string workorderno,string routeid, Row_R_WO_HEADER_TJ row_R_WO_HEADER, string trsn, OleExec DB)
         {
             T_R_SN SnDetailTable = new T_R_SN(DB, this.DBType);
             Row_R_SN r_sn = (Row_R_SN)SnDetailTable.NewRow();
             //R_WO_HEADER中获取数据
 
-
             string result = string.Empty;
-            r_sn.ID = SnDetailTable.GetNewID("TJ", DB);
+            r_sn.ID = SnDetailTable.GetNewID(bu, DB);
             r_sn.SN = trsn;
             r_sn.EDIT_TIME = DateTime.Now;
             r_sn.WORKORDERNO = workorderno;
             r_sn.SKUNO = row_R_WO_HEADER.MATNR;
             r_sn.PLANT = row_R_WO_HEADER.WERKS;
-            r_sn.ROUTE_ID = "";
+            r_sn.ROUTE_ID = routeid;
             r_sn.STARTED_FLAG = "0";
             r_sn.START_TIME = DateTime.Now;
             r_sn.PACKED_FLAG = "0";
@@ -1688,7 +1687,7 @@ namespace MESDataObject.Module
             r_sn.VALID_FLAG ="1";
             r_sn.STOCK_STATUS = "0";
             r_sn.STOCK_IN_TIME = DateTime.Parse("1990-01-01 00:00:00.000");
-            r_sn.EDIT_EMP = "system";
+            r_sn.EDIT_EMP = user;
             r_sn.EDIT_TIME = DateTime.Now;
             string sql = r_sn.GetInsertString(this.DBType);
             result = DB.ExecSQL(sql);
