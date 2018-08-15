@@ -69,7 +69,7 @@ namespace MESDataObject.Module
 
         public bool CheckLinkByValue(string value, OleExec sfcdb)
         {
-            string sql = $@"select * from r_sn_kp where value ='{value}'";
+            string sql = $@"select * from r_sn_kp where value ='{value}'  AND SCANTYPE IN ('SystemSN')";
             DataSet ds = sfcdb.RunSelect(sql);
             if (ds.Tables[0].Rows.Count > 0)
             {
