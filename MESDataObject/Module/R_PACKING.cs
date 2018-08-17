@@ -23,6 +23,8 @@ namespace MESDataObject.Module
 
         public Row_R_PACKING GetRPackingByPackNo(OleExec DB,string PackNo)
         {
+
+            PackNo = "P18061500001";
             string strSql = $@" SELECT * FROM R_PACKING where PACK_NO='{PackNo}' ";
             DataSet ds = DB.ExecSelect(strSql);
             Row_R_PACKING r = (Row_R_PACKING)this.NewRow();
@@ -37,6 +39,20 @@ namespace MESDataObject.Module
             string strSql = $@"select * from r_packing where parent_pack_id='{parentPackId}'";
             DataSet ds = DB.ExecSelect(strSql);
             foreach(DataRow row in ds.Tables[0].Rows)
+            {
+                rowPacking = (Row_R_PACKING)this.NewRow();
+                rowPacking.loadData(row);
+                packingList.Add(rowPacking.GetDataObject());
+            }
+            return packingList;
+        }
+        public List<R_PACKING> GetListPackByPackno(string packno, OleExec DB)
+        {
+            List<R_PACKING> packingList = new List<R_PACKING>();
+            Row_R_PACKING rowPacking;
+            string strSql = $@"select * from r_packing where PACK_NO='{packno}'";
+            DataSet ds = DB.ExecSelect(strSql);
+            foreach (DataRow row in ds.Tables[0].Rows)
             {
                 rowPacking = (Row_R_PACKING)this.NewRow();
                 rowPacking.loadData(row);

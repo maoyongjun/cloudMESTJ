@@ -165,6 +165,7 @@
     <Compile Include="Stations\StationActions\DataCheckers\CheckRepairFail.cs" />
     <Compile Include="Stations\StationActions\DataCheckers\SkuCheckers.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\APInfoDataloader.cs" />
+    <Compile Include="Stations\StationActions\DataLoaders\BoxLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\CustomLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\DataInputLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\PackingDataLoader.cs" />
