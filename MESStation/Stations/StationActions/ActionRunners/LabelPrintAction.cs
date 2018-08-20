@@ -43,7 +43,9 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
 
 
-            SKU SKU = (SKU)(Station.StationSession.Find(T => T.MESDataType == Paras[1].SESSION_TYPE && T.SessionKey == Paras[1].SESSION_KEY).Value);
+            //SKU SKU = (SKU)(Station.StationSession.Find(T => T.MESDataType == Paras[1].SESSION_TYPE && T.SessionKey == Paras[1].SESSION_KEY).Value);
+            SKU SKU = new SKU();
+            SKU.Init("VT02130969", "A5", SFCDB, DB_TYPE_ENUM.Oracle);
 
             List<string> ProcessLabType = new List<string>();
             if (Paras.Count > 1)

@@ -127,10 +127,10 @@ namespace MESStation.Packing
         {
             T_R_PACKING TRP = new T_R_PACKING(DB, DB_TYPE_ENUM.Oracle);
             Row_R_PACKING data = TRP.GetRPackingByPackNo(DB, PLNO);
-            if (data.PACK_TYPE != "PALLET")
-            {
-                throw new Exception($@"{PLNO} in not Pallet");
-            }
+            //if (data.PACK_TYPE != "PALLET")
+            //{
+            //    throw new Exception($@"{PLNO} in not Pallet");
+            //}
             DATA = data;
         }
 

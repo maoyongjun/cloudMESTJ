@@ -84,7 +84,7 @@ namespace MESHelper.Plugin
                 string Type = dc["Type"].ToString();
                 if (Type == "0")
                 {
-                    string ItemName = "@" + Name + "@";
+                    string ItemName = Name;
                     try
                     {
                         _vars.Item(ItemName)._Value = dc["Value"].ToString();
@@ -98,7 +98,7 @@ namespace MESHelper.Plugin
                     JArray Values = (JArray)dc["Value"];
                     for (int i = 0; i < Values.Count; i++)
                     {
-                        string ItemName = "@" + Name + (i + 1).ToString() + "@";
+                        string ItemName =  Name + (i + 1).ToString() ;
                         try
                         {
                             _vars.Item(ItemName)._Value = Values[i].ToString();

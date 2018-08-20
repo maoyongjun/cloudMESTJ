@@ -14,8 +14,8 @@ namespace MESStation.Label
         
         LabelInputValue I_PALLETNO = new LabelInputValue() { Name = "PLNO", Type = "STRING", Value = "", StationSessionType = "PRINT_PL", StationSessionKey = "1" };
 
-        LabelOutput O_SN = new LabelOutput() { Name = "SN", Type = LableOutPutTypeEnum.StringArry, Description = "", Value = new List<string>() };
-        LabelOutput O_SKUNO = new LabelOutput() { Name = "SKU", Type = LableOutPutTypeEnum.String, Description = "", Value = "" };
+        LabelOutput O_SN = new LabelOutput() { Name = "SSN", Type = LableOutPutTypeEnum.StringArry, Description = "", Value = new List<string>() };
+        LabelOutput O_SKUNO = new LabelOutput() { Name = "HHPN", Type = LableOutPutTypeEnum.String, Description = "", Value = "" };
         LabelOutput O_VER = new LabelOutput() { Name = "VER", Type = LableOutPutTypeEnum.String, Description = "", Value = "" };
         LabelOutput O_QTY = new LabelOutput() { Name = "QTY", Type = LableOutPutTypeEnum.String, Description = "", Value = "" };
         LabelOutput O_PLNO = new LabelOutput() { Name = "PLNO", Type = LableOutPutTypeEnum.String, Description = "", Value = "" };
