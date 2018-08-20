@@ -43,12 +43,47 @@ namespace MESStation.Interface
             C_PACKING c_PACKING = t_C_PACKING.GetPackingBySkuAndType(workorder.SkuNO, packType,Sfcdb);
             double? qty = c_PACKING.MAX_QTY;
 
-            int packs = (int)(workorder.WORKORDER_QTY / qty)+1;
+            int packs = (int)(workorder.WORKORDER_QTY / qty);
             string ruleName = c_PACKING.SN_RULE;
+            T_R_PACKING t_r_packing = new T_R_PACKING(Sfcdb, DBTYPE);
+
+            int remainQty = 0;
+            if (packs * qty < workorder.WORKORDER_QTY)
+            {
+                remainQty = (int)(workorder.WORKORDER_QTY - packs * qty);
+                packs = packs + 1;
+            }
             for (int i = 0; i < packs; i++) {
                 string nextpackno = SNmaker.GetNextSN(ruleName,Sfcdb);
                 System.Console.WriteLine(nextpackno);
+                Row_R_PACKING row_r_packing = (Row_R_PACKING)t_r_packing.NewRow();
+
+                row_r_packing.IP = this.IP;
+                row_r_packing.STATION = "STARTPARTNO";
+                row_r_packing.LINE = "LINE0";
+                row_r_packing.EDIT_EMP = this.LoginUser.EMP_NO;
+                row_r_packing.EDIT_TIME = DateTime.Now;
+                row_r_packing.CREATE_TIME = DateTime.Now;
+                row_r_packing.CLOSED_FLAG = "0";
+                row_r_packing.QTY = 0;
+                if (packs == i && remainQty > 0)
+                {
+                    row_r_packing.MAX_QTY = remainQty;
+                }
+                else
+                {
+                    row_r_packing.MAX_QTY = qty;
+                }
+                row_r_packing.SKUNO = workorder.SkuNO;
+                row_r_packing.PARENT_PACK_ID = "";
+                row_r_packing.PACK_TYPE = packType;
+                row_r_packing.PACK_NO = nextpackno;
+                row_r_packing.ID = t_r_packing.GetNewID(this.BU,Sfcdb);
+
+                Sfcdb.ExecSQL(row_r_packing.GetInsertString(DBTYPE));
+
             }
+           
 
             StationReturn.Status = StationReturnStatusValue.Pass;
         }
