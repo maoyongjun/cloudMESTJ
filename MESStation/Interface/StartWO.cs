@@ -79,6 +79,11 @@ namespace MESStation.Interface
                 StationReturn.Message = "未配置keypartlistid";
                 return;
             }
+            //生成工单基础表
+            T_R_WO_BASE t_R_WO_BASE = new T_R_WO_BASE(Sfcdb, this.DBTYPE);
+            t_R_WO_BASE.deleteWOByWo(WO, Sfcdb);
+            t_R_WO_BASE.addWOByWOHeader(BU, user, routeid, row_R_WO_HEADER, Sfcdb);
+
             WorkOrder objWorkorder = new WorkOrder();
             objWorkorder.Init(WO, Sfcdb);
             objWorkorder.WorkorderNo = WO;
@@ -108,10 +113,7 @@ namespace MESStation.Interface
                     snObject.InsertR_SN_KP(objWorkorder, r_sns[i], Sfcdb, Station, this.DBTYPE);
                 }
             }
-            //生成工单基础表
-            T_R_WO_BASE t_R_WO_BASE = new T_R_WO_BASE(Sfcdb, this.DBTYPE);
-            t_R_WO_BASE.deleteWOByWo(WO,Sfcdb);
-            t_R_WO_BASE.addWOByWOHeader(BU, user, routeid, row_R_WO_HEADER, Sfcdb);
+       
            
             StationReturn.Data = qty;
             StationReturn.Status = StationReturnStatusValue.Pass;

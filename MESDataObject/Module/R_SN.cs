@@ -1655,7 +1655,8 @@ namespace MESDataObject.Module
             T_R_SN SnDetailTable = new T_R_SN(DB, this.DBType);
             Row_R_SN r_sn = (Row_R_SN)SnDetailTable.NewRow();
             //R_WO_HEADER中获取数据
-
+            T_C_ROUTE_DETAIL t_c_route_detail = new T_C_ROUTE_DETAIL(DB,this.DBType);
+           
             string result = string.Empty;
             r_sn.ID = SnDetailTable.GetNewID(bu, DB);
             r_sn.SN = trsn;
@@ -1674,7 +1675,7 @@ namespace MESDataObject.Module
             r_sn.SHIPDATE = DateTime.Parse("1990-01-01 00:00:00.000");
             r_sn.REPAIR_FAILED_FLAG = "0";
             r_sn.CURRENT_STATION = "STARTED";
-            r_sn.NEXT_STATION = "Assy";
+            r_sn.NEXT_STATION = t_c_route_detail.getNextStation(routeid, r_sn.CURRENT_STATION, DB); 
             r_sn.KP_LIST_ID = "";
             r_sn.PO_NO = "";
             r_sn.CUST_ORDER_NO = "";

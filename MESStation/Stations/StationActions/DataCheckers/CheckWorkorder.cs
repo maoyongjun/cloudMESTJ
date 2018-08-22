@@ -46,10 +46,10 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 s.InputValue = Input.Value.ToString();
                 s.ResetInput = Input;
 
-                //modify by LLF 2018-02-02
-                //Station.AddMessage("MES00000029", new string[] { "Workorder", WO}, MESReturnView.Station.StationMessageState.Message);
-                ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000029", new string[] { "Workorder", WO });
-                throw new MESReturnMessage(ErrMessage);
+                
+                Station.AddMessage("MES00000029", new string[] { "Workorder", WO}, MESReturnView.Station.StationMessageState.Message);
+                //ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000029", new string[] { "Workorder", WO });
+                //throw new MESReturnMessage(ErrMessage);
             }
             catch (Exception ex)
             {
