@@ -55,7 +55,7 @@ namespace MESStation.Interface.SAPRFC
 
             RfcConfigParameters configParams = new RfcConfigParameters();
 
-            RfcPara.Add(RfcConfigParameters.SystemNumber, "02");
+            RfcPara.Add(RfcConfigParameters.SystemNumber, "04");
             RfcPara.Add(RfcConfigParameters.User, "SFC_USER");
             RfcPara.Add(RfcConfigParameters.Password, "yhpwd");
             RfcPara.Add(RfcConfigParameters.Client, "801");
@@ -63,7 +63,7 @@ namespace MESStation.Interface.SAPRFC
             RfcPara.Add(RfcConfigParameters.Language, "en");
             RfcPara.Add(RfcConfigParameters.PoolSize, "5");
             RfcPara.Add(RfcConfigParameters.MaxPoolSize, "10");
-            RfcPara.Add(RfcConfigParameters.GatewayHost, "10.134.28.85");
+            RfcPara.Add(RfcConfigParameters.GatewayHost, "10.134.28.204");
             RfcPara.Add(RfcConfigParameters.LogonGroup, "PUBLIC");
 
             RfcDest = RfcDestinationManager.GetDestination(RfcPara);
