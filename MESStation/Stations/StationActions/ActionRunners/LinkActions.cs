@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
 using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using MESDBHelper;
 
 namespace MESStation.Stations.StationActions.ActionRunners
 {
     class LinkActions
     {
-        public static void SNLinkPassAction_Old(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNLinkPassAction_Old(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SN = null;
             string ErrMessage = string.Empty;
@@ -52,7 +52,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             TRS.RecordPassStationDetail(sn, Station.Line, Station.StationName, Station.StationName, Station.BU, Station.SFCDB);
         }
 
-        public static void SNLinkSubSNKPAction_Old(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNLinkSubSNKPAction_Old(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             WorkOrder wO = null;
             //SN snob = null;
@@ -137,7 +137,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         }
 
 
-        public static void SNLinkSubSNKPAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNLinkSubSNKPAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             List<Dictionary<string, string>> KPList = new List<Dictionary<string, string>>();
             List<Dictionary<string, string>> KPList_Temp = new List<Dictionary<string, string>>();
@@ -284,7 +284,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             KPListSession.Value = KPList;
         }
 
-        public static void SNLinkPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNLinkPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string SubSn = "";
             SN SubSNObj = new SN();
@@ -414,7 +414,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 }
                 KPListSession.Value = null;
                 ClearFlagGSession.Value = "true";
-                Station.AddMessage("MES00000195", new string[] { SubSn, StrNextStation }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000195", new string[] { SubSn, StrNextStation }, StationMessageState.Pass);
             }
         }
     }

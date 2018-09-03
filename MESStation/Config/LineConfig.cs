@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.Config
 {
-  public  class LineConfig : MESStation.BaseClass.MesAPIBase
+  public  class LineConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo addline = new APIInfo()
         {

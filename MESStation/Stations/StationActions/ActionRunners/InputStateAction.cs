@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using System.Collections;
 using MESDataObject;
 using System.Data;
@@ -16,7 +16,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 {
     public class InputStateAction
     {
-        public static void InputsEnable(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InputsEnable(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             for (int i = 0; i < Paras.Count; i++)
             {
@@ -28,7 +28,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void InputsDisable(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InputsDisable(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             for (int i = 0; i < Paras.Count; i++)
             {
@@ -40,7 +40,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void InputsDisableControl(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InputsDisableControl(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             for (int i = 0; i < Paras.Count; i++)
             {
@@ -52,7 +52,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void SetNextInput(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SetNextInput(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             MESStationInput input = Station.Inputs.Find(t => t.DisplayName == Paras[0].VALUE.ToString().Trim());
             if (input != null)
@@ -61,7 +61,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void ClearInputAndMemory(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void ClearInputAndMemory(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ClearFlag = string.Empty;
             string ClearItem = string.Empty;
@@ -121,14 +121,14 @@ namespace MESStation.Stations.StationActions.ActionRunners
             
         }
 
-        public static void SetPassOrFailInOba(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SetPassOrFailInOba(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             MESStationInput snInput = Station.Inputs.Find(t => t.DisplayName == Paras[0].SESSION_TYPE.ToString());
             MESStationInput failSnInput = Station.Inputs.Find(t => t.DisplayName == Paras[1].SESSION_TYPE.ToString());
             MESStationInput FailCodeInput = Station.Inputs.Find(t => t.DisplayName == Paras[2].SESSION_TYPE.ToString());
             MESStationInput LocationInput = Station.Inputs.Find(t => t.DisplayName == Paras[3].SESSION_TYPE.ToString());
             MESStationInput FailDescInput = Station.Inputs.Find(t => t.DisplayName == Paras[4].SESSION_TYPE.ToString());
-
+            
 
             if (Input.Value.ToString().ToUpper().Equals("PASS"))
             {

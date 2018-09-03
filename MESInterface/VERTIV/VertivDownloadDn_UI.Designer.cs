@@ -57,6 +57,7 @@
             this.button1.TabIndex = 3;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // VertivDownloadDn_UI
             // 
@@ -67,6 +68,7 @@
             this.Controls.Add(this.label1);
             this.Name = "VertivDownloadDn_UI";
             this.Size = new System.Drawing.Size(625, 377);
+            this.Load += new System.EventHandler(this.DownDN_UI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

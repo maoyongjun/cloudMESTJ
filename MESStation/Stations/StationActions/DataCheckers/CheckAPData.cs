@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 using MESDataObject;
 using MESDBHelper;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using MESStation.Stations.StationActions.DataLoaders;
 using System.Data.OleDb;
 
@@ -24,7 +24,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SMTTRSNStateDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SMTTRSNStateDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             //return;
             int EXTQTY = 0;//TRSN剩餘數量
@@ -215,7 +215,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 LinkQTY_Session.Value = 0;
                 throw ex;
             }             
-            Station.AddMessage("MES00000001", new string[] { R_TR_SN_Row["TR_SN"].ToString() }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000001", new string[] { R_TR_SN_Row["TR_SN"].ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
            
         }
         /// <summary>
@@ -259,7 +259,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000131", new string[] { Input_LinkQty.Value.ToString(), AP_LinkQty.Value.ToString() }));
                 }
                 Station.Inputs[3].Enable = true;
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch(Exception ex)
             {
@@ -303,7 +303,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SMTSolderDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SMTSolderDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             //Marked by LLF 2018-01-29
             //if (Paras.Count == 0)
@@ -333,7 +333,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             if (result == "OK")
             {
                 
-                Station.AddMessage("MES00000062", new string[] { PsnInsert }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000062", new string[] { PsnInsert }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
@@ -348,7 +348,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SMTStencilDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SMTStencilDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -371,7 +371,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Paras"></param>
         /// MES1.CHECK_AOI_STATUS@mbdallpart(VAR_PANELNO,var_nextevent,var_productionline,var_LASTEDITBY,var_message )
         /// (G_SYSSERIALNO IN VARCHAR2,
-        public static void AOITestAPDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void AOITestAPDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             
             OleExec apdb = Station.APDB;
@@ -394,7 +394,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             if (result == "OK")
             {
                 
-                Station.AddMessage("MES00000062", new string[] { Psn }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000062", new string[] { Psn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
@@ -495,7 +495,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 //}
                 
                 Station.Inputs[3].Enable = true;
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {

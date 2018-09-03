@@ -31,8 +31,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer-Console", "WebSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocket-Sharp", "websocket-sharp\WebSocket-Sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebClient", "WebClient\", "{3B0615DA-2D7F-46DA-AEA4-822669592A3B}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebClient", "WebClient\", "{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}"
 	ProjectSection(WebsiteProperties) = preProject
+		SccProjectName = ""$/MES_Project.root/MES_Project", TDAAAAAA"
+		SccAuxPath = ""
+		SccLocalPath = ".."
+		SccProvider = "MSSCCI:Microsoft Visual SourceSafe"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_51105"
 		Debug.AspNetCompiler.PhysicalPath = "WebClient\"
@@ -50,6 +54,28 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebClient", "WebClient\", "
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "51105"
 		SlnRelativePath = "WebClient\"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MESPubLab", "MESPubLab\MESPubLab.csproj", "{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebReportCenter", "WebReportCenter\", "{2141F6E3-13D5-4981-9BE4-D50EE1988E25}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_56681"
+		Debug.AspNetCompiler.PhysicalPath = "WebReportCenter\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56681\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_56681"
+		Release.AspNetCompiler.PhysicalPath = "WebReportCenter\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56681\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "56681"
 	EndProjectSection
 EndProject
 Global
@@ -172,14 +198,30 @@ Global
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B357BAC7-529E-4D81-A0D2-71041B19C8DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Release_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Release_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B0615DA-2D7F-46DA-AEA4-822669592A3B}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Release_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Release_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD2ECBB-FB8F-4D69-8709-C71D956ACBD6}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Release_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Release_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{2141F6E3-13D5-4981-9BE4-D50EE1988E25}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

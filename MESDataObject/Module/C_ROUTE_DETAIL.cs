@@ -260,6 +260,20 @@ namespace MESDataObject.Module
                 return false;
             }
         }
+
+        public bool IsJobStockin(string routeID, string stationName, OleExec sfcdb)
+        {
+            string sql = $@"select * from c_route_detail where route_id='{routeID}' and station_name='{stationName}' and station_type='JOBSTOCKIN' ";
+            DataTable dt = sfcdb.ExecSelect(sql).Tables[0];
+            if (dt.Rows.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
     public class Row_T_C_ROUTE_DETAIL : DataObjectBase
     {

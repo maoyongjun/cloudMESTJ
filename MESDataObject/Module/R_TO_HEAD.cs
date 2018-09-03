@@ -30,6 +30,7 @@ namespace MESDataObject.Module
         public R_TO_HEAD GetDataObject()
         {
             R_TO_HEAD DataObject = new R_TO_HEAD();
+            DataObject.ID = this.ID;
             DataObject.CREATETIME = this.CREATETIME;
             DataObject.DROP_FLAG = this.DROP_FLAG;
             DataObject.EXTERNAL_NO = this.EXTERNAL_NO;
@@ -40,6 +41,17 @@ namespace MESDataObject.Module
             DataObject.PLAN_STARTIME = this.PLAN_STARTIME;
             DataObject.TO_NO = this.TO_NO;
             return DataObject;
+        }
+        public string ID
+        {
+            get
+            {
+                return (string)this["ID"];
+            }
+            set
+            {
+                this["ID"] = value;
+            }
         }
         public DateTime? CREATETIME
         {
@@ -143,6 +155,7 @@ namespace MESDataObject.Module
     }
     public class R_TO_HEAD
     {
+        public string ID{ get; set; }
         public DateTime? CREATETIME{ get; set; }
         public string DROP_FLAG{ get; set; }
         public string EXTERNAL_NO{ get; set; }

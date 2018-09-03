@@ -49,7 +49,7 @@
 
             #outputsite .form-group {
                 /*width: calc((100% - 45px)/3);*/
-                width: calc((100% - 45px)/2);
+                width: calc(100%/4);
                 float: left;
                 border-bottom: 1px dotted #337ab7;
                 padding: 0 !important;
@@ -59,7 +59,7 @@
                 #outputsite .form-group label {
                     padding: 0 15px 0 0 !important;
                     margin: 0;
-                    font-size: initial;
+                    font-size: small;
                     float: left;
                     width: auto;
                 }
@@ -67,6 +67,7 @@
                 #outputsite .form-group div {
                     width: auto;
                     padding: 0px !important;
+                    font-size: small;
                     min-height: 18px;
                 }
 
@@ -87,7 +88,7 @@
         @media(max-width:1599px) {
             #outputsite .form-group {
                 float: left;
-                width: calc((100% - 30px)/2);
+                width: calc((100% - 30px)/4);
                 /*width: 100%;*/
             }
         }
@@ -129,40 +130,58 @@
         </div>
         <div class="ibox-content">
             <div class="row full-height">
-                <div class="col-xs-12">
+                <!--<div class="col-xs-12">
                     <div class="panel panel-default col-xs-12 no-padding">
-                        <div class="panel-heading" style=" font-size:large; margin-bottom:10px; font-weight:bold;" set-lan="html:StationInfo">Lot Information</div>
+                        <div class="panel-heading" style=" font-size:medium; margin-bottom:10px; font-weight:bold;" set-lan="html:StationInfo">Lot Information</div>
                         <div class="panel-body no-padding">
                             <div class="col-xs-11 col-xs-offset-1 no-padding" id="outputsite">
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <div class="col-xs-12" id="IOSite">
                     <div class="col-xs-6">
-                        <div class="panel panel-default col-xs-12 no-padding">
-                            <div class="panel-heading" style=" font-size:large; margin-bottom:10px; font-weight:bold;" set-lan="html:InLotInput">InLot</div>
+                        <div class="panel panel-success col-xs-12 no-padding">
+                            <div class="panel-heading" style=" font-size:small; margin-bottom:10px; font-weight:bold;" set-lan="html:TO_LIST">TO_LIST</div>
                             <div class="panel-body no-padding">
-                                <div class="col-xs-7 no-padding" id="divPackno"></div>
-                                <div class="col-xs-3 no-padding" id="divLevel"></div>
-                                <div class="col-xs-2 no-padding" id="divPackClose"></div>
+                                <div class="col-xs-12 no-padding" id="divToList"></div>
                             </div>
                         </div>
+                        <!--<div class="panel panel-success col-xs-12 no-padding">
+                            <div class="panel-heading" style=" font-size:small; margin-bottom:10px; font-weight:bold;" set-lan="html:DN_LIST">DN_LIST</div>
+                            <div class="panel-body no-padding">
+                                <div class="col-xs-12 no-padding" id="divDoList"></div>
+                            </div>
+                        </div>
+                        <div class="panel panel-success col-xs-12 no-padding">
+                            <div class="panel-heading" style=" font-size:small; margin-bottom:10px; font-weight:bold;" set-lan="html:DN_ITEM">DN_ITEM</div>
+                            <div class="panel-body no-padding">
+                                <div class="col-xs-12 no-padding" id="divDnItem"></div>
+                            </div>
+                        </div>-->
                     </div>
                     <div class="col-xs-6">
-                        <div class="panel panel-default col-xs-12 no-padding">
-                            <div class="panel-heading" style=" font-size:large; margin-bottom:10px; font-weight:bold;" set-lan="html:InLotInput">LotInfo</div>
+                        <div class="panel panel-success col-xs-12 no-padding">
+                            <div class="panel-heading" style=" font-size:small; margin-bottom:10px; font-weight:bold;" set-lan="html:ShipDataInfo">ShipDataInfo</div>
+                            <div class="panel-body no-padding" >
+                                <div class="col-xs-11 col-xs-offset-1 no-padding"  style="font-size:small;" id="outputsite">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-success col-xs-12 no-padding">
+                            <div class="panel-heading" style=" font-size:small; margin-bottom:10px; font-weight:bold;" set-lan="html:ScanPackNo">Scan</div>
                             <div class="panel-body no-padding">
-                                <div class="col-xs-12 no-padding" id="divPackList"></div>
+                                <div class="col-xs-7 no-padding" id="divPackno"></div>
+                            </div>
+                        </div>
+                        <div class="panel panel-success col-xs-12 no-padding">
+                            <div class="panel-heading" style="font-size:small; font-weight:bold;" set-lan="html:StationMessage">Message</div>
+                            <div class="panel-body no-padding" id="messagesite">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default col-xs-12 no-padding">
-                    <div class="panel-heading" style="background-color: #92B5D3 !important; font-size:large; font-weight:bold;" set-lan="html:StationMessage">Message</div>
-                    <div class="panel-body no-padding" id="messagesite">
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -184,7 +203,7 @@
     <script src="../../Scripts/Station/MesClient.Station.js"></script>
     <script>
         var Client = null;
-        var stationName = "PASSOBA";
+        var stationName = "SHIPOUT";
         var option = null;
         var station = null;
         var line = "Line1";
@@ -192,10 +211,11 @@
         $(document).ready(function () {
             Client = self.parent.client;
             //stationName = $.MES.getQueryString("StationName");
+            //ShipOutStation = new ShipOutStation(this);
             $('.panel-heading h3 span').text(stationName);
             var resize = function () {
                 var hg = $(".ibox-content").height() - $("#IOSite").height() - 40;
-                $("#messagesite").height(hg > 300 ? hg : 300);
+                $("#messagesite").height(hg > 280 ? hg : 280);
             };
             option = {
                 Client: Client,
@@ -206,28 +226,21 @@
                 MContainer: $("#messagesite"),
                 MessageShowType: undefined,
                 Init: function (d) {
+                    var thisStation = new ShipOutStation(this);
                     if (d.Status == "Pass") {
                         this.ShowInput({
                             InputName: "PACKNO",
                             Container: $("#divPackno")
                         });
-                        this.ShowInput({
-                            InputName: "AQLLEVEL",
-                            Container: $("#divLevel")
-                        });
-                        this.ShowInput({
-                            InputName: "PACKLIST",
-                            Container: $("#divPackList")
-                        });
-                        this.ShowInput({    
-                            InputName: "CLOSED",
-                            Container: $("#divPackClose")
+                        thisStation.ShowShipOutInput({
+                            InputName: "TO_LIST",
+                            Container: $("#divToList")
                         });
                     }
                     else {
                         swal("工站初始化失败！", d.Message, "error");
                     }
-                     resize();
+                    resize();
                 }
             };
 
@@ -245,6 +258,169 @@
             }
 
         });
+
+        var ShipOutStation = function(o) {
+            var station = o;
+            ShipOutStation.prototype.ShowShipOutInput = function (obj) {
+                if (station.ScanType == "Pass") {
+                    for (var i = 0; i < station.Inputs.length; i++) {
+                        if (station.Inputs[i].DisplayName == obj.InputName) {
+                            obj.Container.find("button").unbind("click");
+                            obj.Container.find("input:radio").unbind("click");
+                            obj.Container.find("input.form-control").unbind("keypress");
+                            obj.Container.find("select.form-control").unbind("change");
+                            this.ShowTable(obj.Container,station.Inputs[i]);
+                            station.Inputs[i].SetEnable();
+                            station.Inputs[i].SetVisable();                     
+                            break;
+                        }
+                    }
+                }
+            }
+            ShipOutStation.prototype.ShowTable = function (c, Ip) {
+                var value = Ip.Value;
+                if (value[0] == "{" || value[0] == "[")
+                    return;
+                $("#divToList").html("");
+                var tb = $("<table id=\"" + Ip.Name + "\" view-group=\"" + Ip.Name + "_" + Ip.ID + "\"></table>");
+                c.append(tb);
+                var col = [];
+                if (value.length > 0) {
+                    for (var item in value[0]) {
+                        var cell = {
+                            field: item,
+                            title: item,
+                            align: 'center',
+                            valign: 'middle',
+                            sortable: false
+                        };
+                        col.push(cell);
+                    }
+                }
+                tb.bootstrapTable({
+                    data: value,
+                    detailView: true,//父子表
+                    pageSize: 10,
+                    pageList: [10, 25],
+                    striped: true, //是否显示行间隔色
+                    pagination: true, //是否显示分页（*）
+                    paginationPreText: '<', //上下翻页
+                    paginationNextText: '>',
+                    columns: col,
+                    onExpandRow: function (index, row, $detail) {
+                        InitSubTable(index, row, $detail);
+                    }
+                });
+                SelectTableRowData(tb);
+            };
+        };
+
+        //初始化子表格(无线循环)
+        var InitSubTable = function (index, row, $detail) {
+            var cur_table = $detail.html('<table></table>').find('table');
+            var col = [];
+            self.parent.client.CallFunction("MESStation.Config.WhsConfig", "GetWaitShipOutToDetailDataByToNo",
+                { ToNo: row.TO_NO },
+                function(e) {
+                    if (e.Data.length > 0) {
+                        $(cur_table).bootstrapTable({
+                            data: e.Data,
+                            clickToSelect: true,
+                            detailView: true, //父子表
+                            pageSize: 10,
+                            pageList: [10, 25],
+                            striped: true, //是否显示行间隔色
+                            pagination: true, //是否显示分页（*）
+                            paginationPreText: '<', //上下翻页
+                            paginationNextText: '>',
+                            columns: [{
+                                    field: 'TO_ITEM_NO',
+                                    title: 'TO_ITEM_NO'
+                            }, {
+                                    field: 'DN_NO',
+                                    title: 'DN_NO'
+                            }, {
+                                    field: 'CREATETIME',
+                                    title: 'CREATETIME'
+                            } ],
+                            //无线循环取子表，直到子表里面没有记录
+                            onExpandRow: function(index, row, $Subdetail) {
+                                InitDnSubTable(index, row, $Subdetail);
+                            }
+                        });
+                    }
+                });
+        };
+
+        var InitDnSubTable = function (index, row, $detail) {
+            var cur_table = $detail.html('<table></table>').find('table');
+            var col = [];
+            self.parent.client.CallFunction("MESStation.Config.WhsConfig", "GetWaitShipOutDnDetailDataByDnNo",
+                { DnNo: row.DN_NO },
+                function(e) {
+                    if (e.Data.length > 0) {
+                        for (var item in e.Data[0]) {
+                            var cell = {
+                                field: item,
+                                title: item,
+                                align: 'center',
+                                valign: 'middle',
+                                sortable: false
+                            };
+                            col.push(cell);
+                        }
+                        $(cur_table).bootstrapTable({
+                            data: e.Data,
+                            clickToSelect: true,
+                            pageSize: 10,
+                            pageList: [10, 25],
+                            striped: true, //是否显示行间隔色
+                            pagination: true, //是否显示分页（*）
+                            paginationPreText: '<', //上下翻页
+                            paginationNextText: '>',
+                            columns: [
+                                {
+                                    field: 'DN_NO',
+                                    title: 'DN_NO'
+                                }, {
+                                    field: 'DN_LINE',
+                                    title: 'DN_LINE'
+                                }, {
+                                    field: 'SKUNO',
+                                    title: 'SKUNO'
+                                }, {
+                                    field: 'QTY',
+                                    title: 'QTY'
+                                }, {
+                                    field: 'DN_PLANT',
+                                    title: 'DN_PLANT'
+                                }, {
+                                    field: 'PO_NO',
+                                    title: 'PO_NO'
+                                }, {
+                                    field: 'PO_LINE',
+                                    title: 'PO_LINE'
+                                }, {
+                                    field: 'SO_NO',
+                                    title: 'SO_NO'
+                                }],
+                            onDblClickRow: function (row) {
+                                station.SetInputValue("TO_LIST", { DnNo: row.DN_NO,DnLine:row.DN_LINE});
+                                station.SendData();
+                            }
+                        });
+                    }
+                });
+        };
+
+        var SelectTableRowData = function(c) {
+            c.on('click-row.bs.table',
+                function(e, row, element) {
+                    $('.success').removeClass('success'); //去除之前选中的行的，选中样式
+                    $(element).addClass('success'); //添加当前选中的 success样式用于区别
+                    //var index = $('#formTempDetailTable_new').find('tr.success').data('index'); //获得选中的行的id
+                });
+        };
     </script>
 </body>
 </html>

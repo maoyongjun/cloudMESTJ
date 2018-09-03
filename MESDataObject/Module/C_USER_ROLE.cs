@@ -6,6 +6,7 @@ using System.Data;
 using System.Threading.Tasks;
 using MESDBHelper;
 using System.Reflection;
+using SqlSugar;
 
 namespace MESDataObject.Module
 {
@@ -81,72 +82,92 @@ namespace MESDataObject.Module
 
         public List<c_load_userrole> QueryUserRoleInfo(string Emp_No,String Dpt_Name,string Bu_Name,string Factory,String EmpLevel, OleExec DB)
         {
-            string sql = string.Empty;
-            string strsql = string.Empty;
+            //string sql = string.Empty;
+            //string strsql = string.Empty;
             DataTable dt = new DataTable();
             List<c_load_userrole> UserRoleInfoList = new List<c_load_userrole>();
-            if (Emp_No.Length != 0)
-            {
-                sql = $@" SELECT A.FACTORY,
-                                 A.BU_NAME,
-                                 A.EMP_NO,
-                                 A.EMP_NAME,
-                                 A.DPT_NAME,
-                                 TO_CHAR (WM_CONCAT (C.ROLE_NAME)) AS ROLE_NAME
-                            FROM C_USER A, C_USER_ROLE B, C_ROLE C
-                           WHERE C.ID = B.ROLE_ID AND A.ID = B.USER_ID AND A.EMP_NO='{Emp_No}'
-                        GROUP BY A.FACTORY,
-                                 A.BU_NAME,
-                                 A.EMP_NO,
-                                 A.EMP_NAME,
-                                 A.DPT_NAME
-                        UNION
-                        SELECT A.FACTORY,
-                               A.BU_NAME,
-                               A.EMP_NO,
-                               A.EMP_NAME,
-                               A.DPT_NAME,
-                               NULL AS ROLE_NAME
-                          FROM C_USER A
-                         WHERE NOT EXISTS
-                                  (SELECT 1
-                                     FROM C_USER_ROLE B, C_ROLE C
-                                    WHERE B.ROLE_ID = C.ID AND B.USER_ID = A.ID  ) AND A.EMP_NO='{Emp_No}'";
-            }
-            else
-            {
-                if (EmpLevel!="9")
-                {
-                    strsql = $@" AND A.DPT_NAME='{Dpt_Name}'";
-                }
-                sql = $@" SELECT A.FACTORY,
-                                 A.BU_NAME,
-                                 A.EMP_NO,
-                                 A.EMP_NAME,
-                                 A.DPT_NAME,
-                                 TO_CHAR (WM_CONCAT (C.ROLE_NAME)) AS ROLE_NAME
-                            FROM C_USER A, C_USER_ROLE B, C_ROLE C
-                           WHERE C.ID = B.ROLE_ID AND A.ID = B.USER_ID {strsql} AND A.BU_NAME='{Bu_Name}' AND A.FACTORY='{Factory}'
-                        GROUP BY A.FACTORY,
-                                 A.BU_NAME,
-                                 A.EMP_NO,
-                                 A.EMP_NAME,
-                                 A.DPT_NAME
-                        UNION
-                        SELECT A.FACTORY,
-                               A.BU_NAME,
-                               A.EMP_NO,
-                               A.EMP_NAME,
-                               A.DPT_NAME,
-                               NULL AS ROLE_NAME
-                          FROM C_USER A
-                         WHERE NOT EXISTS
-                                  (SELECT 1
-                                     FROM C_USER_ROLE B, C_ROLE C
-                                    WHERE B.ROLE_ID = C.ID AND B.USER_ID = A.ID)  {strsql}  AND A.BU_NAME='{Bu_Name}' AND A.FACTORY='{Factory}' ";
-            }
 
-            dt = DB.ExecSelect(sql).Tables[0];
+            dt = DB.ORM.Queryable<C_USER, C_USER_ROLE, C_ROLE>((u, ur, r) => new object[] { JoinType.Left, u.ID == ur.USER_ID, JoinType.Left, r.ID == ur.ROLE_ID })
+                    .WhereIF(Emp_No.Length != 0, u => u.EMP_NO == Emp_No)
+                    .WhereIF(Emp_No.Length == 0, u => u.BU_NAME == Bu_Name && u.FACTORY == Factory)
+                    .WhereIF(EmpLevel != "9", u => u.DPT_NAME == Dpt_Name)
+                    .Select("factory,bu_name,emp_no,emp_name,dpt_name,to_char(wm_concat(role_name))  role_name")
+                    .GroupBy("factory,bu_name,emp_no,emp_name,dpt_name").ToDataTable();
+            //if (Emp_No.Length != 0)
+            //{
+
+            //    dt = DB.ORM.Queryable<C_USER, C_USER_ROLE, C_ROLE>((u, ur, r) => new object[] { JoinType.Left, u.ID == ur.USER_ID, r.ID == ur.ROLE_ID })
+            //        .Where(u => u.EMP_NO == Emp_No)
+            //        .Select("factory,bu_name,emp_no,emp_name,dpt_name,to_char(wm_concat(role_name)) as role_name")
+            //        .ToDataTable();
+            //    //sql = $@" SELECT A.FACTORY,
+            //    //                 A.BU_NAME,
+            //    //                 A.EMP_NO,
+            //    //                 A.EMP_NAME,
+            //    //                 A.DPT_NAME,
+            //    //                 TO_CHAR (WM_CONCAT (C.ROLE_NAME)) AS ROLE_NAME
+            //    //            FROM C_USER A, C_USER_ROLE B, C_ROLE C
+            //    //           WHERE C.ID = B.ROLE_ID AND A.ID = B.USER_ID AND A.EMP_NO='{Emp_No}'
+            //    //        GROUP BY A.FACTORY,
+            //    //                 A.BU_NAME,
+            //    //                 A.EMP_NO,
+            //    //                 A.EMP_NAME,
+            //    //                 A.DPT_NAME
+            //    //        UNION
+            //    //        SELECT A.FACTORY,
+            //    //               A.BU_NAME,
+            //    //               A.EMP_NO,
+            //    //               A.EMP_NAME,
+            //    //               A.DPT_NAME,
+            //    //               NULL AS ROLE_NAME
+            //    //          FROM C_USER A
+            //    //         WHERE NOT EXISTS
+            //    //                  (SELECT 1
+            //    //                     FROM C_USER_ROLE B, C_ROLE C
+            //    //                    WHERE B.ROLE_ID = C.ID AND B.USER_ID = A.ID  ) AND A.EMP_NO='{Emp_No}'";
+            //}
+            //else
+            //{
+            //    //if (EmpLevel!="9")
+            //    //{
+            //    //    strsql = $@" AND A.DPT_NAME='{Dpt_Name}'";
+            //    //}
+
+            //    dt = DB.ORM.Queryable<C_USER, C_USER_ROLE, C_ROLE>((u, ur, r) => new object[] { JoinType.Left, u.ID == ur.USER_ID,JoinType.Inner, r.ID == ur.ROLE_ID })
+            //        .WhereIF(Emp_No.Length!=0,u=>u.EMP_NO==Emp_No)
+            //        .WhereIF(Emp_No.Length==0,u=> u.BU_NAME == Bu_Name && u.FACTORY == Factory)
+            //        .WhereIF(EmpLevel!="9",u=>u.DPT_NAME==Dpt_Name)
+            //        .Select("factory,bu_name,emp_no,emp_name,dpt_name,to_char(wm_concat(role_name)) as role_name")
+            //        .GroupBy(u => new object[] { u.FACTORY, u.BU_NAME, u.EMP_NO, u.EMP_NAME, u.DPT_NAME }).ToDataTable();
+
+            //    //sql = $@" SELECT A.FACTORY,
+            //    //                 A.BU_NAME,
+            //    //                 A.EMP_NO,
+            //    //                 A.EMP_NAME,
+            //    //                 A.DPT_NAME,
+            //    //                 TO_CHAR (WM_CONCAT (C.ROLE_NAME)) AS ROLE_NAME
+            //    //            FROM C_USER A, C_USER_ROLE B, C_ROLE C
+            //    //           WHERE C.ID = B.ROLE_ID AND A.ID = B.USER_ID {strsql} AND A.BU_NAME='{Bu_Name}' AND A.FACTORY='{Factory}'
+            //    //        GROUP BY A.FACTORY,
+            //    //                 A.BU_NAME,
+            //    //                 A.EMP_NO,
+            //    //                 A.EMP_NAME,
+            //    //                 A.DPT_NAME
+            //    //        UNION
+            //    //        SELECT A.FACTORY,
+            //    //               A.BU_NAME,
+            //    //               A.EMP_NO,
+            //    //               A.EMP_NAME,
+            //    //               A.DPT_NAME,
+            //    //               NULL AS ROLE_NAME
+            //    //          FROM C_USER A
+            //    //         WHERE NOT EXISTS
+            //    //                  (SELECT 1
+            //    //                     FROM C_USER_ROLE B, C_ROLE C
+            //    //                    WHERE B.ROLE_ID = C.ID AND B.USER_ID = A.ID)  {strsql}  AND A.BU_NAME='{Bu_Name}' AND A.FACTORY='{Factory}' ";
+            //}
+
+            //dt = DB.ExecSelect(sql).Tables[0];
             foreach (DataRow item in dt.Rows)
             {
                 UserRoleInfoList.Add(new c_load_userrole
@@ -162,7 +183,69 @@ namespace MESDataObject.Module
             return UserRoleInfoList;
         }
 
+        /// <summary>
+        /// 給用戶添加角色，并且根據前端選擇是否可以編輯角色將 C_USER 中的 EMP_LEVEL 值改變（改變 C_USER 中的 EMP_LEVEL 我覺得沒必要）
+        /// </summary>
+        /// <param name="EmpNo"></param>
+        /// <param name="RoleId"></param>
+        /// <param name="LevelFlag"></param>
+        /// <param name="BuName"></param>
+        /// <param name="UserName"></param>
+        /// <param name="SystemName"></param>
+        /// <param name="DB"></param>
+        /// <returns></returns>
+        public int Add(string EmpNo, string RoleId, string LevelFlag, string BuName, string UserName, string SystemName, OleExec DB)
+        {
+            List<C_USER> users = DB.ORM.Queryable<C_USER>().Where(u => u.EMP_NO == EmpNo).ToList();
+            int i = 0;
+            if (users.Count > 0)
+            {
+                //插入到 C_USER_ROLE 中
+                C_USER u = users.First();
+                bool exist = DB.ORM.Queryable<C_USER_ROLE>().Where(ur => ur.USER_ID == u.ID && ur.ROLE_ID == RoleId).Any();
+                if (!exist)
+                {
+                    i+=DB.ORM.Insertable<C_USER_ROLE>(new C_USER_ROLE()
+                    {
+                        ID = GetNewID(BuName, DB),
+                        USER_ID = u.ID,
+                        ROLE_ID = RoleId,
+                        SYSTEM_NAME = SystemName,
+                        EDIT_TIME = GetDBDateTime(DB),
+                        EDIT_EMP = UserName,
+                        OPERATE_FLAG = LevelFlag
+                    }).ExecuteCommand();
 
+                    //更新 C_USER 表中的 EMP_LEVEL
+                    u.EMP_LEVEL = LevelFlag;
+                    u.EDIT_EMP = UserName;
+                    u.EDIT_TIME = GetDBDateTime(DB);
+                    i+=DB.ORM.Updateable<C_USER>(u).Where(t => t.ID == u.ID).ExecuteCommand();
+                }
+
+            }
+            return i;
+        }
+
+        /// <summary>
+        /// 刪除指定的用戶所屬的角色
+        /// </summary>
+        /// <param name="EmpNo"></param>
+        /// <param name="RoleId"></param>
+        /// <param name="DB"></param>
+        /// <returns></returns>
+        public int Delete(string EmpNo, string RoleId, OleExec DB)
+        {
+            int i = 0;
+            List<C_USER> us = DB.ORM.Queryable<C_USER>().Where(u=>u.EMP_NO==EmpNo).ToList();
+            if (us.Count>0)
+            {
+                string UserId = us.First().ID;
+
+                i=DB.ORM.Deleteable<C_USER_ROLE>().Where(ur => ur.USER_ID == UserId && ur.ROLE_ID == RoleId).ExecuteCommand();
+            }
+            return i;
+        }
         public DataObjectBase GetObjByUserIDRoleID(string USERID, string ROLE_ID, OleExec DB, DB_TYPE_ENUM DBType)
         {
             string strSql = $@"select * from c_user_role where USER_ID = '{USERID}' AND ROLE_ID='{ROLE_ID}' ";
@@ -288,6 +371,17 @@ namespace MESDataObject.Module
         public string OPERATE_FLAG{get;set;}
         public DateTime EDIT_TIME{get;set;}
         public string EDIT_EMP{get;set;}
+    }
+
+    public class C_USER_ROLE
+    {
+        public string ID { get; set; }
+        public string SYSTEM_NAME { get; set; }
+        public string USER_ID { get; set; }
+        public string ROLE_ID { get; set; }
+        public string OPERATE_FLAG { get; set; }
+        public DateTime EDIT_TIME { get; set; }
+        public string EDIT_EMP { get; set; }
     }
 
     public class c_load_userrole

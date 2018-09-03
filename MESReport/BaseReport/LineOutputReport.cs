@@ -70,7 +70,7 @@ namespace MESReport.BaseReport
                 {
                     sqlline = sqlline + $@"AND current_station = '{station}'";
                 }
-                sqlline = sqlline + $@"AND START_TIME BETWEEN TO_DATE('{svalue}', 'YYYY/MM/DD HH24:MI:SS')
+                sqlline = sqlline + $@"AND EDIT_TIME BETWEEN TO_DATE('{svalue}', 'YYYY/MM/DD HH24:MI:SS')
                                 AND TO_DATE('{evalue}','YYYY/MM/DD HH24:MI:SS')
                                 GROUP BY line, skuno, CURRENT_STATION order by line";
                DataSet res = SFCDB.RunSelect(sqlline);

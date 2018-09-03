@@ -140,6 +140,7 @@
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0001B.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0003.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0009.cs" />
+    <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0011.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0020.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0022.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0023T.cs" />

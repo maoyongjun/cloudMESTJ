@@ -34,7 +34,7 @@ namespace MESHelper
         public Helper()
         {
             InitializeComponent();
-            CheckProcess();//檢查本程序是否已經有副本打開，如果有就幹掉它！
+             CheckProcess();//檢查本程序是否已經有副本打開，如果有就幹掉它！
             Init(); //初始化窗体数据
             InitPath();//初始化临时文件夹路径
             bnt_run_Click(new object(), new EventArgs());//触发侦听程序开始运行

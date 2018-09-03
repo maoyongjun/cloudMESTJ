@@ -52,6 +52,11 @@ namespace MESDataObject.Module
             string sql = $@" update r_sn_kp set sn='{sn}',edit_time=sysdate,edit_emp='{user}' where r_sn_id='{snId}' ";
             return SFCDB.ExecSQL(sql);
         }
+        public int  RetrunUpdateKPSNBySnId(string snId,string stationName,string user,OleExec DB) {
+            string sql = $@" update r_sn_kp set VALUE ='',edit_time=sysdate,edit_emp='{user}'  where r_sn_id='{snId}' and station ='{stationName}'";
+            int res = DB.ExecuteNonQuery(sql, CommandType.Text, null);
+            return res;
+        }
 
         public bool CheckLinkBySNID(string snID, OleExec sfcdb)
         {
@@ -100,6 +105,25 @@ namespace MESDataObject.Module
             {
                 return false;
             }
+        }
+
+        public int ReplaceSnKP(string newSn, string oldSn, OleExec sfcdb)
+        {
+            int result = 0;
+            string sql = string.Empty;
+            if (this.DBType == DB_TYPE_ENUM.Oracle)
+            {
+                sql = $@"UPDATE R_SN_KEYPART_DETAIL R SET R.SN='{newSn}' WHERE R.SN='{oldSn}'";
+                result = sfcdb.ExecSqlNoReturn(sql, null);
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+
+            return result;
+
         }
     }
     public class Row_R_SN_KP : DataObjectBase

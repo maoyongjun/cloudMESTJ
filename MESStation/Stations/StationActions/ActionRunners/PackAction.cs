@@ -1,5 +1,5 @@
 ﻿using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using System.Collections;
 using MESDataObject;
 using System.Data;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using MESDataObject.Module;
 using System.Reflection;
 using MESStation.Label;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.Packing;
 using System.Linq;
 using System;
@@ -19,7 +19,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 {
     public class PackAction
     {
-        public static void CloseCartionAndPalletAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CloseCartionAndPalletAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             OleExec SFCDB = Station.SFCDB;
             string Run = "";
@@ -105,7 +105,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
 
         }
-        public static void CartionAndPalletAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CartionAndPalletAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             OleExec SFCDB = Station.SFCDB;
             string Run = "";
@@ -227,7 +227,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
         }
 
-        public static void CloseLot(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CloseLot(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             DisplayOutPut Dis_LotNo = Station.DisplayOutput.Find(t => t.Name == "LOTNO");
             MESStationInput Level = Station.Inputs.Find(t => t.DisplayName == "AQLLEVEL");
@@ -263,7 +263,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             #endregion
         }
 
-        public static void PackPassStation(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void PackPassStation(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             MESStationSession packSesseion = Station.StationSession.Find(t=>t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == "1");
             T_R_SN tRSn = new T_R_SN(Station.SFCDB, Station.DBType);
@@ -288,7 +288,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void MovePackingSessionValue(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void MovePackingSessionValue(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 8)
             {
@@ -574,7 +574,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void OpenPackingAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void OpenPackingAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count != 1)
@@ -606,6 +606,26 @@ namespace MESStation.Stations.StationActions.ActionRunners
             {
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// 栈板出货
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void PalletShipOut(MESPubLab.MESStation.MESStationBase Station,
+            MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            string packNo = Input.Value.ToString(),
+                dnNo = Station.DisplayOutput.Find(t => t.Name == "DN_NO").Value.ToString(),
+                dnLine = Station.DisplayOutput.Find(t => t.Name == "DN_ITEM").Value.ToString();
+            T_R_SN rSn = new T_R_SN(Station.SFCDB,DB_TYPE_ENUM.Oracle);
+            var rDnStatus = Station.SFCDB.ORM.Queryable<R_DN_STATUS>()
+                .Where(x => x.DN_NO == dnNo && x.DN_LINE == dnLine && x.DN_FLAG == "0").ToList().FirstOrDefault();
+            rSn.PalletShipOutRecord(packNo, Station.LoginUser.EMP_NO,Station.Line, Station.BU, Station.StationName, rDnStatus, Station.SFCDB);
+            if(rDnStatus.DN_FLAG=="1")
+                Station.StationMessages.Add(new StationMessage(){Message = MESReturnMessage.GetMESReturnMessage("MSGCODE20180802154903", new string[] { dnNo,dnLine })});
         }
     }
 }

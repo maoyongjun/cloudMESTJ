@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESDataObject;
 
@@ -12,7 +12,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
 {
     public class CounterLoader
     {
-        public static void LoadWoFromInput(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LoadWoFromInput(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -27,7 +27,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         }
 
         //計數器初始化
-        public static void CounterInitDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CounterInitDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -48,7 +48,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             else{
                 CounterSavePoint.Value = int.Parse( Paras.Where(p => p.SESSION_TYPE == "COUNT").FirstOrDefault().VALUE);
             }
-            Station.AddMessage("MES00000029", new string[] { "COUNT", "InitCount" }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "COUNT", "InitCount" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
     }
 }

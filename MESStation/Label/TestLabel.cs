@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDBHelper;
+using MESPubLab.MESStation.Label;
+
 
 namespace MESStation.Label
 {

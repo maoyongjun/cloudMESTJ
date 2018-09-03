@@ -73,16 +73,17 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public List<string> GetAllBU(OleExec DB)
         {
-            string sql = $@"select distinct bu from c_bu  order by bu";
+            //string sql = $@"select distinct bu from c_bu  order by bu";
       
-            DataSet dsBU = DB.ExecSelect(sql);
-            List<string> buList = new List<string>();
+            //DataSet dsBU = DB.ExecSelect(sql);
+            //List<string> buList = new List<string>();
             
-            foreach (DataRow row in dsBU.Tables[0].Rows)
-            {                
-                buList.Add(row["bu"].ToString());
-            }
-            return buList;
+            //foreach (DataRow row in dsBU.Tables[0].Rows)
+            //{                
+            //    buList.Add(row["bu"].ToString());
+            //}
+            return DB.ORM.Queryable<C_BU>().Select(bu => bu.BU).ToList();
+            //return buList;
         }
 
         public List<C_BU> GetBUList(OleExec oleDB, string bu)

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.Config
 {
-    public class FactoryConfig : MESStation.BaseClass.MesAPIBase
+    public class FactoryConfig : MESPubLab.MESStation.MesAPIBase
     {
         protected APIInfo FGETALLFACTORY = new APIInfo()
         {

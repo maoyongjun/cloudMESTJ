@@ -1,7 +1,7 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,7 +115,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void FailCodeDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void FailCodeDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -183,7 +183,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 sessionRepairCount.Value = t_r_repair_main.GetRepairedCount(snObject.SerialNo, Station.SFCDB, Station.DBType);
                 sessionRepairCount.InputValue = t_r_repair_main.GetRepairedCount(snObject.SerialNo, Station.SFCDB, Station.DBType).ToString();
                 sessionRepairCount.ResetInput = Input;
-                Station.AddMessage("MES00000029", new string[] { Paras[1].SESSION_TYPE, sessionRepairCount.Value.ToString() }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000029", new string[] { Paras[1].SESSION_TYPE, sessionRepairCount.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
             }
             catch (Exception ex)
             {

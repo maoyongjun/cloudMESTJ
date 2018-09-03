@@ -97,6 +97,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MESPubLab\MESPubLab.csproj">
+      <Project>{fa7c2f99-a446-47d3-9344-faa3fa8cc40c}</Project>
+      <Name>MESPubLab</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WebServer.SocketService\WebServer.SocketService.csproj">
       <Project>{9510668d-631e-4c0f-bdf2-062f550e2c5a}</Project>
       <Name>WebServer.SocketService</Name>

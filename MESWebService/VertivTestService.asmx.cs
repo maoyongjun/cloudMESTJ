@@ -7,6 +7,8 @@ using MESDataObject;
 using MESDBHelper;
 using System.Data;
 using MESDataObject.Module;
+using MESPubLab.MESStation;
+using MESPubLab.MESStation.MESReturnView.Station;
 
 namespace MESWebService
 {
@@ -143,11 +145,11 @@ namespace MESWebService
         {                    
             CallWebService c = new CallWebService(VertivSfbDbPool, VertivApDbPool);
             resObj = new MESServiceRes {Message= "", Statusvalue = (int)StatusValue.success, MessageCode = ""};
-            MESStation.BaseClass.MESStationReturn s = new MESStation.BaseClass.MESStationReturn();
+            MESStationReturn s = new MESStationReturn();
             try
             {
                 #region StationPara setting
-                StationPara sp = new StationPara { Station = STATION, Line = TESTLINE };
+                StationPara sp = new StationPara { Station = STATION, Line = TESTLINE,Bu= "VERTIV" };
                 #endregion
 
                 #region InitStation
@@ -155,7 +157,7 @@ namespace MESWebService
                 #endregion
 
                 #region Setting Inputs Value
-                MESStation.MESReturnView.Station.CallStationReturn ret = (MESStation.MESReturnView.Station.CallStationReturn)s.Data;
+                MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = (MESPubLab.MESStation.MESReturnView.Station.CallStationReturn)s.Data;
                 ret.Station.Inputs[0].Value = SN;
                 #endregion
 
@@ -166,7 +168,7 @@ namespace MESWebService
                 #region setting run results
                 foreach (var stationRes in ret.Station.StationMessages)
                 {
-                    if (stationRes.State == MESStation.MESReturnView.Station.StationMessageState.Fail)
+                    if (stationRes.State == StationMessageState.Fail)
                     {
                         resObj = new MESServiceRes { Message = stationRes.Message , Statusvalue = (int)StatusValue.fail, MessageCode = "MES00011" };
                         break;
@@ -181,6 +183,53 @@ namespace MESWebService
 
             return resObj;
         }
+
+        [WebMethod]
+        public MESServiceRes PassTestStation_Test(string WO,string SN, string STATION, string TESTLINE)
+        {
+            CallWebService c = new CallWebService(VertivSfbDbPool, VertivApDbPool);
+            resObj = new MESServiceRes { Message = "", Statusvalue = (int)StatusValue.success, MessageCode = "" };
+            MESStationReturn s = new MESStationReturn();
+            try
+            {
+                #region StationPara setting
+                StationPara sp = new StationPara { Station = STATION, Line = TESTLINE,Bu= "VERTIV" };
+                #endregion
+
+                #region InitStation
+                c.InitStation(s, sp);
+                #endregion
+
+                #region Setting Inputs Value
+                MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = (MESPubLab.MESStation.MESReturnView.Station.CallStationReturn)s.Data;
+                ret.Station.Inputs[0].Value = "002328000011";                
+                #endregion
+
+                #region Doing Inputs Events
+                c.StationInput(s, "PASS", "WO");
+                ret.Station.Inputs[1].Value = SN;
+                c.StationInput(s, "PASS", "SN");
+                #endregion
+
+                #region setting run results
+                foreach (var stationRes in ret.Station.StationMessages)
+                {
+                    if (stationRes.State == StationMessageState.Fail)
+                    {
+                        resObj = new MESServiceRes { Message = stationRes.Message, Statusvalue = (int)StatusValue.fail, MessageCode = "MES00011" };
+                        break;
+                    }
+                }
+                #endregion
+            }
+            catch (Exception e)
+            {
+                resObj = new MESServiceRes { Message = s.Message, Statusvalue = (int)StatusValue.fail, MessageCode = "MES00012" };
+            }
+
+            return resObj;
+        }
+
 
         /// <summary>
         /// 获取上传到MES的测试记录

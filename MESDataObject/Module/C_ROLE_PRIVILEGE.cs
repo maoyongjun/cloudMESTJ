@@ -290,6 +290,68 @@ namespace MESDataObject.Module
             }
         }
 
+        /// <summary>
+        /// 根據傳入的 RoleId，PrivilegeId 遞歸刪除該角色的權限
+        /// </summary>
+        /// <param name="RoleId"></param>
+        /// <param name="PrivilegeId"></param>
+        /// <param name="Counter"></param>
+        /// <param name="DB"></param>
+        public void Delete(string RoleId,string PrivilegeId,ref Int32 Counter,OleExec DB)
+        {
+            //根據傳入的 RoleId 和 PrivilegeId 查詢得到 C_ROLE_PRIVILEGE 對象
+            var exist = DB.ORM.Queryable<C_ROLE_PRIVILEGE>().Where(t => t.ROLE_ID == RoleId && t.PRIVILEGE_ID == PrivilegeId).Any();
+            if (exist) //如果 C_ROLE_PRIVILEGE 對象不爲空
+            {
+                ////查詢到該 PrivilegeId 下面對應的子頁面的集合
+                List<C_PRIVILEGE> ChildPrivileges = DB.ORM.Queryable<C_PRIVILEGE, C_MENU, C_PRIVILEGE>((p1, c1, p2) => p1.MENU_ID == c1.PARENT_CODE && c1.ID == p2.MENU_ID)
+                    .Where((p1, c1, p2) => p1.ID == PrivilegeId).Select((p1, c1, p2) => p2).ToList();
+                //如果子權限的集合數目大於0
+                if (ChildPrivileges.Count > 0)
+                {
+                    //遍歷每個子權限，繼續調用 Delete 進行遞歸刪除
+                    foreach (C_PRIVILEGE rp in ChildPrivileges)
+                    {
+                        Delete(RoleId, rp.ID,ref Counter, DB);
+                    }
+                }
+                //刪除當前權限
+                Counter += DB.ORM.Deleteable<C_ROLE_PRIVILEGE>().Where(t=>t.ROLE_ID==RoleId && t.PRIVILEGE_ID==PrivilegeId).ExecuteCommand();
+            }
+        }
+
+        /// <summary>
+        /// 根據傳入的 RoleId，PrivilegeId 遞歸添加角色權限
+        /// </summary>
+        /// <param name="RoleId"></param>
+        /// <param name="PrivilegeId"></param>
+        /// <param name="Counter"></param>
+        /// <param name="Bu"></param>
+        /// <param name="Emp"></param>
+        /// <param name="DB"></param>
+        public void Add(string RoleId, string PrivilegeId, ref Int32 Counter,string Bu,string Emp, OleExec DB)
+        {
+            bool exist = DB.ORM.Queryable<C_ROLE_PRIVILEGE>().Where(t => t.ROLE_ID == RoleId && t.PRIVILEGE_ID == PrivilegeId).Any();
+            if (!exist)
+            {
+                //List<C_PRIVILEGE> ParentPrivileges=DB.ORM.Queryable<C_PRIVILEGE,C_MENU,C_PRIVILEGE>((privilege,menu,pp)=>privilege.ID==)
+                var m = DB.ORM.Queryable<C_PRIVILEGE, C_MENU>((privilege, menu) => privilege.MENU_ID == menu.ID).Where((privilege, menu) => privilege.ID == PrivilegeId)
+                    .Select((privilege, menu) => menu).ToList().First();
+                if (m != null && m.PARENT_CODE != "0")
+                {
+                    var p = DB.ORM.Queryable<C_PRIVILEGE>().Where(t => t.MENU_ID == m.PARENT_CODE).ToList().First();
+                    if (p != null)
+                    {
+                        Add(RoleId, p.ID, ref Counter, Bu, Emp, DB);
+                    }
+                }
+
+                C_ROLE_PRIVILEGE RolePrivilege = new C_ROLE_PRIVILEGE {  ID=GetNewID(Bu, DB), SYSTEM_NAME="MES", ROLE_ID=RoleId,PRIVILEGE_ID=PrivilegeId, EDIT_TIME=GetDBDateTime(DB),EDIT_EMP=Emp };
+                Counter += DB.ORM.Insertable(RolePrivilege).ExecuteCommand();
+            }
+        }
+         
+
     }
 
 
@@ -323,8 +385,14 @@ namespace MESDataObject.Module
     public class C_ROLE_PRIVILEGE
     {
         public string ID { get; set; }
-        public string PRIVILEGE_NAME { get; set; }
-        public string PRIVILEGE_DESC { get; set; }
+
+        public string SYSTEM_NAME { get; set; }
+        public string ROLE_ID { get; set; }
+        public string PRIVILEGE_ID { get; set; }
+        public DateTime? EDIT_TIME { get; set; }
+        public string EDIT_EMP { get; set; }
+        //public string PRIVILEGE_NAME { get; set; }
+        //public string PRIVILEGE_DESC { get; set; }
     }
     public class Row_C_ROLE_PRIVILEGE : DataObjectBase
     {

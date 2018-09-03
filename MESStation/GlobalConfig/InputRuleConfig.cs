@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.GlobalConfig
 {
-    public class InputRuleConfig : MESStation.BaseClass.MesAPIBase
+    public class InputRuleConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo addinputrule = new APIInfo()
         {

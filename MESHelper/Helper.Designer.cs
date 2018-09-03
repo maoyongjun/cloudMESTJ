@@ -179,7 +179,7 @@
             this.txt_MESServer.Name = "txt_MESServer";
             this.txt_MESServer.Size = new System.Drawing.Size(275, 22);
             this.txt_MESServer.TabIndex = 7;
-            this.txt_MESServer.Text = "10.120.115.142:2130";
+            this.txt_MESServer.Text = "10.120.246.111:2130";
             // 
             // label15
             // 

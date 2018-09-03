@@ -74,16 +74,23 @@ namespace MESReport.HWD
                 var now = DateTime.Now;
                 for (int i = 0; i < res.Tables[0].Rows.Count; i++)
                 {
-                    DataRow dr = res.Tables[0].Rows[i];
-                    string SN = dr["SN"].ToString();
-                    string yearCode = SN.Substring(6, 2);
-                    string MMCode = SN.Substring(8, 1);
-                    string DDCode = SN.Substring(9, 1);
-                    var year = yearCodeMapping.Find(T => T.CODEVALUE == yearCode).VALUE;
-                    var MM = MMCodeMapping.Find(T => T.CODEVALUE == MMCode).VALUE;
-                    var DD = DDCodeMapping.Find(T => T.CODEVALUE == DDCode).VALUE;
-                    dr["WORKTIME"] = year + MM + DD;
-                    dr["DAYS"] = ((int)(now - DateTime.Parse($@"{year}-{MM}-{DD}")).TotalDays).ToString();
+                    try
+                    {
+                        DataRow dr = res.Tables[0].Rows[i];
+                        string SN = dr["SN"].ToString();
+                        string yearCode = SN.Substring(6, 2);
+                        string MMCode = SN.Substring(8, 1);
+                        string DDCode = SN.Substring(9, 1);
+                        var year = yearCodeMapping.Find(T => T.CODEVALUE == yearCode).VALUE;
+                        var MM = MMCodeMapping.Find(T => T.CODEVALUE == MMCode).VALUE;
+                        var DD = DDCodeMapping.Find(T => T.CODEVALUE == DDCode).VALUE;
+                        dr["WORKTIME"] = year + MM + DD;
+                        dr["DAYS"] = ((int)(now - DateTime.Parse($@"{year}-{MM}-{DD}")).TotalDays).ToString();
+                    }
+                    catch
+                    {
+
+                    }
                 }
 
                 ReportTable retTab = new ReportTable();

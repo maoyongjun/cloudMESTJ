@@ -6,20 +6,22 @@ using System.Threading.Tasks;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using MESStation;
-using MESStation.MESReturnView.Public;
-using MESStation.BaseClass;
+using MESPubLab;
 using System.Xml.Linq;
 using System.Reflection;
 using MESDBHelper;
 using MESDataObject;
+using MESPubLab.MESStation;
+using MESPubLab.MESStation.LogicObject;
+using MESPubLab.MESStation.MESReturnView.Public;
 
 namespace WebServer.SocketService
 {
     public class Report : ServiceBase
     {
-        public static MESDBHelper.OleExecPool SFCDBPool = new OleExecPool("TESTDB", true);
+        public static MESDBHelper.OleExecPool SFCDBPool = new OleExecPool("SFCDB", true);
         public static MESDBHelper.OleExecPool APDBPool = new OleExecPool("APDB", true);
-        public static Dictionary<string, MESStation.LogicObject.User> LoginUsers = new Dictionary<string, MESStation.LogicObject.User>();
+        public static Dictionary<string, User> LoginUsers = new Dictionary<string, User>();
         public string Token = null;
         
 
@@ -80,7 +82,7 @@ namespace WebServer.SocketService
                 bool CheckLogin = false;
                 if (LoginUsers.ContainsKey(TOKEN))
                 {
-                    MESStation.LogicObject.User lu = LoginUsers[TOKEN];
+                    User lu = LoginUsers[TOKEN];
                     ((MesAPIBase)API_CLASS).LoginUser = lu;
                     CheckLogin = true;
                     API.BU = lu.BU;
@@ -110,7 +112,7 @@ namespace WebServer.SocketService
                         if (StationReturn.Status == "Pass")
                         {
                             LoginReturn r = (LoginReturn)StationReturn.Data;
-                            MESStation.LogicObject.User lu = ((MesAPIBase)API_CLASS).LoginUser;
+                            User lu = ((MesAPIBase)API_CLASS).LoginUser;
                             if (this.Token != null)
                             {
                                 Report.LoginUsers.Remove(Token);
@@ -138,7 +140,7 @@ namespace WebServer.SocketService
                         if (StationReturn.Status == "Pass")
                         {
                             LoginReturn r = (LoginReturn)StationReturn.Data;
-                            MESStation.LogicObject.User lu = ((MesAPIBase)API_CLASS).LoginUser;
+                            User lu = ((MesAPIBase)API_CLASS).LoginUser;
                             string NewToken = r.Token;
                             if (LoginUsers.ContainsKey(NewToken))
                             {
@@ -174,7 +176,7 @@ namespace WebServer.SocketService
             }
             catch (MESReturnMessage ee)
             {
-                StationReturn.Status = MESStation.BaseClass.StationReturnStatusValue.Fail;
+                StationReturn.Status =StationReturnStatusValue.Fail;
                 StationReturn.Message = ee.Message;
                 if (ee.InnerException != null)
                 {
@@ -183,7 +185,7 @@ namespace WebServer.SocketService
             }
             catch (Exception ee)
             {
-                StationReturn.Status = MESStation.BaseClass.StationReturnStatusValue.Fail;
+                StationReturn.Status =StationReturnStatusValue.Fail;
                 StationReturn.Message = ee.Message;
                 if (ee.InnerException != null)
                 {

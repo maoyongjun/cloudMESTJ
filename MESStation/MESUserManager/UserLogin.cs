@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.MESReturnView.Public;
-using MESStation.BaseClass;
+
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 using System.Data;
 using MESDataObject.Module;
+using MESPubLab.MESStation.MESReturnView.Public;
 
 namespace MESStation.MESUserManager
 {
@@ -62,7 +63,7 @@ namespace MESStation.MESUserManager
             c_user_info user_info = new c_user_info();
             user_info = GetLoginUser.GetLoginUser(EMP_NO, SFCDB);
 
-            LogicObject.User lu = new LogicObject.User();
+            MESPubLab.MESStation.LogicObject.User lu = new MESPubLab.MESStation.LogicObject.User();
             if (PWD == rcu.EMP_PASSWORD)
             {
                 lu.ID = user_info.ID;

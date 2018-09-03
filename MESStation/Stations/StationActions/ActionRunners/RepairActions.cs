@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
 using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using MESDBHelper;
 using System.Data;
 //using System.Transactions;
@@ -17,7 +17,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
     public class RepairActions
     {
         //產品維修CheckIn Action
-        public static void SNInRepairAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNInRepairAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 3)
             {
@@ -65,11 +65,11 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 string strRet = (Station.SFCDB).ExecSQL(rowTransfer.GetInsertString(DB_TYPE_ENUM.Oracle));
                 if (Convert.ToInt32(strRet) > 0)
                 {
-                    Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Pass);
                 }
                 else
                 {
-                    Station.AddMessage("MES00000037", new string[] { "INSET R_REPAIR_TRANSFER" }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000037", new string[] { "INSET R_REPAIR_TRANSFER" }, StationMessageState.Pass);
                 }
             }
             else
@@ -79,7 +79,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         }
 
         //產品維修CheckOut Action
-        public static void SNOutRepairAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNOutRepairAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 3)
             {
@@ -120,22 +120,22 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 string strRet = (Station.SFCDB).ExecSQL(rowTransfer.GetUpdateString(DB_TYPE_ENUM.Oracle));
                 if (Convert.ToInt32(strRet) > 0)
                 {
-                    Station.AddMessage("MES00000035", new string[] { strRet }, MESReturnView.Station.StationMessageState.Pass); 
+                    Station.AddMessage("MES00000035", new string[] { strRet }, StationMessageState.Pass); 
                 }                
                 else
                 {
-                    Station.AddMessage("MES00000025", new string[] { "REPAIR TRANSFER" }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000025", new string[] { "REPAIR TRANSFER" }, StationMessageState.Pass);
                 }
                 Row_R_SN rowSN = (Row_R_SN)t_r_sn.GetObjByID(snObject.ID, Station.SFCDB);
                 rowSN.REPAIR_FAILED_FLAG = "0";
                 strRet = (Station.SFCDB).ExecSQL(rowSN.GetUpdateString(DB_TYPE_ENUM.Oracle));
                 if (Convert.ToInt32(strRet) > 0)
                 {
-                    Station.AddMessage("MES00000035", new string[] { strRet }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000035", new string[] { strRet }, StationMessageState.Pass);
                 }
                 else
                 {
-                    Station.AddMessage("MES00000025", new string[] { "R_SN" }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000025", new string[] { "R_SN" }, StationMessageState.Pass);
                 }
             }
             else
@@ -144,7 +144,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void SNFailAction_Old(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNFailAction_Old(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string R_SN_STATION_DETAIL_ID = "";
             if (Paras.Count == 0)
@@ -231,10 +231,10 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
             oleDB.CommitTrain();
 
-            Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Pass);
         }
 
-        public static void SNFailAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNFailAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             Int16 FailCount = 0;
@@ -278,6 +278,16 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 }
                 Station.StationSession.Add(StatusSession);
             }
+            MESStationSession ClearInputSession = null;
+            if (Paras.Count >= 5)
+            {
+                ClearInputSession = Station.StationSession.Find(t => t.MESDataType.Equals(Paras[4].SESSION_TYPE) && t.SessionKey.Equals(Paras[4].SESSION_KEY));
+                if (ClearInputSession == null)
+                {
+                    ClearInputSession = new MESStationSession() { MESDataType = Paras[4].SESSION_TYPE, SessionKey = Paras[4].SESSION_KEY };
+                    Station.StationSession.Add(ClearInputSession);
+                }
+            }
 
             FailCount = Convert.ToInt16(FailCountSession.Value.ToString());
             FailList = (List<Dictionary<string, string>>)FailListSession.Value;
@@ -309,8 +319,14 @@ namespace MESStation.Stations.StationActions.ActionRunners
                         R_SN r = rSn.GetDetailBySN(StrSn, Station.SFCDB);
                         rrSn = (Row_R_SN)rSn.GetObjByID(r.ID, Station.SFCDB);
                         rrSn.REPAIR_FAILED_FLAG = "1";
-                        rrSn.EDIT_EMP= Station.LoginUser.EMP_NO;
-                        rrSn.EDIT_TIME= FailTime;
+                        //AOI工站不入维修
+                        if (Station.StationName == "AOI1" || Station.StationName == "AOI2")
+                        {
+                            rrSn.REPAIR_FAILED_FLAG = "0";
+                        }
+
+                        rrSn.EDIT_EMP = Station.LoginUser.EMP_NO;
+                        rrSn.EDIT_TIME = FailTime;
                         string strRet = (Station.SFCDB).ExecSQL(rrSn.GetUpdateString(DB_TYPE_ENUM.Oracle));
                         if (!(Convert.ToInt32(strRet) > 0))
                         {
@@ -320,7 +336,10 @@ namespace MESStation.Stations.StationActions.ActionRunners
                         //新增一筆FAIL記錄到R_SN_STATION_DETAIL
                         T_R_SN_STATION_DETAIL rSnStationDetail = new T_R_SN_STATION_DETAIL(Station.SFCDB, DB_TYPE_ENUM.Oracle);
                         R_SN_STATION_DETAIL_ID = rSnStationDetail.GetNewID(Station.BU, Station.SFCDB);
-                        string detailResult = rSnStationDetail.AddDetailToRSnStationDetail(R_SN_STATION_DETAIL_ID,rrSn.GetDataObject(),Station.Line,Station.StationName,Station.StationName,Station.SFCDB);
+                        // string detailResult = rSnStationDetail.AddDetailToRSnStationDetail(R_SN_STATION_DETAIL_ID,rrSn.GetDataObject(),Station.Line,Station.StationName,Station.StationName,Station.SFCDB);
+                        string detailResult = rSnStationDetail.AddDetailToBipStationFailDetail(
+                               R_SN_STATION_DETAIL_ID, rrSn.GetDataObject(), Station.Line, Station.StationName,
+                               Station.StationName, Station.SFCDB, "1");
                         if (!(Convert.ToInt32(detailResult) > 0))
                         {
                             throw new Exception("Insert sn station detail error!");
@@ -338,8 +357,8 @@ namespace MESStation.Stations.StationActions.ActionRunners
                         //rRepairMain.FAIL_TIME = Station.GetDBDateTime();//Mpdofy by LLF 2018-03-17
                         rRepairMain.FAIL_TIME = FailTime;
                         rRepairMain.CREATE_TIME = Station.GetDBDateTime();
-                        rRepairMain.EDIT_EMP= Station.LoginUser.EMP_NO;
-                        rRepairMain.EDIT_TIME= Station.GetDBDateTime();
+                        rRepairMain.EDIT_EMP = Station.LoginUser.EMP_NO;
+                        rRepairMain.EDIT_TIME = Station.GetDBDateTime();
                         rRepairMain.CLOSED_FLAG = "0";
                         string insertResult = (Station.SFCDB).ExecSQL(rRepairMain.GetInsertString(DB_TYPE_ENUM.Oracle));
                         if (!(Convert.ToInt32(insertResult) > 0))
@@ -381,8 +400,8 @@ namespace MESStation.Stations.StationActions.ActionRunners
                     rRepairFailCode.DESCRIPTION = failDescription;
                     rRepairFailCode.REPAIR_FLAG = "0";
                     rRepairFailCode.CREATE_TIME = Station.GetDBDateTime();
-                    rRepairFailCode.EDIT_EMP= Station.LoginUser.EMP_NO;
-                    rRepairFailCode.EDIT_TIME= Station.GetDBDateTime();
+                    rRepairFailCode.EDIT_EMP = Station.LoginUser.EMP_NO;
+                    rRepairFailCode.EDIT_TIME = Station.GetDBDateTime();
 
                     string strResult = (Station.SFCDB).ExecSQL(rRepairFailCode.GetInsertString(DB_TYPE_ENUM.Oracle));
                     if (!(Convert.ToInt32(strResult) > 0))
@@ -392,13 +411,25 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
                     //oleDB.CommitTrain();
                 }
-                ((List<Dictionary<string, string>>)FailListSession.Value).Clear();
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                if (ClearInputSession != null)
+                {
+                    ClearInputSession.Value = "true";
+                }
+                else
+                {
+                    ((List<Dictionary<string, string>>)FailListSession.Value).Clear();
+                }
+                Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Pass);
+            }
+            else
+            {
+                Station.NextInput = Station.FindInputByName("Location");
+                Station.AddMessage("MES00000162", new string[] { StrSn, FailCount.ToString(), FailList.Count.ToString() }, StationMessageState.Message);
             }
         }
 
 
-        public static void HWDBIPSNFailAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void HWDBIPSNFailAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             string StrSn = "";
@@ -691,12 +722,12 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
                 ReturnMessage.Remove(ReturnMessage.Length - 1, 1);
                 Station.NextInput = Station.FindInputByName("PanelSn");
-                Station.AddMessage("MES00000158", new string[] { StrSn, ReturnMessage.ToString() }, MESReturnView.Station.StationMessageState.Pass); 
+                Station.AddMessage("MES00000158", new string[] { StrSn, ReturnMessage.ToString() }, StationMessageState.Pass); 
             }
             else
             {
                 Station.NextInput = Station.FindInputByName("Location");
-                Station.AddMessage("MES00000162", new string[] { StrSn, FailCount.ToString(),FailList.Count.ToString() }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000162", new string[] { StrSn, FailCount.ToString(),FailList.Count.ToString() }, StationMessageState.Message);
             }
         }
 
@@ -708,7 +739,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void PCBARepairSaveAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void PCBARepairSaveAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SnObject = null;
             string updateSql = null;
@@ -996,7 +1027,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNRepairFinishAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNRepairFinishAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SnObject = null;
             string UpdateSql = "";
@@ -1092,16 +1123,14 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 throw ex;
             }
         }
-
-
-
+        
         /// <summary>
         /// SN掃入維修ByFailCode
         /// </summary>
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNFailByFailCodeAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNFailByFailCodeAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -1193,7 +1222,200 @@ namespace MESStation.Stations.StationActions.ActionRunners
             {
                 throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000021", new string[] { "FAILCODE" }));
             }
-            Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);         
+            Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Pass);         
+        }
+
+        //產品維修CheckIn Action ByPassWord 
+        public static void SNInByPassWordRepairAction(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 5)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000050"));
+            }
+            MESStationSession sessionSendEmp = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionSendEmp == null || sessionSendEmp.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE }));
+            }
+            MESStationSession sessionSendPW = Station.StationSession.Find(t => t.MESDataType == Paras[1].SESSION_TYPE && t.SessionKey == Paras[1].SESSION_KEY);
+            if (sessionSendPW == null || sessionSendPW.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[1].SESSION_TYPE }));
+            }
+            MESStationSession sessionReceiveEmp = Station.StationSession.Find(t => t.MESDataType == Paras[2].SESSION_TYPE && t.SessionKey == Paras[2].SESSION_KEY);
+            if (sessionReceiveEmp == null || sessionReceiveEmp.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[2].SESSION_TYPE }));
+            }
+            MESStationSession sessionReceivePW = Station.StationSession.Find(t => t.MESDataType == Paras[3].SESSION_TYPE && t.SessionKey == Paras[3].SESSION_KEY);
+            if (sessionReceivePW == null || sessionReceivePW.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[3].SESSION_TYPE }));
+            }
+            MESStationSession sessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[4].SESSION_TYPE && t.SessionKey == Paras[4].SESSION_KEY);
+            if (sessionSN == null || sessionSN.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[4].SESSION_TYPE }));
+            }
+
+            T_c_user t_c_user = new T_c_user(Station.SFCDB, Station.DBType);
+            Row_c_user rowSendUser = t_c_user.getC_Userbyempno(sessionSendEmp.Value.ToString(), Station.SFCDB, Station.DBType);
+            if (rowSendUser == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180620163103", new string[] { sessionSendEmp.Value.ToString() }));
+            }
+            if (!rowSendUser.EMP_PASSWORD.Equals(sessionSendPW.Value.ToString()))
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180813154717", new string[] { sessionSendEmp.Value.ToString() }));
+            }
+
+            Row_c_user rowReceiveUser = t_c_user.getC_Userbyempno(sessionReceiveEmp.Value.ToString(), Station.SFCDB, Station.DBType);
+            if (rowReceiveUser == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180620163103", new string[] { sessionReceiveEmp.Value.ToString() }));
+            }
+            if (!rowReceiveUser.EMP_PASSWORD.Equals(sessionReceivePW.Value.ToString()))
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180813154717", new string[] { sessionReceivePW.Value.ToString() }));
+            }
+
+            SN snObject = (SN)sessionSN.Value;
+            T_R_REPAIR_MAIN rRepairMain = new T_R_REPAIR_MAIN(Station.SFCDB, Station.DBType);
+            List<R_REPAIR_MAIN> RepariMainList = rRepairMain.GetRepairMainBySN(Station.SFCDB, snObject.SerialNo);
+            R_REPAIR_MAIN rMain = RepariMainList.Where(r => r.CLOSED_FLAG == "0").FirstOrDefault();  // Find(r => r.CLOSED_FLAG == "0");
+            if (rMain != null)
+            {
+                T_R_REPAIR_TRANSFER rTransfer = new T_R_REPAIR_TRANSFER(Station.SFCDB, Station.DBType);
+                Row_R_REPAIR_TRANSFER rowTransfer = (Row_R_REPAIR_TRANSFER)rTransfer.NewRow();
+                rowTransfer.ID = rTransfer.GetNewID(Station.BU, Station.SFCDB);
+                rowTransfer.REPAIR_MAIN_ID = rMain.ID;
+                rowTransfer.IN_SEND_EMP = sessionSendEmp.Value.ToString();
+                rowTransfer.IN_RECEIVE_EMP = sessionReceiveEmp.Value.ToString();
+                rowTransfer.IN_TIME = Station.GetDBDateTime();
+                rowTransfer.SN = snObject.SerialNo;
+                rowTransfer.LINE_NAME = Station.Line;
+                rowTransfer.STATION_NAME = snObject.CurrentStation;
+                rowTransfer.WORKORDERNO = snObject.WorkorderNo;
+                rowTransfer.SKUNO = snObject.SkuNo;
+                rowTransfer.CLOSED_FLAG = "0";
+                rowTransfer.CREATE_TIME = Station.GetDBDateTime();
+                rowTransfer.DESCRIPTION = "";
+                rowTransfer.EDIT_TIME = Station.GetDBDateTime();
+                rowTransfer.EDIT_EMP = sessionReceiveEmp.Value.ToString();
+                string strRet = (Station.SFCDB).ExecSQL(rowTransfer.GetInsertString(DB_TYPE_ENUM.Oracle));
+                if (Convert.ToInt32(strRet) > 0)
+                {
+                    Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Pass);
+                }
+                else
+                {
+                    Station.AddMessage("MES00000037", new string[] { "INSET R_REPAIR_TRANSFER" }, StationMessageState.Pass);
+                }
+            }
+            else
+            {
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000066", new string[] { snObject.SerialNo, "CLOSED" }));
+            }
+        }
+
+        //產品維修CheckOut Action ByPassWord 
+        public static void SNOutByPassWordRepairAction(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 5)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000050"));
+            }
+            MESStationSession sessionSendEmp = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionSendEmp == null || sessionSendEmp.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE }));
+            }
+            MESStationSession sessionSendPW = Station.StationSession.Find(t => t.MESDataType == Paras[1].SESSION_TYPE && t.SessionKey == Paras[1].SESSION_KEY);
+            if (sessionSendPW == null || sessionSendPW.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[1].SESSION_TYPE }));
+            }
+
+            MESStationSession sessionReceiveEmp = Station.StationSession.Find(t => t.MESDataType == Paras[2].SESSION_TYPE && t.SessionKey == Paras[2].SESSION_KEY);
+            if (sessionReceiveEmp == null || sessionReceiveEmp.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[2].SESSION_TYPE }));
+            }
+
+            MESStationSession sessionReceivePW = Station.StationSession.Find(t => t.MESDataType == Paras[3].SESSION_TYPE && t.SessionKey == Paras[3].SESSION_KEY);
+            if (sessionReceivePW == null || sessionReceivePW.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[3].SESSION_TYPE }));
+            }
+
+            MESStationSession sessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[4].SESSION_TYPE && t.SessionKey == Paras[4].SESSION_KEY);
+            if (sessionSN == null || sessionSN.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[4].SESSION_TYPE }));
+            }
+
+            T_c_user t_c_user = new T_c_user(Station.SFCDB, Station.DBType);
+            Row_c_user rowSendUser = t_c_user.getC_Userbyempno(sessionSendEmp.Value.ToString(), Station.SFCDB, Station.DBType);
+            if (rowSendUser == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180620163103", new string[] { sessionSendEmp.Value.ToString() }));
+            }
+            if (!rowSendUser.EMP_PASSWORD.Equals(sessionSendPW.Value.ToString()))
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180813154717", new string[] { sessionSendEmp.Value.ToString() }));
+            }
+
+            Row_c_user rowReceiveUser = t_c_user.getC_Userbyempno(sessionReceiveEmp.Value.ToString(), Station.SFCDB, Station.DBType);
+            if (rowReceiveUser == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180620163103", new string[] { sessionReceiveEmp.Value.ToString() }));
+            }
+            if (!rowReceiveUser.EMP_PASSWORD.Equals(sessionReceivePW.Value.ToString()))
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180813154717", new string[] { sessionReceivePW.Value.ToString() }));
+            }
+
+            SN snObject = (SN)sessionSN.Value;
+
+            T_R_REPAIR_TRANSFER rTransfer = new T_R_REPAIR_TRANSFER(Station.SFCDB, Station.DBType);
+            Row_R_REPAIR_TRANSFER rowTransfer = (Row_R_REPAIR_TRANSFER)rTransfer.NewRow();
+            T_R_SN t_r_sn = new T_R_SN(Station.SFCDB, Station.DBType);
+
+            List<R_REPAIR_TRANSFER> transferList = rTransfer.GetLastRepairedBySN(snObject.SerialNo, Station.SFCDB);
+            R_REPAIR_TRANSFER rRepairTransfer = transferList.Where(r => r.CLOSED_FLAG == "0").FirstOrDefault();//TRANSFER表 1 表示不良
+            if (rRepairTransfer != null)
+            {
+                rowTransfer = (Row_R_REPAIR_TRANSFER)rTransfer.GetObjByID(rRepairTransfer.ID, Station.SFCDB);
+                rowTransfer.CLOSED_FLAG = "1";
+                rowTransfer.OUT_TIME = Station.GetDBDateTime();
+                rowTransfer.OUT_SEND_EMP = sessionSendEmp.Value.ToString();
+                rowTransfer.OUT_RECEIVE_EMP = sessionReceiveEmp.Value.ToString();
+
+                string strRet = (Station.SFCDB).ExecSQL(rowTransfer.GetUpdateString(DB_TYPE_ENUM.Oracle));
+                if (Convert.ToInt32(strRet) > 0)
+                {
+                    Station.AddMessage("MES00000035", new string[] { strRet }, StationMessageState.Pass);
+                }
+                else
+                {
+                    Station.AddMessage("MES00000025", new string[] { "REPAIR TRANSFER" }, StationMessageState.Pass);
+                }
+                Row_R_SN rowSN = (Row_R_SN)t_r_sn.GetObjByID(snObject.ID, Station.SFCDB);
+                rowSN.REPAIR_FAILED_FLAG = "0";
+                strRet = (Station.SFCDB).ExecSQL(rowSN.GetUpdateString(DB_TYPE_ENUM.Oracle));
+                if (Convert.ToInt32(strRet) > 0)
+                {
+                    Station.AddMessage("MES00000035", new string[] { strRet }, StationMessageState.Pass);
+                }
+                else
+                {
+                    Station.AddMessage("MES00000025", new string[] { "R_SN" }, StationMessageState.Pass);
+                }
+            }
+            else
+            {
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000066", new string[] { snObject.SerialNo, "abnormal" }));
+            }
         }
 
     }

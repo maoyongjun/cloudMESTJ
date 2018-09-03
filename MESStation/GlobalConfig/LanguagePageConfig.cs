@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 
 namespace MESStation.GlobalConfig
 {
-  public  class LanguagePageConfig : MESStation.BaseClass.MesAPIBase
+  public  class LanguagePageConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo pagelanguage = new APIInfo()
         {

@@ -20,8 +20,7 @@ namespace MESInterface.HWD
             //base.init();
             try
             {
-                newSFCDB = new OleExec("HWDMES", false);
-                oldSFCDB = new OleExec("HWD_OLD_SFCDB", false);
+
                 List<System.Net.IPAddress> temp = HWDNNSFCBase.HostInfo.IP.Where(ipv4 => ipv4.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToList();
                 ip = temp[0].ToString();
                 Output.UI = new CopySkuTypeToOld_UI(this);
@@ -47,6 +46,10 @@ namespace MESInterface.HWD
 
             try
             {
+                newSFCDB = new OleExec("HWDMES", false);
+                oldSFCDB = new OleExec("HWD_OLD_SFCDB", false);
+                newSFCDB.ThrowSqlExeception = true;
+                oldSFCDB.ThrowSqlExeception = true;
 
                 if (updateDate != "")
                 {
@@ -75,12 +78,13 @@ namespace MESInterface.HWD
 
                             oldSql = $@"select * from sfccodelike where skuno='{row["SKUNO"].ToString()}'";
                             dtOld = oldSFCDB.ExecSelect(oldSql).Tables[0];
+                            runSql = "";
                             if (dtOld.Rows.Count > 0)
                             {
                                 if (row["SKU_TYPE"].ToString() != "" && dtOld.Rows[0]["CATEGORY"].ToString() != row["SKU_TYPE"].ToString())
                                 {
                                     runSql = $@" update sfccodelike set category='{row["SKU_TYPE"].ToString()}' where skuno='{row["SKUNO"].ToString()}'";
-                                }
+                                }                                
                             }
                             else
                             {
@@ -103,6 +107,11 @@ namespace MESInterface.HWD
                                 {
                                     description = row["SKUNO"].ToString();
                                 }
+                                if (row["VERSION"].ToString() == "")
+                                {
+                                    throw new Exception(row["SKUNO"].ToString() + " the version is null!");
+                                }
+
 
                                 if (row["SKU_TYPE"].ToString() != "")
                                 {

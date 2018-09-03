@@ -1,8 +1,8 @@
 ﻿using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,C_SECTION保存的位置</param>
-        public static void LoadSectionFromInput(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LoadSectionFromInput(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count != 1)
@@ -45,7 +45,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             DataTable res = Station.SFCDB.ExecuteDataTable(strSql, CommandType.Text, paramet);
             if (res.Rows.Count <= 0)
             {
-                Station.AddMessage("MES00000007", new string[] { "Section", SectionInput }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000007", new string[] { "Section", SectionInput }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else
             {

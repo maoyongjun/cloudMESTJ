@@ -91,6 +91,7 @@ namespace MESDataObject.Module
                 row.STATION_NAME = StationName;
                 row.DEVICE_NAME = DeviceName;
                 row.EDIT_TIME = GetDBDateTime(DB);
+                
                 if (this.DBType == DB_TYPE_ENUM.Oracle)
                 {
                     sql = row.GetInsertString(this.DBType);
@@ -289,6 +290,78 @@ namespace MESDataObject.Module
                 R_SN_STATION_DETAIL_LIST.Add(R_Sn_Station_Detail);
             }
             return R_SN_STATION_DETAIL_LIST;
+        }
+
+        /// <summary>
+        // /check if the last station of the SN in the route is PASS
+        /// </summary>
+        /// <param name="sn"></param>
+        /// <param name="station"></param>
+        /// <param name="sfcdb"></param>
+        /// <returns></returns>
+        public bool TheLastStationIsPass(string sn, string station, OleExec sfcdb)
+        {
+            bool bPass = true;
+            C_ROUTE_DETAIL lastSation = null;
+            R_SN_STATION_DETAIL r_sn_station_detail = null;
+            T_R_SN t_r_sn = new T_R_SN(sfcdb,this.DBType);
+            T_C_ROUTE_DETAIL t_c_route_detail = new T_C_ROUTE_DETAIL(sfcdb, this.DBType);
+
+            R_SN snObject = t_r_sn.LoadSN(sn,sfcdb);
+            if (snObject != null)
+            {               
+                if (!t_c_route_detail.StationInRoute(snObject.ROUTE_ID, station, sfcdb))
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000156", new string[] { sn, station }));
+                }
+                C_ROUTE_DETAIL currentStation = t_c_route_detail.GetByRouteIdOrderBySEQASC(snObject.ROUTE_ID, sfcdb).Find(s => s.STATION_NAME == station);
+                List<C_ROUTE_DETAIL> routeList = t_c_route_detail.GetByRouteIdOrderBySEQASC(snObject.ROUTE_ID, sfcdb).FindAll(s => s.SEQ_NO < currentStation.SEQ_NO);
+                if (routeList.Count > 0)
+                {
+                    lastSation = routeList.OrderBy(t => t.SEQ_NO).LastOrDefault();
+                    if (lastSation != null)
+                    {
+                        r_sn_station_detail = sfcdb.ORM.Queryable<R_SN_STATION_DETAIL>().Where(p => p.STATION_NAME == lastSation.STATION_NAME &&
+                         p.ROUTE_ID == lastSation.ROUTE_ID && p.SN == snObject.SN && p.R_SN_ID == snObject.ID).ToList().FirstOrDefault();
+                        if (r_sn_station_detail == null)
+                        {
+                            bPass = false;
+                        }
+                    }
+                }
+            }   
+            return bPass;
+        }
+
+        /// <summary>
+        // /check if the sn is write into r_sn_station_detail
+        /// </summary>
+        /// <param name="sn"></param>
+        /// <param name="station"></param>
+        /// <param name="sfcdb"></param>
+        /// <returns></returns>
+        public bool HadWriteIntoDetail(string sn, string station, OleExec sfcdb)
+        {
+            bool bPass = true;
+            R_SN_STATION_DETAIL r_sn_station_detail = null;
+            T_R_SN t_r_sn = new T_R_SN(sfcdb, this.DBType);
+            T_C_ROUTE_DETAIL t_c_route_detail = new T_C_ROUTE_DETAIL(sfcdb, this.DBType);
+
+            R_SN snObject = t_r_sn.LoadSN(sn, sfcdb);
+            if (snObject != null)
+            {
+                if (!t_c_route_detail.StationInRoute(snObject.ROUTE_ID, station, sfcdb))
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000156", new string[] { sn, station }));
+                }
+                r_sn_station_detail = sfcdb.ORM.Queryable<R_SN_STATION_DETAIL>().Where(p => p.STATION_NAME == station &&
+                         p.ROUTE_ID == snObject.ROUTE_ID && p.SN == snObject.SN && p.R_SN_ID == snObject.ID).ToList().FirstOrDefault();
+                if (r_sn_station_detail == null)
+                {
+                    bPass = false;
+                }
+            }
+            return bPass;
         }
     }
     public class Row_R_SN_STATION_DETAIL : DataObjectBase

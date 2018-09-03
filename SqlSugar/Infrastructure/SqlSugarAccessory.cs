@@ -268,7 +268,7 @@ namespace SqlSugar
         protected InsertableProvider<T> CreateInsertable<T>(T[] insertObjs) where T : class, new()
         {
             var result = InstanceFactory.GetInsertableProvider<T>(this.CurrentConnectionConfig);
-            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig); ;
+            var sqlBuilder = InstanceFactory.GetSqlbuilder(this.CurrentConnectionConfig) ;
             result.Context = this.Context;
             result.EntityInfo = this.Context.EntityMaintenance.GetEntityInfo<T>();
             result.SqlBuilder = sqlBuilder;

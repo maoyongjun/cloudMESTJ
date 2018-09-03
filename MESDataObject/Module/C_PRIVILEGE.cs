@@ -186,6 +186,19 @@ SELECT A.ID,
             return Privilegelist;
         }
     }
+
+    public class C_PRIVILEGE
+    {
+        public string ID { get; set; }
+        public string SYSTEM_NAME { get; set; }
+        public string MENU_ID { get; set; }
+        public string PRIVILEGE_NAME { get; set; }
+        public string PRIVILEGE_DESC { get; set; }
+        public DateTime? EDIT_TIME { get; set; }
+        public string EDIT_EMP { get; set; }
+        public string BASECONFIG_FLAG { get; set; }
+    }
+
     public class Row_C_PRIVILEGE : DataObjectBase
     {
         public Row_C_PRIVILEGE(DataObjectInfo info) : base(info)

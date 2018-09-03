@@ -201,6 +201,7 @@
     <script type="text/javascript">
        
         var textarea = "";
+        var client
         var mesUI;
         var lan;
         var arrayID = [];
@@ -673,7 +674,7 @@
                 toolbar: "#tableEventsToolbar",    //指定工具栏
                 toolbarAlign: "left",              //工具栏对齐方式
                 buttonsAlign: "right",             //按钮对齐方式
-                showExport: false,                  //是否显示导出按钮
+                showExport: true,                  //是否显示导出按钮
                 exportDataType: 'all',             //'basic', 'all', 'selected'  exportDataType表示导出的模式是当前页、所有数据还是选中数据
                 exportTypes: ['excel', 'csv'],     //导出文件类型
                 Icons: 'glyphicon-export',

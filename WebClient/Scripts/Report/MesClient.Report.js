@@ -631,12 +631,13 @@ var columnChart = function (c, ID, ChartData) {
             text: ChartData.Title
         },
         xAxis: {
-            labels: {
-                overflow: 'justify'
-            },
+            //labels: {
+            //    overflow: 'justify'
+            //},
             title: {
                 text: ChartData.XAxis.Title
-            }
+            },
+            categories: ChartData.XAxis.Categories
         },
         yAxis: {
             title: {

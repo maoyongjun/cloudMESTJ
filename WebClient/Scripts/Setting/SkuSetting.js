@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     var FindValueByKey = function (key, data) {
         for (var d in data) {
-            if (key.name == d) {
+            if (key.name == d.toUpperCase()) {
                 key.value = data[d];
                 break;
             }
@@ -323,7 +323,7 @@ $(document).ready(function () {
             if (rows.length > 1 || rows.length <= 0) {
                 $("#EditSku").attr("disabled", "disabled");
             } else {
-                $("#EditSku").removeAttr("disabled")
+                $("#EditSku").removeAttr("disabled");
             }
             if (rows.length <= 0) {
                 $("#DeleteSku").attr("disabled", "disabled");
@@ -390,8 +390,62 @@ $(document).ready(function () {
         locale: tableLocale//中文支持,
     });
     $("#NewSku").on("click", function () {
+        var referenceHtml = "<div class=\"form-group\"><label class=\"col-xs-3 text-right\">參考機種:</label><div class=\"col-xs-7\"><input id=\"referenceSku\" name=\"referenceSku\"  type=\"text\" class=\"form-control\" /> </div><div class=\"col-xs-2\"><button type=\"button\" class=\"btn btn-outline btn-primary\" id=\"ReferenceBtn\"><lan set-lan=\"html:Commit\">確定</lan></button></div></div>";
+        
+        parent.client.CallFunction("MESStation.Config.SkuConfig", "GetAllCSku", {}, function (e) {
+            if (e.Status == "Pass") {
+                layer.open({
+                    type: 1,
+                    skin: 'layui-layer-rim', //加上边框
+                    area: ['30%', '20%'], //宽高
+                    content: referenceHtml,
+                    success: function (layero, index) {
+                        $("#ReferenceBtn").on("click", function () {
+                            showNewSku();
+                            layer.close(index); 
+                        });
+                    }
+                });
+                var data = [];
+                for (var i = 0; i < e.Data.length; i++) {
+                    data.push(e.Data[i].SKUNO);
+                }
+                $("#referenceSku").autocomplete({
+                    minLength: 2,
+                    source: data,
+                    select: function (event, ui) {
+                        var e = $.Event("keypress");
+                        e.keyCode = 13;
+                        $(this).val(ui.item.value);
+                        $(this).trigger(e);
+                    },
+                    create: function (event, ui) {
+                        $(this).bind("click", function () {
+                            var active = $(this).attr("autocomplete");
+                            if (active == "off") {
+                                $(this).autocomplete("search", "");
+                            }
+                        });
+                    },
+                    scroll: true,
+                    scrollHeight: 180,
+                    position: { my: "right top", at: "right bottom" }
+                });
+            }
+            else {
+                layer.msg(e.Message, {
+                    icon: 2,
+                    time: 3000
+                }, function () {
+                });
+            }
+        });
+    });
+
+    var showNewSku=function() {
         NewFlag = true;
         SKU_EditRow = {};
+        var referenceSku = $("#referenceSku").val();
         $("#EditModelDetail .form-control").each(function () {
             this.value = "";
         });
@@ -408,15 +462,45 @@ $(document).ready(function () {
             scrollbar: false,
             content: $("#ModifyList"),
             success: function (layero, index) {
-                $("#ModifyList").removeClass("hidden");
-                Get_Route("");
+                parent.client.CallFunction("MESStation.Config.SkuConfig",
+                    "GetSingleSkuByName",
+                    { Sku_Name: referenceSku},
+                    function(e) {
+                        if (e.Status == "Pass"&&e.Data.length==1) {
+                            $("#ModifyList").removeClass("hidden");
+                            //Get_Route("");
+                            Get_RoutList(e.Data[0].ID);
+                            Get_BFPoint(e.Data[0].SKUNO);
+                            Get_Route(e.Data[0].ID);
+                            Get_PackConfig(e.Data[0].SKUNO);
+                            Get_LabelConfig(e.Data[0].SKUNO);
+                            Get_SkuAqlTypeData(e.Data[0].ID);
+                            setModifySkuno(e.Data[0]);
+                        } else {
+                            $("#ModifyList").removeClass("hidden");
+                            Get_Route("");
+                        }
+                    });
             },
             end: function () {
                 $("#ModifyList").addClass("hidden");
                 SKU_EditRow = null;
             }
         });
+    }
+
+    var setModifySkuno = function (smdata) {
+        for (var i = 0; i < $("#ModifySkuno input[type=text]").length; i++) {
+            if ($("#ModifySkuno input[type=text]").name == "ID")
+                continue;
+            FindValueByKey($("#ModifySkuno input[type=text]")[i], smdata);
+        }
+    }
+
+    $("#ReferenceBtn").on("click", function() {
+        showNewSku();
     });
+
     $("#EditSku").on("click", function () {
         var selRows = $('#Sku_List_Table').bootstrapTable('getAllSelections');
         if (selRows.length <= 0) {
@@ -479,7 +563,7 @@ $(document).ready(function () {
                                 icon: 1,
                                 time: 3000
                             }, function () {
-                                Get_data();
+                                Get_SkuList();
                             });
                         }
                         else {
@@ -505,7 +589,7 @@ $(document).ready(function () {
     });
     $("#SaveSku").on("click", function () {
         var ClassName, FunctionName;
-        var id = $("#EditModelDetail input[name=SkuId]").val();
+        var id = $("#EditModelDetail input[name=ID]").val();
         if (id == ""||id == undefined) {//新增
             ClassName = "MESStation.Config.SkuConfig";
             FunctionName = "AddSku";
@@ -1179,6 +1263,5 @@ $(document).ready(function () {
     Get_AqlType();
     mesUI.SetLanguage("SKUSetting");
 });
-
 
 

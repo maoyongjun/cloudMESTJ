@@ -366,4 +366,15 @@ namespace MESDataObject.Module
             public string ROLE_TYPE{get;set;}
         }
     }
+
+    public class C_ROLE
+    {
+        public string ROLE_TYPE{ get; set; }
+        public string EDIT_EMP{ get; set; }
+        public DateTime? EDIT_TIME{ get; set; }
+        public string ROLE_DESC{ get; set; }
+        public string ROLE_NAME{ get; set; }
+        public string SYSTEM_NAME{ get; set; }
+        public string ID{ get; set; }
+    }
 }

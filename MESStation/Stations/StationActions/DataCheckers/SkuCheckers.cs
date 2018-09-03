@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 
@@ -19,7 +19,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void InputSkuWoSkuChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void InputSkuWoSkuChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string SkuNo = string.Empty;
@@ -49,7 +49,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             //{
             //    if (Wo.SkuNO.Equals(SkuNo))
             //    {
-            //        Station.AddMessage("MES00000111", new string[] { SkuNo }, MESReturnView.Station.StationMessageState.Pass);
+            //        Station.AddMessage("MES00000111", new string[] { SkuNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             //    }
             //    else
             //    {

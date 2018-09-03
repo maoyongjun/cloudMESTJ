@@ -531,4 +531,27 @@ namespace MESDataObject.Module
             }
         }
     }
+
+    public class C_USER
+    {
+        public string EMP_EN_NAME{ get; set; }
+        public string EDIT_EMP{ get; set; }
+        public DateTime? EDIT_TIME{ get; set; }
+        public string EMP_DESC{ get; set; }
+        public DateTime? CHANGE_PASSWORD_TIME{ get; set; }
+        public string AGENT_EMP_NO{ get; set; }
+        public string LOCK_FLAG{ get; set; }
+        public string LOCATION{ get; set; }
+        public string PHONE_NUMBER{ get; set; }
+        public string MAIL_ADDRESS{ get; set; }
+        public string POSITION_NAME{ get; set; }
+        public string DPT_NAME{ get; set; }
+        public string EMP_LEVEL{ get; set; }
+        public string EMP_NAME{ get; set; }
+        public string EMP_PASSWORD{ get; set; }
+        public string EMP_NO{ get; set; }
+        public string BU_NAME{ get; set; }
+        public string FACTORY{ get; set; }
+        public string ID{ get; set; }
+    }
 }

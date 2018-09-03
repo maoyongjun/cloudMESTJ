@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 
 namespace MESStation.Test
 {
-    public class InputValueTest:BaseClass.MesAPIBase
+    public class InputValueTest:MesAPIBase
     {
         APIInfo GetSkusAPI = new APIInfo()
         {
@@ -62,7 +62,7 @@ namespace MESStation.Test
             StationReturn.Data = ret;
             StationReturn.Status = StationReturnStatusValue.Pass;
         }
-        public static void TESTGetPoBuySKUDataLoader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void TESTGetPoBuySKUDataLoader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string skuno = Input.Value.ToString();
             MESStationInput I = Station.Inputs.Find(t => t.DisplayName == "PO");

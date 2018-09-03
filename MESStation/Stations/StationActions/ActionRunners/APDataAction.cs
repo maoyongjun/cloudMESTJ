@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+
 using System.Collections;
 using MESDataObject;
 using System.Data;
 using MESDBHelper;
 using MESStation.Stations.StationActions.DataLoaders;
 using System.Data.OleDb;
+using MESPubLab.MESStation.MESReturnView.Station;
 
 namespace MESStation.Stations.StationActions.ActionRunners
 {
@@ -24,7 +25,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void APStencilUpdateCountAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void APStencilUpdateCountAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
 
@@ -45,7 +46,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             if (result == "OK")
             {
                 //apdbPool.Return(apdb);
-                Station.AddMessage("MES00000062", new string[] { Psn }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000062", new string[] { Psn }, StationMessageState.Pass);
             }
             else
             {
@@ -54,7 +55,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }            
         }
 
-        public static void APPanelSNReplaceAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void APPanelSNReplaceAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             string PanelSN;
@@ -97,7 +98,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             if (result == "OK")
             {
                 //apdbPool.Return(apdb);
-                Station.AddMessage("MES00000062", new string[] { "" }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000062", new string[] { "" }, StationMessageState.Pass);
             }
             else
             {
@@ -108,7 +109,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
         /// HWD PTH Allpart扣料，add by LLF 2018-02-19
         /// </summary>
-        public static void APAssignMaterialPTHAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void APAssignMaterialPTHAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 //            OleExecPool apdbPool = null;
             OleExec apdb = null;
@@ -233,7 +234,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void TRSNDataSessionUpdateAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void TRSNDataSessionUpdateAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             Dictionary<string, DataRow> APInfo = new Dictionary<string, DataRow>();
             string strTRSN = "";

@@ -26,7 +26,7 @@ namespace MESDataObject.Module
         public List<ModelTypePrivilege> GetPrivilegeForUser(string LoginUserEmp, string EditEmp, string EmpLevel, MESDBHelper.OleExec SFCDB)
         {
             string sql = string.Empty;
-            sql = $@"Select b.id,a.type_no,a.department,a.model_name,a.program_name,a.description,b.EDIT_EMP,b.EDIT_TIME 
+            sql = $@"Select b.id,a.type_no, a.department,a.model_name,a.program_name,a.description,b.EDIT_EMP,b.EDIT_TIME 
                      From sfcbase.c_model_type a,sfcbase.c_model_user b,c_user c 
                      Where a.id =b.type_id and b.user_id=c.id and emp_no='{EditEmp}'";
             DataSet res = SFCDB.ExecSelect(sql);

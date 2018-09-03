@@ -85,6 +85,19 @@ from r_file r where r.usetype ='{UseType}' and r.name='{Name}' order by edit_tim
 
         }
 
+        public R_FILE GetFileByFileName(string fileName, string UseType, OleExec DB)
+        {
+            string strSql = $@"select r.id, r.name,r.filename,r.md5,r.usetype,r.valid,r.state,r.edit_time,r.edit_emp,blob_file from r_file r where r.filename='{fileName}' and r.usetype ='{UseType}' and r.valid = 1";
+            DataSet ret = DB.RunSelect(strSql);
+
+            Row_R_FILE r = (Row_R_FILE)this.NewRow();
+            if (ret.Tables[0].Rows.Count > 0)
+            {
+                r.loadData(ret.Tables[0].Rows[0]);
+            }
+            return r.GetDataObject();
+        }
+
         public void SetFileDisableByName(string Name,string UseType, OleExec DB)
         {
             string strSql = $@"update R_FILE r set r.valid = 0 where r.name='{Name}' and r.usetype ='{UseType}' ";

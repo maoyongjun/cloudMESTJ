@@ -1,9 +1,9 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -65,26 +65,26 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 }
                 if (RepairedCount.Equals(TotalCount))
                 {
-                    Station.AddMessage("MES00000068", new string[] { P_sn }, MESReturnView.Station.StationMessageState.Fail);
+                    Station.AddMessage("MES00000068", new string[] { P_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000068",
                                     new string[] { P_sn });
                     throw new MESReturnMessage(ErrMessage);
                 }
                 if (CompletedCount.Equals(TotalCount))
                 {
-                    Station.AddMessage("MES00000069", new string[] { P_sn }, MESReturnView.Station.StationMessageState.Fail);
+                    Station.AddMessage("MES00000069", new string[] { P_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000069",
                                     new string[] { P_sn });
                     throw new MESReturnMessage(ErrMessage);
                 }
                 if (ShippedCount.Equals(TotalCount))
                 {
-                    Station.AddMessage("MES00000070", new string[] { P_sn }, MESReturnView.Station.StationMessageState.Fail);
+                    Station.AddMessage("MES00000070", new string[] { P_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000070",
                                     new string[] { P_sn });
                     throw new MESReturnMessage(ErrMessage);
                 }
-                Station.AddMessage("MES00000067", new string[] { "PanleSN" }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000067", new string[] { "PanleSN" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
@@ -94,26 +94,26 @@ namespace MESStation.Stations.StationActions.DataCheckers
             //{
             //    if (r_sn[0].REPAIR_FAILED_FLAG == "1")
             //    {
-            //        Station.AddMessage("MES00000068", new string[] { P_sn }, MESReturnView.Station.StationMessageState.Fail);
+            //        Station.AddMessage("MES00000068", new string[] { P_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //        ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000068",
             //                        new string[] { P_sn });
             //        throw new MESReturnMessage(ErrMessage);
             //    }
             //    if (r_sn[0].COMPLETED_FLAG == "1" || r_sn[0].PACKED_FLAG == "1")
             //    {
-            //        Station.AddMessage("MES00000069", new string[] { P_sn }, MESReturnView.Station.StationMessageState.Fail);
+            //        Station.AddMessage("MES00000069", new string[] { P_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //        ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000069",
             //                        new string[] { P_sn });
             //        throw new MESReturnMessage(ErrMessage);
             //    }
             //    if (r_sn[0].SHIPPED_FLAG == "1")
             //    {
-            //        Station.AddMessage("MES00000070", new string[] { P_sn }, MESReturnView.Station.StationMessageState.Fail);
+            //        Station.AddMessage("MES00000070", new string[] { P_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //        ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000070",
             //                        new string[] { P_sn });
             //        throw new MESReturnMessage(ErrMessage);
             //    }
-            //    Station.AddMessage("MES00000067", new string[] { "PanleSN" }, MESReturnView.Station.StationMessageState.Pass);
+            //    Station.AddMessage("MES00000067", new string[] { "PanleSN" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             //}
 
 
@@ -216,6 +216,43 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 throw new MESReturnMessage(ErrMessage);
             }
 
+        }
+
+        /// <summary>
+        /// 檢查panel對象中的SN的NextStation是否等於當前工站
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void PanleNextStationChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 1)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000050"));
+            }
+            MESStationSession sessionPanle = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionPanle == null || sessionPanle.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE }));
+            }
+            Panel panel = new Panel();
+
+            Panel panleObject = (Panel)sessionPanle.Value;
+            T_C_ROUTE_DETAIL t_c_route_detail = new T_C_ROUTE_DETAIL(Station.SFCDB, Station.DBType);
+
+            List<R_SN> snList = panel.GetSnDetail(panleObject.PanelNo, Station.SFCDB, Station.DBType);
+            foreach(R_SN sn in snList)
+            {
+                if (!t_c_route_detail.StationInRoute(sn.ROUTE_ID, Station.StationName, Station.SFCDB))
+                {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180621172210", new string[] { Station.StationName, sn.SN }));
+                }
+                if (!sn.NEXT_STATION.Equals(Station.StationName))
+                {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000136", new string[] { sn.NEXT_STATION }));
+                }
+            }
+            
         }
     }
 }

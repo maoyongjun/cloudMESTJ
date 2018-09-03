@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject;
 using MESDataObject.Module;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using MESStation.LogicObject;
 using System.Text.RegularExpressions;
 using MESDBHelper;
@@ -21,7 +21,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,SN規則檢查，SKU保存的位置</param>
-        public static void SNRuleDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNRuleDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             SKU objsku;
             bool SnRuleFlag = false;
@@ -80,18 +80,18 @@ namespace MESStation.Stations.StationActions.DataCheckers
 
             if (SnRuleFlag)
             {
-                Station.AddMessage("MES00000059", new string[] { Getnewsn }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000059", new string[] { Getnewsn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000058", new string[] { Getnewsn, regexstr }));
-                //Station.AddMessage("MES00000058", new string[] { Getnewsn, regexstr }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000058", new string[] { Getnewsn, regexstr }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
 
 
         }
 
-        public static void SNRuleStringDataChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNRuleStringDataChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             SKU objSku;
             bool snRuleFlag = true;
@@ -165,7 +165,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
 
                 if (snRuleFlag)
                 {
-                    Station.AddMessage("MES00000059", new string[] { inputSn }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000059", new string[] { inputSn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 }
                 else
                 {
@@ -186,7 +186,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void SNFailCodeReapirDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNFailCodeReapirDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             T_R_REPAIR_FAILCODE RepairFailcode = new T_R_REPAIR_FAILCODE(Station.SFCDB, Station.DBType);
             Row_R_REPAIR_FAILCODE FailCodeRow;
@@ -224,7 +224,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void ReapirLocationDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void ReapirLocationDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             OleExec apdb = null;
             List<string> LocationList = new List<string>();
@@ -269,7 +269,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     }
                 }
                 Station.DBS["APDB"].Return(apdb);
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
@@ -290,7 +290,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void WoLoadingStationDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void WoLoadingStationDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             WorkOrder ObjWorkorder = new WorkOrder();
             string ErrMessage = string.Empty;            
@@ -313,7 +313,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     {
                         if (ObjWorkorder.WORKORDER_QTY <= ObjWorkorder.INPUT_QTY)
                         {
-                            //Station.AddMessage("MES00000060", new string[] { ObjWorkorder.WorkorderNo.ToString(),ObjWorkorder.WORKORDER_QTY.ToString(), ObjWorkorder.INPUT_QTY.ToString() }, MESReturnView.Station.StationMessageState.Fail);
+                            //Station.AddMessage("MES00000060", new string[] { ObjWorkorder.WorkorderNo.ToString(),ObjWorkorder.WORKORDER_QTY.ToString(), ObjWorkorder.INPUT_QTY.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                             ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000060",
                                     new string[] { ObjWorkorder.WorkorderNo.ToString(),
                                         ObjWorkorder.WORKORDER_QTY.ToString(),
@@ -322,12 +322,12 @@ namespace MESStation.Stations.StationActions.DataCheckers
                         }
                         if (ObjWorkorder.CLOSED_FLAG != "0")
                         {
-                            //Station.AddMessage("MES00000041", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESReturnView.Station.StationMessageState.Fail);
+                            //Station.AddMessage("MES00000041", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                             ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000041",
                                     new string[] { ObjWorkorder.WorkorderNo.ToString() });
                             throw new MESReturnMessage(ErrMessage);
                         }
-                        Station.AddMessage("MES00000061", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                        Station.AddMessage("MES00000061", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                     }
                 }
                 else
@@ -348,7 +348,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void SMTLoadingWoStationDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SMTLoadingWoStationDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             WorkOrder ObjWorkorder = new WorkOrder();
             string ErrMessage = string.Empty;
@@ -413,7 +413,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
 
                         }
                         // 4.工單不能被鎖定、工單料號不能被鎖定--?還未實現該功能
-                        Station.AddMessage("MES00000061", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                        Station.AddMessage("MES00000061", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                     }
                 }
                 else
@@ -423,7 +423,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
         }
 
-        public static void SMTLoadingWoInputQtyDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SMTLoadingWoInputQtyDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             WorkOrder ObjWorkorder = new WorkOrder();
             string ErrMessage = string.Empty;
@@ -498,13 +498,13 @@ namespace MESStation.Stations.StationActions.DataCheckers
 
                     }
                     // 4.工單不能被鎖定、工單料號不能被鎖定--?還未實現該功能
-                    Station.AddMessage("MES00000061", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000061", new string[] { ObjWorkorder.WorkorderNo.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 }
 
             }
         }
 
-        public static void RouteDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RouteDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             List<R_MRB> GetMRBList = new List<R_MRB>();
@@ -586,7 +586,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 }
                 
 
-                Station.AddMessage("MES00000026", new string[] {  }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000026", new string[] {  }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
@@ -599,7 +599,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void ActionCodeDataChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void ActionCodeDataChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {           
             if (Paras.Count != 1)
             {
@@ -624,7 +624,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 {
                     throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000007", new string[] { "ActionCode", ActionCodeInput }));
                 }
-                Station.AddMessage("MES00000026", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000026", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch(Exception ex)
             {
@@ -638,7 +638,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void InputSessionDataChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void InputSessionDataChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             for (int i = 0; i < Paras.Count; i++)
             {
@@ -653,6 +653,10 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 }
             }
         }
+
+        
+
+
     }
 }
 

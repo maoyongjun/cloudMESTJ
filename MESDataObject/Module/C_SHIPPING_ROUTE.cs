@@ -30,9 +30,21 @@ namespace MESDataObject.Module
         public C_SHIPPING_ROUTE GetDataObject()
         {
             C_SHIPPING_ROUTE DataObject = new C_SHIPPING_ROUTE();
+            DataObject.ID = this.ID;
             DataObject.DESCRIPTION = this.DESCRIPTION;
             DataObject.ROUTENAME = this.ROUTENAME;
             return DataObject;
+        }
+        public string ID
+        {
+            get
+            {
+                return (string)this["ID"];
+            }
+            set
+            {
+                this["ID"] = value;
+            }
         }
         public string DESCRIPTION
         {
@@ -59,7 +71,8 @@ namespace MESDataObject.Module
     }
     public class C_SHIPPING_ROUTE
     {
-        public string DESCRIPTION;
-        public string ROUTENAME;
+        public string ID{ get; set; }
+        public string DESCRIPTION{ get; set; }
+        public string ROUTENAME{ get; set; }
     }
 }

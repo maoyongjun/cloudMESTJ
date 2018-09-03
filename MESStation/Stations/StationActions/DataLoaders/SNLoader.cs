@@ -1,8 +1,8 @@
 ﻿using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,7 +103,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         }
 
         //加載SN待過工站
-        public static void SNNextStationDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNNextStationDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             //Modify by LLF 2018-01-26 通過配置獲取
             //MESStationSession WipStationSave = new MESStationSession() {MESDataType= "WIPSTATION", InputValue=Input.Value.ToString(),SessionKey="1",ResetInput=Input };
@@ -154,13 +154,13 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
             }
             NextStationSave.Value = snStationList;
-            Station.AddMessage("MES00000029", new string[] { "NextStationList", "NextStation" }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "NextStationList", "NextStation" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
         //add by LLF 2018-01-26
         //加載Panel待過工站
         //modify by ZGJ 2018-03-07
-        public static void PanelSNNextStationDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void PanelSNNextStationDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             //MESStationSession WipStationSave = new MESStationSession() { MESDataType = "WIPSTATION", InputValue = Input.Value.ToString(), SessionKey = "1", ResetInput = Input };
             MESStationSession NextStationSave = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -191,7 +191,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             //        snStationList.Add(item.STATION_NAME);
             //    }
             //}
-            Station.AddMessage("MES00000029", new string[] { "NextStationList", "NextStation" }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "NextStationList", "NextStation" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
         /// add by LLF 2018-01-29
-        public static void StationNextDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void StationNextDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string NextStation = "";
             MESStationSession StationNextSave = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -252,7 +252,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
             }
             StationNextSave.Value = snStationList;
-            Station.AddMessage("MES00000029", new string[] { "StationNext", "StationNextList" }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "StationNext", "StationNextList" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void StationNextByWODataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void StationNextByWODataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string NextStation = "";
             WorkOrder WoObj = new WorkOrder();
@@ -305,7 +305,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
             }
             StationNextSave.Value = snStationList;
-            Station.AddMessage("MES00000029", new string[] { "StationNext", "StationNextList" }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "StationNext", "StationNextList" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
 
@@ -527,7 +527,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
 
                 LinkSnSession.Value = KeyPartList;
 
-                Station.AddMessage("MES00000029", new string[] { "KeyPartList", KeyPartList.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "KeyPartList", KeyPartList.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -595,12 +595,53 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180529094259"));                    
                 }               
                 snObjectList.Value = snList;
-                Station.AddMessage("MES00000001", new string[] { sessionInputString.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { sessionInputString.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        /// <summary>
+        /// 從Sn加載 stationName List
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void GetStationBySnDataloader(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 1)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000057"));
+            }
+            MESStationSession sessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionSN == null || sessionSN.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE }));
+            }
+            MESStationSession sessionStation = new MESStationSession();
+            SN SNObj = (SN)sessionSN.Value;
+            List<string> stationList = new List<string>();           
+            T_C_ROUTE_DETAIL RouteDetailTable = new T_C_ROUTE_DETAIL(Station.SFCDB, Station.DBType);
+            List<C_ROUTE_DETAIL> RouteDetails = RouteDetailTable.GetByRouteIdOrderBySEQASC(SNObj.RouteID, Station.SFCDB);
+            MESStationInput stationInput = Station.Inputs.Find(t => t.DisplayName == "ReturnStation");
+            if (RouteDetails.Count > 0)
+            {
+
+                stationInput.DataForUse.Clear();
+                stationInput.DataForUse.Add("");
+                foreach (C_ROUTE_DETAIL c in RouteDetails)
+                {
+                    stationInput.DataForUse.Add(c.STATION_NAME);
+                }               
+            }
+            else
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000194", new string[] { SNObj.WorkorderNo }));
+            }
+
+           
+            Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Message);
         }
     }
 }

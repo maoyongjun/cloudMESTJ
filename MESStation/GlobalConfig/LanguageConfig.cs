@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.GlobalConfig
 {
-    public class LanguageConfig : MESStation.BaseClass.MesAPIBase
+    public class LanguageConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo AllLANGUAGE = new APIInfo()
         {

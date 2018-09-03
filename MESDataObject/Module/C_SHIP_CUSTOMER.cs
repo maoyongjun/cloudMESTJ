@@ -30,6 +30,7 @@ namespace MESDataObject.Module
         public C_SHIP_CUSTOMER GetDataObject()
         {
             C_SHIP_CUSTOMER DataObject = new C_SHIP_CUSTOMER();
+            DataObject.ID = this.ID;
             DataObject.ROUTENAME = this.ROUTENAME;
             DataObject.BILLTOCODE = this.BILLTOCODE;
             DataObject.CURRENCYCODE = this.CURRENCYCODE;
@@ -38,6 +39,17 @@ namespace MESDataObject.Module
             DataObject.BILLTOLOCATION = this.BILLTOLOCATION;
             DataObject.CUSTOMERNAME = this.CUSTOMERNAME;
             return DataObject;
+        }
+        public string ID
+        {
+            get
+            {
+                return (string)this["ID"];
+            }
+            set
+            {
+                this["ID"] = value;
+            }
         }
         public string ROUTENAME
         {
@@ -119,7 +131,8 @@ namespace MESDataObject.Module
     }
     public class C_SHIP_CUSTOMER
     {
-        public string ROUTENAME { get; set; }
+        public string ID{ get; set; }
+        public string ROUTENAME{ get; set; }
         public string BILLTOCODE{ get; set; }
         public string CURRENCYCODE{ get; set; }
         public string BILLTOCOUNTRY{ get; set; }

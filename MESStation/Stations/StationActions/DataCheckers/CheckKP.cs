@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject;
 using MESStation.LogicObject;
 
@@ -14,7 +14,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
 {
     public class CheckKP
     {
-        public static void SNStationKPDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNStationKPDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             MESStationSession SNSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             //MESStationSession WO = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -40,7 +40,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNStationKeypartDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNStationKeypartDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             MESStationSession SNSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);           
             OleExec SFCDB = Station.SFCDB;            

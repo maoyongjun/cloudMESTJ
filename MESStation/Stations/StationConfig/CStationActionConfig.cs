@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
@@ -11,7 +11,7 @@ using System.Reflection;
 
 namespace MESStation.Stations.StationConfig
 {
-    public  class CStationActionConfig : MESStation.BaseClass.MesAPIBase
+    public  class CStationActionConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo addcstationaction = new APIInfo()
         {
@@ -289,9 +289,9 @@ namespace MESStation.Stations.StationConfig
         public void GetClassList(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JToken Data, MESStationReturn StationReturn)
         {
             string DllName = Data["DllName"].ToString().Trim();
-            MESReturnView.Public.GetApiClassListReturncs ret = new MESReturnView.Public.GetApiClassListReturncs();
+            MESPubLab.MESStation.MESReturnView.Public.GetApiClassListReturncs ret = new MESPubLab.MESStation.MESReturnView.Public.GetApiClassListReturncs();
             Assembly assemby = Assembly.LoadFile(System.IO.Directory.GetCurrentDirectory() + "\\" + DllName);
-            Type tagType = typeof(BaseClass.MesAPIBase);
+            Type tagType = typeof(MesAPIBase);
             Type[] t = assemby.GetTypes();
             for (int i = 0; i < t.Length; i++)
             {
@@ -318,7 +318,7 @@ namespace MESStation.Stations.StationConfig
             Type t = assemby.GetType(ClassName);
             object obj = assemby.CreateInstance(ClassName);
            // MesAPIBase API = (MesAPIBase)obj;
-         //   Dictionary<string, MESStation.BaseClass.APIInfo> APIS;
+         //   Dictionary<string, MESPubLab.MESStation.APIInfo> APIS;
             //   MESReturnView.Public.GetApiFunctionsListReturn ret = new MESReturnView.Public.GetApiFunctionsListReturn();
             //APIS = API.Apis;
             foreach (var item in obj.GetType().GetMethods())

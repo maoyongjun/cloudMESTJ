@@ -147,7 +147,7 @@ namespace MESDataObject.Module
 
         public List<string> GetPakcingSNList(string parentPakcId,OleExec sfcdb)
         {
-            string sql=$@"select c.sn from r_packing a,r_sn_packing b,r_sn c where a.parent_pack_id='{parentPakcId}' and a.id = b.pack_id and b.sn_id = c.id";
+            string sql=$@"select c.sn from r_packing a,r_sn_packing b,r_sn c where a.parent_pack_id='{parentPakcId}' and a.id = b.pack_id and b.sn_id = c.id ";
             List<string> snList = new List<string>();            
             DataSet ds = sfcdb.ExecSelect(sql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -160,6 +160,54 @@ namespace MESDataObject.Module
             else
             {
                 snList = null;
+            }
+            return snList;
+        }
+
+        /// <summary>
+        /// get sn object list by pallet ID
+        /// </summary>
+        /// <param name="palletID">pallet ID</param>
+        /// <param name="sfcdb"></param>
+        /// <returns></returns>
+        public List<R_SN> GetSnListByPalletID(string palletID,OleExec sfcdb)
+        {
+            string sql = $@"select c.* from r_packing a,r_sn_packing b,r_sn c where a.parent_pack_id='{palletID}' and a.id = b.pack_id and b.sn_id = c.id and c.shipped_flag='1'";
+            List<R_SN> snList = new List<R_SN>();
+            T_R_SN t_r_sn = new T_R_SN(sfcdb, this.DBType);
+            DataSet ds = sfcdb.ExecSelect(sql);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Row_R_SN rowSN = (Row_R_SN)t_r_sn.NewRow();
+                    rowSN.loadData(row);
+                    snList.Add(rowSN.GetDataObject());
+                }
+            }
+            return snList;
+        }
+
+        /// <summary>
+        ///  get sn object list by carton ID
+        /// </summary>
+        /// <param name="cartonID">carton ID</param>
+        /// <param name="sfcdb"></param>
+        /// <returns></returns>
+        public List<R_SN> GetSnListByCartonID(string cartonID, OleExec sfcdb)
+        {
+            string sql = $@" select b.* from r_sn_packing a,r_sn b where a.pack_id='{cartonID}' and a.sn_id = b.id  and b.shipped_flag='1'";
+            List<R_SN> snList = new List<R_SN>();
+            T_R_SN t_r_sn = new T_R_SN(sfcdb, this.DBType);
+            DataSet ds = sfcdb.ExecSelect(sql);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    Row_R_SN rowSN = (Row_R_SN)t_r_sn.NewRow();
+                    rowSN.loadData(row);
+                    snList.Add(rowSN.GetDataObject());
+                }
             }
             return snList;
         }

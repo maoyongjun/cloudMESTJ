@@ -92,6 +92,27 @@ namespace MESDataObject.Module
             }
         }
 
+        public Row_R_LOT_STATUS GetLotBySkuAnd(string skuno, string stationName, OleExec DB)
+        {
+            string strsql = "";
+            Row_R_LOT_STATUS R = null;
+            if (DBType == DB_TYPE_ENUM.Oracle)
+            {
+                strsql = $@" select ID from r_lot_status where skuno='{skuno}' and SAMPLE_STATION='{stationName}' and closed_flag='0'";
+                string ID = DB.ExecSelectOneValue(strsql)?.ToString();
+                if (ID != null)
+                {                   
+                    R = (Row_R_LOT_STATUS)this.GetObjByID(ID, DB);
+                }
+                return R;
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+        }
+
         /// <summary>
         /// 通過SN 獲取它所在的LOT_NO
         /// </summary>

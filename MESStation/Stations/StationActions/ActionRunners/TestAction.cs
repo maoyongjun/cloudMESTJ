@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using MESDataObject;
 using System.Data;
 using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using MESDBHelper;
 
 namespace MESStation.Stations.StationActions.ActionRunners
 {
     public class TestAction
     {
-        public static void TEST1(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void TEST1(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string SN = SNMaker.SNmaker.GetNextSN("TEST",Station.SFCDB);
 

@@ -1,7 +1,7 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MESStation.Config
 {
-    public class CStationConfig : MESStation.BaseClass.MesAPIBase
+    public class CStationConfig : MESPubLab.MESStation.MesAPIBase
     {
         public CStationConfig()
         {
@@ -288,6 +288,19 @@ namespace MESStation.Config
             listInputType.Add("SN");
             listInputType.Add("PANEL");
             StationReturn.Data = listInputType;
+            StationReturn.Status = StationReturnStatusValue.Pass;
+            StationReturn.MessageCode = "MES00000001";
+        }
+
+        public void GetStationTypeList(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
+        {
+            List<string> typeList = new List<string>();
+
+            foreach (STATIONTYPE stationType in Enum.GetValues(typeof(STATIONTYPE)))
+            {
+                typeList.Add(stationType.ToString());
+            }
+            StationReturn.Data = typeList;
             StationReturn.Status = StationReturnStatusValue.Pass;
             StationReturn.MessageCode = "MES00000001";
         }

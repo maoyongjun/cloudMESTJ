@@ -30,6 +30,7 @@ namespace MESDataObject.Module
         public C_SHIPPING_ROUTE_DETAIL GetDataObject()
         {
             C_SHIPPING_ROUTE_DETAIL DataObject = new C_SHIPPING_ROUTE_DETAIL();
+            DataObject.ID = this.ID;
             DataObject.RFC_NAME = this.RFC_NAME;
             DataObject.TO_PLANT = this.TO_PLANT;
             DataObject.FROM_PLANT = this.FROM_PLANT;
@@ -40,6 +41,17 @@ namespace MESDataObject.Module
             DataObject.SEQ = this.SEQ;
             DataObject.ROUTENAME = this.ROUTENAME;
             return DataObject;
+        }
+        public string ID
+        {
+            get
+            {
+                return (string)this["ID"];
+            }
+            set
+            {
+                this["ID"] = value;
+            }
         }
         public string RFC_NAME
         {
@@ -143,6 +155,7 @@ namespace MESDataObject.Module
     }
     public class C_SHIPPING_ROUTE_DETAIL
     {
+        public string ID{ get; set; }
         public string RFC_NAME{ get; set; }
         public string TO_PLANT{ get; set; }
         public string FROM_PLANT{ get; set; }
