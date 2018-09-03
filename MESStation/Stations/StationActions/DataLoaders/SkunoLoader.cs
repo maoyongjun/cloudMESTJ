@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 using MESDataObject;
@@ -12,7 +12,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
 {
     public class SkunoLoader
     {
-        public static void SkuDataLoader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SkuDataLoader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count != 1)
@@ -32,19 +32,19 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 MESDBHelper.OleExec ole = Station.SFCDB;
                 sku = sku.Init(Input.Value.ToString(), ole, MESDataObject.DB_TYPE_ENUM.Oracle);
                 s.Value = sku;
-                Station.AddMessage("MES00000029", new string[] { "Skuno", sku.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "Skuno", sku.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch
             {
 
-                //Station.AddMessage("MES00000052", new string[] { "Skuno"+ ":"+ Input.Value.ToString() }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000052", new string[] { "Skuno"+ ":"+ Input.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { "Skuno" + ":" + Input.Value.ToString() }));
             }
 
 
         }
 
-        public static void SmtSkuFromWODataCheck(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SmtSkuFromWODataCheck(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 3)
             {
@@ -86,16 +86,16 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
 
                 SkuSession.Value = sku;
-                Station.AddMessage("MES00000029", new string[] { "Skuno", sku.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "Skuno", sku.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception e)
             {
-                Station.AddMessage("MES00000007", new string[] { "Skuno" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000007", new string[] { "Skuno" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw e;
             }
         }
 
-        public static void SkuFromWODataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SkuFromWODataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count != 2)
@@ -138,18 +138,18 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 //}
 
                 SkuSession.Value = sku;
-                Station.AddMessage("MES00000029", new string[] { "Skuno", sku.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "Skuno", sku.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch(Exception e)
             {
-                Station.AddMessage("MES00000007", new string[] { "Skuno" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000007", new string[] { "Skuno" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw e;
             }
 
 
         }
 
-        public static void SnSKUDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SnSKUDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count != 2)
@@ -189,11 +189,11 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 MESDBHelper.OleExec ole = Station.SFCDB;
                 sku = sku.InitBySn(SnObject.SerialNo, ole, MESDataObject.DB_TYPE_ENUM.Oracle);
                 SkuSession.Value = sku;
-                Station.AddMessage("MES00000029", new string[] { "SN", sku.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "SN", sku.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch
             {
-                //Station.AddMessage("MES00000007", new string[] { "SN" }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000007", new string[] { "SN" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000007", new string[] { "SN" }));
 
             }
@@ -202,7 +202,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         }
 
         //通過Sku獲取ModelType
-        public static void ModelTypeFromSkuDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void ModelTypeFromSkuDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string strModelType = "";
             SKU sku;
@@ -256,7 +256,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">2個參數,SKU,LOTNO保存的位置</param>
-        public static void GetLotDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void GetLotDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ColoumName = "skuno";
             Row_R_LOT_STATUS RLotSku;
@@ -280,7 +280,9 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 SKU ObjSku = (SKU)Ssku.Value;
                 //Marked by LLF 20018-02-22 
                 //RLotSku = TR.GetByInput(ObjSku.SkuNo, ColoumName, Station.SFCDB);
-                RLotSku = TR.GetLotBySku(ObjSku.SkuNo, ColoumName, Station.SFCDB);
+                //RLotSku = TR.GetLotBySku(ObjSku.SkuNo, ColoumName, Station.SFCDB);
+                //modify by fgg get lot by sku and station name 2018.8.16
+                RLotSku = TR.GetLotBySkuAnd(ObjSku.SkuNo,Station.StationName,Station.SFCDB);
             }
 
             if (Slot == null)
@@ -309,7 +311,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     SLotNewFlag.Value = "0";
                     LOT.Init(RLotSku.LOT_NO,"", Station.SFCDB);
                     Slot.Value = LOT;
-                    Station.AddMessage("MES00000029", new string[] { "LotNo", LOT.ToString() }, MESReturnView.Station.StationMessageState.Message);
+                    Station.AddMessage("MES00000029", new string[] { "LotNo", LOT.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
                 }
 
             }
@@ -327,7 +329,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,SKU 保存的位置</param>
-        public static void GetSampleQtyDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void GetSampleQtyDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             Row_C_SKU_SAMPLE RLotSku;
             Row_C_AQLTYPE RAqltype;
@@ -449,8 +451,8 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     SessionFailQty.Value = ((LotNo)SessionLotNo.Value).FAIL_QTY;
                 }
 
-                //Station.AddMessage("MES00000104", new string[] { "AQLTYPE", RAqltype.AQL_TYPE, "LotQTY", RAqltype.LOT_QTY.ToString(), "SAMPLEQTY", RAqltype.SAMPLE_QTY.ToString(), "REJECTQTY", RAqltype.REJECT_QTY.ToString() }, MESReturnView.Station.StationMessageState.Message);
-                Station.AddMessage("MES00000104", new string[] { "AQLTYPE", SessionAQLTYPE.Value.ToString(), "LotQTY", SessionLotQTY.Value.ToString(), "SAMPLEQTY", SessionSAMPLEQTY.Value.ToString(), "REJECTQTY", SessionREJECTQTY.Value.ToString() }, MESReturnView.Station.StationMessageState.Message);
+                //Station.AddMessage("MES00000104", new string[] { "AQLTYPE", RAqltype.AQL_TYPE, "LotQTY", RAqltype.LOT_QTY.ToString(), "SAMPLEQTY", RAqltype.SAMPLE_QTY.ToString(), "REJECTQTY", RAqltype.REJECT_QTY.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000104", new string[] { "AQLTYPE", SessionAQLTYPE.Value.ToString(), "LotQTY", SessionLotQTY.Value.ToString(), "SAMPLEQTY", SessionSAMPLEQTY.Value.ToString(), "REJECTQTY", SessionREJECTQTY.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
             }
             catch (Exception ex)
             {
@@ -460,7 +462,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             }
         }
 
-        public static void SampleLotDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SampleLotDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string StrSN = "";
             Row_R_LOT_STATUS RLotStatus;
@@ -514,7 +516,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void GetLotDataloaderNew(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void GetLotDataloaderNew(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count <= 0)
             {

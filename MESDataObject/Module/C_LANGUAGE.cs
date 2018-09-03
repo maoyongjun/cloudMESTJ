@@ -27,18 +27,21 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public Dictionary<String, String> GetLanguageType(OleExec DB)
         {
-            string sql = string.Empty;
-            DataTable dt = new DataTable();
-            Dictionary<String, String> LanguageList = new Dictionary<String, String>();
+            //string sql = string.Empty;
+            //DataTable dt = new DataTable();
+            //Dictionary<String, String> LanguageList = new Dictionary<String, String>();
 
-            sql = $@"select * from C_LANGUAGE ORDER BY SORT";
-            dt = DB.ExecSelect(sql).Tables[0];
-            foreach (DataRow dr in dt.Rows)
-            {
-                LanguageList.Add(dr["LANGUAGE_NAME"].ToString(), dr["LANGUAGE_VALUE"].ToString());
+            //sql = $@"select * from C_LANGUAGE ORDER BY SORT";
+            //dt = DB.ExecSelect(sql).Tables[0];
+            //foreach (DataRow dr in dt.Rows)
+            //{
+            //    LanguageList.Add(dr["LANGUAGE_NAME"].ToString(), dr["LANGUAGE_VALUE"].ToString());
 
-            }
-            return LanguageList;
+            //}
+
+            Dictionary<string,string> languages = DB.ORM.Queryable<C_LANGUAGE>().Select<KeyValuePair<string, string>>("language_name,language_value").ToList().ToDictionary(q => q.Key, q => q.Value);
+            return languages;
+            //return LanguageList;
         }
 
 

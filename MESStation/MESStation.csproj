@@ -69,15 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiHelper.cs" />
-    <Compile Include="BaseClass\ActionParameter.cs" />
-    <Compile Include="BaseClass\APIInfo.cs" />
-    <Compile Include="BaseClass\APIInputInfo.cs" />
-    <Compile Include="BaseClass\MESPermission.cs" />
-    <Compile Include="BaseClass\MESStationBase.cs" />
-    <Compile Include="BaseClass\MESStationInput.cs" />
-    <Compile Include="BaseClass\MESStationModel.cs" />
     <Compile Include="Class1.cs" />
-    <Compile Include="BaseClass\MesAPIBase.cs" />
     <Compile Include="Config\BUConfig.cs" />
     <Compile Include="Config\CActionCodeConfig.cs" />
     <Compile Include="Config\CAqltypeConfig.cs" />
@@ -102,17 +94,27 @@
     <Compile Include="Config\SkuKeyPartConfig.cs" />
     <Compile Include="Config\SkuRouteMappingConfig.cs" />
     <Compile Include="Config\SkuSeries.cs" />
+    <Compile Include="Config\SkuVerMappingSetting.cs" />
     <Compile Include="Config\StorageCodeConfig.cs" />
     <Compile Include="Config\StorageItemConfig.cs" />
     <Compile Include="Config\UnlockTypeSelect.cs" />
+    <Compile Include="Config\WhsConfig.cs" />
+    <Compile Include="Config\WTConfig.cs" />
     <Compile Include="FileUpdate\Fileuplaod.cs" />
     <Compile Include="GlobalConfig\MESMessageConfig.cs" />
+    <Compile Include="Interface\JobStockGT.cs" />
+    <Compile Include="Interface\DownLoad_WO_TJ.cs" /><<<<<<< .mine
     <Compile Include="Interface\DownLoad_WO_TJ.cs" />
+=======
+    <Compile Include="Interface\JobStockGT.cs" />
+>>>>>>> .theirs
     <Compile Include="Interface\MrbBackFlush.cs" />
     <Compile Include="Interface\SAPRFC\SAP_RFC_BASE.cs" />
     <Compile Include="Interface\SAPRFC\ZCPP_NSBG_0091.cs" />
     <Compile Include="Interface\SAPRFC\ZRFC_GET_PRO_HEADER8.cs" />
     <Compile Include="Interface\SAPRFC\ZRFC_SFC_NSG_0001B.cs" />
+    <Compile Include="Interface\SAPRFC\ZRFC_SFC_NSG_0003.cs" />
+    <Compile Include="Interface\SAPRFC\ZRFC_SFC_NSG_0011.cs" />
     <Compile Include="Interface\SAPRFC\ZRFC_SFC_NSG_0020.cs" />
     <Compile Include="Interface\SAPRFC\ZRFC_GET_PRO_DETAIL.cs" />
     <Compile Include="Interface\StartWO.cs" />
@@ -121,14 +123,15 @@
     <Compile Include="KeyPart\KP_ScanType_Check.cs" />
     <Compile Include="KeyPart\SNKPBase.cs" />
     <Compile Include="KeyPart\SN_KP.cs" />
-    <Compile Include="Label\LabelBase.cs" />
     <Compile Include="Label\LabelConfig.cs" />
     <Compile Include="Label\SnPalletList.cs" />
     <Compile Include="Label\TestLabel.cs" />
     <Compile Include="Label\TestLabel2.cs" />
+    <Compile Include="Label\VertivCartonLabel.cs" />
     <Compile Include="LogicObject\LotNo.cs" />
     <Compile Include="LogicObject\Packing.cs" />
     <Compile Include="LogicObject\TR_SN.cs" />
+    <Compile Include="Management\CutWoManager.cs" />
     <Compile Include="Management\LockManager.cs" />
     <Compile Include="MESUserManager\RegisterNewUser.cs" />
     <Compile Include="Packing\PackConfigAPI.cs" />
@@ -149,6 +152,7 @@
     <Compile Include="Stations\StationActions\ActionRunners\NextInputAction.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\PackAction.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\PanelActions.cs" />
+    <Compile Include="Stations\StationActions\ActionRunners\PassAction.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\RepairActions.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\SNActions.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\TestAction.cs" />
@@ -209,16 +213,9 @@
     <Compile Include="LogicObject\Role.cs" />
     <Compile Include="LogicObject\SN.cs" />
     <Compile Include="LogicObject\Tray.cs" />
-    <Compile Include="LogicObject\User.cs" />
     <Compile Include="LogicObject\WorkOrder.cs" />
     <Compile Include="Config\CustomerConfig.cs" />
     <Compile Include="Config\WorkClassConfig.cs" />
-    <Compile Include="MESReturnView\Public\GetApiClassListReturncs.cs" />
-    <Compile Include="MESReturnView\Public\GetApiFunctionsListReturn.cs" />
-    <Compile Include="MESReturnView\Public\LoginReturn.cs" />
-    <Compile Include="BaseClass\MESStationReturn.cs" />
-    <Compile Include="MESReturnView\Public\PrivilegeReturn.cs" />
-    <Compile Include="MESReturnView\Station\CallStationReturn.cs" />
     <Compile Include="MESUserManager\UserLogin.cs" />
     <Compile Include="MESUserManager\UserManager.cs" />
     <Compile Include="MESUserManager\UserPrivilege.cs" />
@@ -267,6 +264,10 @@
       <Project>{c8bdb8fc-44f6-4109-a779-34ee99903270}</Project>
       <Name>MESDBHelper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MESPubLab\MESPubLab.csproj">
+      <Project>{fa7c2f99-a446-47d3-9344-faa3fa8cc40c}</Project>
+      <Name>MESPubLab</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MESReport\MESReport.csproj">
       <Project>{33e293d4-9efe-4fac-aa57-865c74845c4f}</Project>
       <Name>MESReport</Name>
@@ -279,7 +280,6 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="BaseClass\工站.cd" />
     <None Include="Service References\HateEmsGetDataService\HateEmsGetDataServiceImplService.wsdl" />
   </ItemGroup>
   <ItemGroup>

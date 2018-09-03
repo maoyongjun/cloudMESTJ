@@ -572,6 +572,12 @@ var StationInput = function (obj) {
             case "LocalChecker":
                 E.LocalChecker(this.Name + "_" + this.ID, this.DisplayName, this.Name, this.Value, this.RefershType, this.MessageID);
                 break;
+            case "Table":
+                E.Table(container,this.Name, this.Value);
+                break;
+            case "PassWord":
+                E.PassWord(container, this.Name + "_" + this.ID, this.DisplayName, this.Name, this.Value, this.RefershType, obj.Scale, this.ScanFlag);
+                break;
             default:
                 container.append("<span>DisplayType " + this.DisplayType + " undefined,input name " + this.Name + "</span>");
                 break;
@@ -862,6 +868,40 @@ var InputElements = function (client) {
                 this.client.CallFunction("", "", {}, function (e) { });
             }
         });
+    };
+    InputElements.prototype.Table = function (c, ID, value) {
+        var tb = $("<table id=\"" + ID + "\" view-group=\"" + ID + "\"></table>");
+        c.append(tb);
+        var col = [];
+        if (value.length > 0) {
+            for (var item in value[0]) {
+                var cell = {
+                    field: item,
+                    title: item,
+                    align: 'center',
+                    valign: 'middle',
+                    sortable: false
+                };
+                col.push(cell);
+            }
+        }
+        tb.bootstrapTable({
+            pagination: false,
+            striped: true,
+            cache: false,
+            columns: col,
+            data: value
+        });
+    };
+    InputElements.prototype.PassWord = function (c, ID, Label, placeholder, value, RefershType, Scale, ScanFlag) {
+        var scales = Scale.split(':');
+        var div = $("<div class=\"form-group\" view-group=\"" + ID + "\"></div>");
+        var label = $("<label for=\"" + ID + "\" class=\"col-xs-" + scales[0] + " control-label text-right\">" + Label + ":" + "</label>");
+        var inputD = $("<div class=\"col-xs-" + scales[1] + "\"></div>");
+        var input = $("<input id=\"" + ID + "\" name=\"" + Label + "\"  type=\"password\" class=\"form-control\" placeholder=\"" + placeholder + "\" value=\"" + value + "\" " + (ScanFlag ? "data-scan=\"true\"" : "") + ">");
+        inputD.append(input);
+        div.append(label, inputD);
+        c.append(div);
     };
 };
 var OutputElements = function () {

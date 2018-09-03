@@ -340,7 +340,8 @@
     <script src="../../Scripts/plugins/bootstrapTable/bootstrap-table-zh-TW.min.js"></script>
     <script src="../../Scripts/plugins/bootstrapTable/bootstrap-table-zh-CN.min.js"></script>
     <script src="../../Scripts/plugins/sweetalert/sweetalert.min.js"></script>
-    <script src="../../Scripts/plugins/pagination/bootstrap-paginator.js"></script>
+<script src="../../Scripts/plugins/pagination/bootstrap-paginator.js"></script>
+<script src="../../Scripts/plugins/layer/layer.min.js"></script>
     <!-- 自定義 -->
  
     <script src="../../Scripts/global.js"></script>
@@ -679,7 +680,8 @@
                         c.push({ checkbox });
                         for (var item in e.Data[0]) {
                             c.push({ field: item, title: "<label set-lan=\"html:table" + item + "\">" + item + "</label>" });
-                        }
+                        };
+                        c.push({ field: 'operate',title: 'OwnerRole',align: 'center',events: "operateEvents",formatter: operateFormatter });
                         $('#mytab').bootstrapTable({
                             data: e.Data,
                             striped: false,
@@ -748,7 +750,32 @@
                 }
                 mesUI.SetLanguage("UserList");
             })
+        };
+
+        function operateFormatter(value, row, index) {
+            var cqaBtn = '<button type="button" class="RoleOfA btn btn-default  btn-sm" style="margin-right:15px;"><span class="glyphicon glyphicon-user"></span>Role</button>';
+            return [cqaBtn].join('');
         }
+
+        window.operateEvents = {
+            'click .RoleOfA': function (e, value, row, index) {
+                self.parent.client.CallFunction("MESStation.MESUserManager.UserRole", "SelectUserRoleInfo", { EMP_NO: row.EMP_NO }, function (g) {
+                    if (g.Status == "Pass") {
+                        var msgstr = "";
+                        for (var i = 0; i < g.Data.length; i++) {
+                            msgstr += g.Data[i].ROLE_NAME+'\\';
+                        }
+                        msgstr = msgstr.length == 0 ? "NoData!" : msgstr;
+                        layer.tips(msgstr, e.currentTarget,{
+                            tips: [2, '#3595CC'],
+                            time: 4000
+                        });
+                    }
+                });
+                
+            }
+        };
+
         function Pagination(PageNum, currentPage) {
            
             $('#pageLimit').bootstrapPaginator({

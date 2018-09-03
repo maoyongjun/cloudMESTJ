@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using System.IO;
 using System.Runtime.Serialization.Json;
@@ -261,6 +261,37 @@ namespace MESStation.Config
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+        public void GetStationItems(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JToken Data, MESStationReturn StationReturn)
+        {
+            T_C_ROUTE_DETAIL RouteDetailTable = null;
+            List<C_ROUTE_DETAIL> RouteDetails = null;
+            OleExec sfcdb = null;
+            try
+            {
+                sfcdb = this.DBPools["SFCDB"].Borrow();
+                string sn = Data["SN"].ToString(); ;
+                List<string> RepairItemsList = new List<string>();
+                T_R_SN R_SN = new T_R_SN(sfcdb, MESDataObject.DB_TYPE_ENUM.Oracle);
+                R_SN rSn = R_SN.LoadSN(sn, sfcdb);
+                RouteDetailTable = new T_C_ROUTE_DETAIL(sfcdb, MESDataObject.DB_TYPE_ENUM.Oracle);
+                RouteDetails = RouteDetailTable.GetByRouteIdOrderBySEQASC(rSn.ROUTE_ID, sfcdb);
+
+                StationReturn.Data = RouteDetails;
+                
+                StationReturn.MessageCode = "MES00000001";
+                this.DBPools["SFCDB"].Return(sfcdb);
+            }
+            catch (Exception ex)
+            {
+                if (sfcdb != null)
+                {
+                    this.DBPools["SFCDB"].Return(sfcdb);
+                }
+                StationReturn.Data = "";
+                StationReturn.MessageCode = "MES00000037";
+                StationReturn.MessagePara.Add(ex.Message);
             }
         }
         private void AddNewRoute(Route newRoute, OleExec sfcdb, MESStationReturn StationReturn)
@@ -2165,7 +2196,7 @@ namespace MESStation.Config
     }
     public enum STATIONTYPE
     {
-        JOBSTART, NORMAL, JOBFINISH
+        JOBSTART, NORMAL, JOBFINISH,SHIPFINISH,JOBSTOCKIN
     }
 
 }

@@ -38,6 +38,34 @@ namespace MESDataObject.Module
             return CheckFlag;
         }
 
+        public DataTable GetSNByWo(string Workorder, OleExec DB)
+        {
+            return DB.ORM.Queryable<R_SN>().Where(t => t.WORKORDERNO == Workorder).ToDataTable();
+        }
+
+        public List<object> GetPieChartTestData(OleExec DB)
+        {
+            List<object> objects = new List<object>();
+            List<object> SNs = DB.ORM.Queryable<R_SN>().GroupBy(t => t.SKUNO).Select<object>("SKUNO,COUNT(ID) COUNT").ToList();
+            foreach(object sn in SNs)
+            {
+                objects.Add(new List<object> { ((dynamic)sn).SKUNO,((dynamic)sn).COUNT });
+            }
+            return objects;
+        }
+
+        public List<object> GetLChartTestData(OleExec DB)
+        {
+            List<object> result = new List<object>();
+            List<object> objs= DB.ORM.Queryable<R_UPH_DETAIL>().Where(t => t.WORK_DATE.ToString() == "2018/7/24" && t.WORKORDERNO == "002328000318" && t.STATION_NAME == "FT2")
+                .Select<object>("WORK_TIME,TOTAL_FRESH_PASS_QTY").ToList();
+            foreach(object obj in objs)
+            {
+                result.Add(new List<object> { ((dynamic)obj).WORK_TIME, ((dynamic)obj).TOTAL_FRESH_PASS_QTY });
+            }
+            return result;
+        }
+
         public R_SN LoadSN(string StrSN, OleExec DB)
         {
             R_SN R_Sn = null;
@@ -235,7 +263,13 @@ namespace MESDataObject.Module
 
             if (this.DBType == DB_TYPE_ENUM.Oracle)
             {
-                Reworked = WorkTimes(SerialNo, Station, DB) > 0 ? true: false;
+                if (Bu.Substring(0, 3) == "MBD") {
+                    Reworked = WorkTimes(SerialNo, Station, DB) > 1 ? true : false;
+                }
+                else
+                {
+                    Reworked = WorkTimes(SerialNo, Station, DB) > 0 ? true : false;
+                }
                 Passed = Status.ToUpper().Equals("PASS");
                 YieldRateTable = new T_R_YIELD_RATE_DETAIL(DB, this.DBType);
                 YieldRateRow = (Row_R_YIELD_RATE_DETAIL)YieldRateTable.NewRow();
@@ -675,11 +709,14 @@ namespace MESDataObject.Module
             bool PackedFlag = false;
             bool FinishedFlag = false;
             bool ShippedFlag = false;
+            bool StockinFlag = false;
             int MaxReworkCount = 0; // 保存設定的最大重工次數
             int HadReworkedTimes = 0;
-            string OriginalNextStation = string.Empty;
-            string NextStation = string.Empty;
+            string OriginalNextStation = string.Empty,
+                routeId = SnObject.ROUTE_ID,
+                NextStation = string.Empty;
             T_R_WO_BASE WoBase = new T_R_WO_BASE(DB, this.DBType);
+            T_C_ROUTE_DETAIL t_c_route_detail = new T_C_ROUTE_DETAIL(DB,this.DBType);
 
             if (this.DBType == DB_TYPE_ENUM.Oracle)
             {
@@ -696,12 +733,19 @@ namespace MESDataObject.Module
                     //FinishedFlag = OriginalNextStation.Equals(GetLastStation(SnObject.ROUTE_ID, DB)) ? true : false;
 
                     //路由中有多個JOBFINISH工站
-                    List<string> jobfinishList = GetLastStationList(SnObject.ROUTE_ID, DB);
+                    List<string> jobfinishList = GetLastStationList(routeId, DB);
                     if(jobfinishList.Count>0)
                     {
                         FinishedFlag = jobfinishList.Find(j => j == OriginalNextStation) != null ? true : false;
                     }
-                    //ShippedFlag 還需要判斷
+                    
+                    ShippedFlag = DB.ORM.Queryable<C_ROUTE_DETAIL>().Where(x =>
+                        x.ROUTE_ID == routeId && x.STATION_NAME == OriginalNextStation &&
+                        x.STATION_TYPE == "SHIPFINISH").Any();
+
+                    StockinFlag = DB.ORM.Queryable<C_ROUTE_DETAIL>().Where(x =>
+                        x.ROUTE_ID == routeId && x.STATION_NAME == OriginalNextStation &&
+                        x.STATION_TYPE == "JOBSTOCKIN").Any();
 
                     if (RepairFlag)
                     {
@@ -711,6 +755,7 @@ namespace MESDataObject.Module
                     }
                     else
                     {
+                        //即將廢棄STOCKIN
                         if (OriginalNextStation == "STOCKIN")
                         {
                             NextStation = GetNextStation(SnObject.ROUTE_ID, SnObject.NEXT_STATION.Replace("Repair_", ""), DB);
@@ -725,8 +770,15 @@ namespace MESDataObject.Module
                             SnObject.COMPLETED_FLAG = "1";
                             SnObject.COMPLETED_TIME = GetDBDateTime(DB);
                             SnObject.CURRENT_STATION = OriginalNextStation;
-                            SnObject.NEXT_STATION = "JOBFINISH";
+                            SnObject.NEXT_STATION = OriginalNextStation.Equals("SHIPOUT") ? "SHIPOUT":"JOBFINISH";
                             WoBase.UpdateFinishQty(SnObject.WORKORDERNO, 1, DB);
+                        }
+                        else if (ShippedFlag)
+                        {
+                            SnObject.SHIPPED_FLAG = "1";
+                            SnObject.SHIPDATE = GetDBDateTime(DB);
+                            SnObject.CURRENT_STATION = OriginalNextStation;
+                            SnObject.NEXT_STATION = "SHIPFINISH";
                         }
                         else
                         {
@@ -744,6 +796,11 @@ namespace MESDataObject.Module
                                 SnObject.REWORK_COUNT = HadReworkedTimes++;
                                 SnObject.PRODUCT_STATUS = "REWORK";
                             }
+                            if (StockinFlag)
+                            {
+                                SnObject.STOCK_STATUS = "1";
+                                SnObject.STOCK_IN_TIME = GetDBDateTime(DB);
+                            }
                             //if (ShippedFlag)
                             //{
                             //    SnObject.SHIPPED_FLAG = "1";
@@ -751,6 +808,40 @@ namespace MESDataObject.Module
                             //}
                         }
                     }
+                    SnObject.EDIT_TIME = GetDBDateTime(DB);
+                    SnObject.EDIT_EMP = EmpNo;
+                }
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+        }
+        /// <summary>
+        /// 更新 SN退站 狀態，用於 SN 過站
+        /// </summary>
+        /// <param name="SnObject"></param>
+        /// <param name="PassOrFail"></param>
+        /// <param name="EmpNo"></param>
+        /// <param name="DB"></param>
+        public void ChangeReturnSnStatus(ref R_SN SnObject, string PassOrFail, string EmpNo, OleExec DB)
+        {
+            string OriginalNextStation = string.Empty,
+                routeId = SnObject.ROUTE_ID,
+                NextStation = string.Empty;
+            T_R_WO_BASE WoBase = new T_R_WO_BASE(DB, this.DBType);
+            T_C_ROUTE_DETAIL t_c_route_detail = new T_C_ROUTE_DETAIL(DB, this.DBType);
+
+            if (this.DBType == DB_TYPE_ENUM.Oracle)
+            {
+                if (SnObject != null)
+                {
+                    OriginalNextStation = SnObject.CURRENT_STATION.ToUpper();
+                    NextStation = SnObject.NEXT_STATION.ToUpper();
+                            SnObject.CURRENT_STATION = OriginalNextStation;
+                            SnObject.NEXT_STATION = NextStation;
+                                          
                     SnObject.EDIT_TIME = GetDBDateTime(DB);
                     SnObject.EDIT_EMP = EmpNo;
                 }
@@ -780,6 +871,37 @@ namespace MESDataObject.Module
             {
                 SNs.Add(SerialNo);
                 LotsPassStation(SNs,Line,StationName,DeviceName,Bu, PassOrFail, EmpNo, DB);
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+
+        }
+        /// <summary>
+        /// 退站的SN過站
+        /// </summary>
+        /// <param name="SerialNo"></param>
+        /// <param name="Line"></param>
+        /// <param name="StationName"></param>
+        /// <param name="DeviceName"></param>
+        /// <param name="Bu"></param>
+        /// <param name="PassOrFail"></param>
+        /// <param name="EmpNo"></param>
+        /// <param name="DB"></param>
+        public void ReturnPassStation(string SerialNo, string Line, string StationName, string DeviceName, string Bu, string PassOrFail, string EmpNo, OleExec DB)
+        {
+            string sql = string.Empty;
+            Row_R_SN SnRow = (Row_R_SN)NewRow();
+            T_R_SN_STATION_DETAIL SnStationDetailTable = new T_R_SN_STATION_DETAIL(DB, this.DBType);
+            DataTable dt = new DataTable();
+            List<string> SNs = new List<string>();
+
+            if (this.DBType == DB_TYPE_ENUM.Oracle)
+            {
+                SNs.Add(SerialNo);
+                LotsRetrunStation(SNs, Line, StationName, DeviceName, Bu, PassOrFail, EmpNo, DB);
             }
             else
             {
@@ -828,6 +950,61 @@ namespace MESDataObject.Module
 
                     }
                     
+                }
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+        }
+        /// <summary>
+        /// SN 退站更新記錄
+        /// </summary>
+        /// <param name="SNs"></param>
+        /// <param name="Line"></param>
+        /// <param name="StationName"></param>
+        /// <param name="DeviceName"></param>
+        /// <param name="Bu"></param>
+        /// <param name="PassOrFail"></param>
+        /// <param name="EmpNo"></param>
+        /// <param name="DB"></param>
+        public void LotsRetrunStation(List<string> SNs, string Line, string StationName, string DeviceName, string Bu, string PassOrFail, string EmpNo, OleExec DB)
+        {
+            string sql = string.Empty;
+            DataTable dt = new DataTable();
+            R_SN TemplateSNObject = null;
+            Row_R_SN row = (Row_R_SN)NewRow();
+
+            if (this.DBType == DB_TYPE_ENUM.Oracle)
+            {
+                if (SNs.Count > 0)
+                {
+                    foreach (string SN in SNs)
+                    {
+                        sql = $@"SELECT * FROM R_SN WHERE SN='{SN}' AND VALID_FLAG='1'"; //表示當前有效的 SN
+                        dt = DB.ExecSelect(sql).Tables[0];
+                        if (dt.Rows.Count > 0)
+                        {
+                            row.loadData(dt.Rows[0]);
+                            TemplateSNObject = row.GetDataObject();
+                            TemplateSNObject.CURRENT_STATION = StationName;
+                            TemplateSNObject.NEXT_STATION = DeviceName;
+                           
+
+                            ChangeReturnSnStatus(ref TemplateSNObject, PassOrFail, EmpNo, DB);
+                            row.ConstructRow(TemplateSNObject);
+                            sql = row.GetUpdateString(this.DBType);
+                            DB.ExecSQL(sql);
+                            RecordPassStationDetail(row.SN, Line, StationName, StationName, Bu, DB);
+                        }
+                        else
+                        {
+                            throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000048", new string[] { SN }));
+                        }
+
+                    }
+
                 }
             }
             else
@@ -919,6 +1096,39 @@ namespace MESDataObject.Module
                 string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
                 throw new MESReturnMessage(errMsg);
             }
+        }
+
+        public void PalletShipOutRecord(string PalletNo,string createByUserName,string line,string bu,string stationName, R_DN_STATUS rDnStatus,OleExec dbOleExec)
+        {
+            var rSnList = dbOleExec.ORM.Queryable<R_SN, R_PACKING, R_SN_PACKING, R_PACKING>((rs, rp1, rsp, rp2) =>
+                    rs.ID == rsp.SN_ID && rp1.ID == rp2.PARENT_PACK_ID &&
+                    rp2.ID == rsp.PACK_ID && rp1.PACK_NO == PalletNo)
+                .Select((rs, rp1, rsp, rp2) => rs).ToList().Distinct().ToList();
+            foreach (var rSn in rSnList)
+            {
+                dbOleExec.ORM.Insertable<R_SHIP_DETAIL>(new R_SHIP_DETAIL()
+                {
+                    ID = rSn.ID,
+                    SN = rSn.SN,
+                    SKUNO = rSn.SKUNO,
+                    DN_NO = rDnStatus.DN_NO,
+                    DN_LINE = rDnStatus.DN_LINE,
+                    SHIPDATE = System.DateTime.Now,
+                    CREATEBY = createByUserName
+                }).ExecuteCommand();
+            }
+
+            var rShipDetails = dbOleExec.ORM.Queryable<R_SHIP_DETAIL>()
+                .Where(x => x.DN_NO == rDnStatus.DN_NO && x.DN_LINE == rDnStatus.DN_LINE).ToList();
+            if(rShipDetails.Count> rDnStatus.QTY)
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180801091520", new string[] { PalletNo, rSnList.Count().ToString(), rDnStatus.QTY.ToString() }));
+            else if (rShipDetails.Count == rDnStatus.QTY)
+            {
+                rDnStatus.DN_FLAG = "1";
+                rDnStatus.EDITTIME = System.DateTime.Now;
+                dbOleExec.ORM.Updateable(rDnStatus).WhereColumns(x => new { x.DN_NO, x.DN_LINE }).ExecuteCommand();
+            }
+            LotsPassStation(rSnList, line, stationName, stationName, bu, "PASS", createByUserName, dbOleExec);
         }
 
         /// <summary>
@@ -1332,9 +1542,9 @@ namespace MESDataObject.Module
             T_R_SN_STATION_DETAIL SnDetailTable = new T_R_SN_STATION_DETAIL(DB, this.DBType);
             Row_R_SN_STATION_DETAIL SnDetailRow = (Row_R_SN_STATION_DETAIL)SnDetailTable.NewRow();
             string result = string.Empty;
-
+         
             if (this.DBType == DB_TYPE_ENUM.Oracle)
-            {
+            {   
                 SnDetailRow.ID = SnDetailTable.GetNewID(Bu, DB);
                 SnDetailRow.R_SN_ID = SNObj.ID;
                 SnDetailRow.SN = SNObj.SN;

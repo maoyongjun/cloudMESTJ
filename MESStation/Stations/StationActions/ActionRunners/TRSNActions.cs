@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System.Data;
 using MESDataObject;
 
@@ -14,7 +14,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void TRInputResetAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void TRInputResetAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             //獲取TR_SN
             string TRSN = string.Empty;
@@ -43,7 +43,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 MESStationInput input = Station.FindInputByName("TRSN");
                 input.Enable = true;
                 Station.NextInput = input;
-                Station.AddMessage("MES00000039", new string[] { TRSN }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000039", new string[] { TRSN }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
             }
             else
             {

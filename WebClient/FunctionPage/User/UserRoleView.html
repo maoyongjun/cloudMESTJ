@@ -31,11 +31,18 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <div class="col-xs-7 col-md-5 col-xs-offset-2">
-                                        <input type="text"  set-lan="attr:placeholder=placeholderuserrole"  class="form-control" id="SearchText">
+                                        <input type="text" set-lan="attr:placeholder=placeholderuserrole" class="form-control" id="SearchText">
+                                    
+                                    </div>
+                                    <div class="col-xs-2 col-md-1">
+                                        <select id="SearchType" name="SearchType" class="form-control" aria-describedby="basic-addon1">
+                                            <option value="Emp" selected>EmpNo</option>
+                                            <option value="Role">Role</option>
+                                        </select>
                                     </div>
                                     <div class="col-xs-2 col-md-1"><button class="btn btn-primary" id="Search"><i class="fa fa-search"><lan set-lan="html:Search">Search</lan></i></button></div>
+                                    </div>
                                 </div>
-                            </div>
                         </div>
                         <p></p>
                         <div class="row">
@@ -168,7 +175,8 @@
     <script src="../../Scripts/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="../../Scripts/plugins/layer/layer.min.js"></script>
     <script src="../../Scripts/plugins/pace/pace.min.js"></script>
-    <script src="../../Scripts/plugins/iCheck/icheck.min.js"></script>
+<script src="../../Scripts/plugins/iCheck/icheck.min.js"></script>
+<script src="../../Scripts/plugins/layer/layer.min.js"></script>
     <!-- 自定义js -->
     <script src="../../Scripts/jquery.cookie.js"></script>
     <script src="../../Scripts/content.js"></script>
@@ -197,22 +205,31 @@
                 tableLocale = "en"
             };
             //加載項
-            function LoadData(EMP_NO,flage) {
+            function LoadData(EMP_NO, flage) {
+                var searchType = $("#SearchType").val();
                 var UserRole = [];
-                ClassName = "	MESStation.MESUserManager.UserRole";
-                FunctionName = "LoadUserRoleInfo";
-                self.parent.client.CallFunction(ClassName, FunctionName, { EMP_NO: EMP_NO }, function (e) {
-                    if (e.Status == "Pass") {
-                        UserRole = e.Data;
-                        ShowTable(UserRole, "#UserRoleTable", flage);
-                        mesUI.SetLanguage("UserRole");
-                    }
-                    else {
-                        MessageAlert("ERROR", "沒有找到對應的數據！");
-                        return;
-                    }
-                })
+                var para;
+                ClassName = "MESStation.MESUserManager.UserRole";
+                if (searchType == "Emp") {
+                    FunctionName = "LoadUserRoleInfo";
+                    para = { EMP_NO: EMP_NO };
+                } else {
+                    FunctionName = "LoadUserRoleListByRole";
+                    para = { ROLENAME: $("#SearchText").val() };
+                }
+                self.parent.client.CallFunction(ClassName,
+                    FunctionName,para,function(e) {
+                        if (e.Status == "Pass") {
+                            UserRole = e.Data;
+                            ShowTable(UserRole, "#UserRoleTable", flage);
+                            mesUI.SetLanguage("UserRole");
+                        } else {
+                            MessageAlert("ERROR", "沒有找到對應的數據！");
+                            return;
+                        }
+                    });
             }
+
             //用户角色管理搜索框事件
             $("#Search").click(function () {
                 //var SearchName = "";
@@ -488,6 +505,7 @@
                 for (var item in Data[0]) {
                     fie.push({ field: item, title: '<label set-lan="html:' + item + '">' + item + '</label> ' });
                 }
+                fie.push({ field: 'operate',title: 'OwnerRole',align: 'center',events: "operateEvents",formatter: operateFormatter });
                 if (TableFlag) {
                     $(TableName).bootstrapTable({
                         data: Data,
@@ -582,6 +600,31 @@
                 $(TableName).bootstrapTable('hideColumn', 'ID');
                
             }
+
+            function operateFormatter(value, row, index) {
+                var cqaBtn = '<button type="button" class="RoleOfA btn btn-default  btn-sm" style="margin-right:15px;"><span class="glyphicon glyphicon-user"></span>Role</button>';
+                return [cqaBtn].join('');
+            }
+
+            window.operateEvents = {
+                'click .RoleOfA': function (e, value, row, index) {
+                    self.parent.client.CallFunction("MESStation.MESUserManager.UserRole", "SelectUserRoleInfo", { EMP_NO: row.EMP_NO }, function (g) {
+                        if (g.Status == "Pass") {
+                            var msgstr = "";
+                            for (var i = 0; i < g.Data.length; i++) {
+                                msgstr += g.Data[i].ROLE_NAME+'\\';
+                            }
+                            msgstr = msgstr.length == 0 ? "NoData!" : msgstr;
+                            layer.tips(msgstr, e.currentTarget,{
+                                tips: [2, '#3595CC'],
+                                time: 4000
+                            });
+                        }
+                    });
+                
+                }
+            };
+
             //消息列表
             function MessageAlert(MsgType, MsgTitle) {
                 if (MsgType == "ERROR") {

@@ -1,7 +1,7 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using MESDataObject.Common;
+
 
 namespace MESStation.Config
 {

@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView;
 using System.Collections;
 using MESDataObject;
 using System.Data;
@@ -22,7 +23,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void PanelInputAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void PanelInputAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             WorkOrder WorkOrder = null;
             T_R_SN SnTable = null;
@@ -167,7 +168,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void PanelLogAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void PanelLogAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -215,7 +216,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 string strRet = Station.SFCDB.ExecSQL(rStation.GetInsertString(DB_TYPE_ENUM.Oracle));
                 if (Convert.ToInt32(strRet) > 0)
                 {
-                    Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000001", new string[] { }, StationMessageState.Pass);
                 }
                 else
                 {
@@ -229,7 +230,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void PanelSnInputAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void PanelSnInputAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -253,11 +254,11 @@ namespace MESStation.Stations.StationActions.ActionRunners
             Boolean b = panel.CreatePanel(tempTable, Station.SFCDB, MESDataObject.DB_TYPE_ENUM.Oracle);
             if (b == false)
             {
-                Station.AddMessage("MES00000029", new string[] { "Panel", strPanel.ToString() }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000029", new string[] { "Panel", strPanel.ToString() }, StationMessageState.Fail);
             }
             input = Station.FindInputByName("Panel");
             Station.NextInput = input;
-            Station.AddMessage("MES00000029", new string[] { "Panel", strPanel.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "Panel", strPanel.ToString() }, StationMessageState.Pass);
 
             string strSql = "update r_sn set current_station=:CurrentStation,next_station=:nextStation where sn=:sn";
             int count = Station.SFCDB.ExecSqlNoReturn(strSql, new System.Data.OleDb.OleDbParameter[3] { new System.Data.OleDb.OleDbParameter("CurrentStation", Station.StationName), new System.Data.OleDb.OleDbParameter("nextStation", "Insp"), new System.Data.OleDb.OleDbParameter("sn", strPanel) });
@@ -269,7 +270,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void AddAPRecordsAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void AddAPRecordsAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
             string Message = string.Empty;
@@ -322,7 +323,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void AddSMTLoadingRecordsAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void AddSMTLoadingRecordsAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
             string Message = string.Empty;
@@ -429,7 +430,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void PanelPassStationAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void PanelPassStationAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
             string PanelSn = string.Empty;
@@ -481,7 +482,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             StationNext = SNObj.StringListToString((List<string>)StationNextList.Value);
 
             table.PanelPassStation(PanelSn, Station.Line, Station.StationName, DeviceName, Station.BU, Status, Station.LoginUser.EMP_NO, Station.SFCDB);
-            Station.AddMessage("MES00000064", new string[] { Station.StationName, StationNext }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000064", new string[] { Station.StationName, StationNext }, StationMessageState.Pass);
         }
 
         /// <summary>
@@ -490,7 +491,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void LotPassStationAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LotPassStationAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             T_R_LOT_STATUS table = new T_R_LOT_STATUS(Station.SFCDB, Station.DBType);
@@ -597,8 +598,15 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 Station.StationSession.Add(SessionFailQty);
             }
 
-            table.LotPassStation(SerialNo, LotNo, Status, Station.LoginUser.EMP_NO, Station.StationName, DeviceName, Station.Line, Station.BU, Station.SFCDB, FailInfos);
-
+            Station.SFCDB.ThrowSqlExeception = true;
+            try
+            {
+                table.LotPassStation(SerialNo, LotNo, Status, Station.LoginUser.EMP_NO, Station.StationName, DeviceName, Station.Line, Station.BU, Station.SFCDB, FailInfos);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             Row_R_Lot_Status = table.GetByLotNo(LotNo, Station.SFCDB);
             if (Row_R_Lot_Status != null)
@@ -621,7 +629,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SplitsPassStationAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SplitsPassStationAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
             string PanelSn = string.Empty;
@@ -691,9 +699,16 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
             PANELObj = (R_PANEL_SN)PanelVitualSNSession.Value;
 
-            table.SplitsPassStation(PanelSn, Station.Line, Station.StationName, DeviceName, Station.BU, SerialNo, Status, Station.LoginUser.EMP_NO, Station.SFCDB, Station.APDB, PANELObj);
-            //table.SplitsPassStation("P147852", Input.Value.ToString(), "PASS", Station.LoginUser.EMP_NO, Station.SFCDB);
-
+            Station.SFCDB.ThrowSqlExeception = true;
+            try
+            {
+                table.SplitsPassStation(PanelSn, Station.Line, Station.StationName, DeviceName, Station.BU, SerialNo, Status, Station.LoginUser.EMP_NO, Station.SFCDB, Station.APDB, PANELObj);
+                //table.SplitsPassStation("P147852", Input.Value.ToString(), "PASS", Station.LoginUser.EMP_NO, Station.SFCDB);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             //检查是否BIP完成
             string strsql = $@"select count(1) from r_sn where sn in (
 select sn from r_panel_sn where panel = '{PanelSn}' ) 
@@ -720,7 +735,7 @@ and id = sn";
 
         }
 
-        public static void InLotPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InLotPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             T_R_LOT_STATUS Table_Lot_Status = new T_R_LOT_STATUS(Station.SFCDB, Station.DBType);
@@ -838,7 +853,7 @@ and id = sn";
             Station.AddMessage("MES00000157", new string[] { SNObj.SerialNo, LotNo }, StationMessageState.Pass); //回饋消息到前台
         }
 
-        public static void LotCloseAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LotCloseAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string StrLotNo = "";
@@ -905,7 +920,7 @@ and id = sn";
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void DeletePanel(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void DeletePanel(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string PanelSN = string.Empty;
             T_R_PANEL_SN RPanelSn = new T_R_PANEL_SN(Station.SFCDB, Station.DBType);
@@ -944,7 +959,7 @@ and id = sn";
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void ReturnSMTLoadingAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void ReturnSMTLoadingAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string PanelSN = string.Empty;
             string WO = string.Empty;

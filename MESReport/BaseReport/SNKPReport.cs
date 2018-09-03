@@ -31,7 +31,7 @@ namespace MESReport.BaseReport
             string wo = woObj.Value.ToString();
             string runSql = $@" select sn.skuno,sn.workorderno,sn.sn,kp.value,kp.partno,kp.kp_name,kp.mpn,kp.scantype,kp.itemseq,
                                 kp.scanseq,kp.detailseq,kp.station,kp.valid_flag,kp.edit_time,kp.edit_emp from  r_sn_kp kp, r_sn sn
-                                 where kp.r_sn_id = sn.id and sn.valid_flag = '1'  ";
+                                 where kp.sn = sn.sn and sn.valid_flag = '1'  ";
             if (sn == "" && wo == "")
             {
                 ReportAlart alart = new ReportAlart("Please input a sn or wo");

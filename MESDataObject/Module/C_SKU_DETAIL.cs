@@ -233,6 +233,9 @@ namespace MESDataObject.Module
             DataObject.EDIT_EMP = this.EDIT_EMP;
             DataObject.EDIT_TIME = this.EDIT_TIME;
             DataObject.ID = this.ID;
+            DataObject.STATION_NAME = this.STATION_NAME;
+            DataObject.SEQ_NO = this.SEQ_NO;
+            DataObject.SNLENGTH = this.SNLENGTH;
             return DataObject;
         }
         public string SKUNO
@@ -345,6 +348,42 @@ namespace MESDataObject.Module
                 this["ID"] = value;
             }
         }
+
+        public string STATION_NAME
+        {
+            get
+            {
+                return (string)this["STATION_NAME"];
+            }
+            set
+            {
+                this["STATION_NAME"] = value;
+            }
+        }
+
+        public string SEQ_NO
+        {
+            get
+            {
+                return (string)this["SEQ_NO"];
+            }
+            set
+            {
+                this["SEQ_NO"] = value;
+            }
+        }
+
+        public double? SNLENGTH
+        {
+            get
+            {
+                return (double?)this["SNLENGTH"];
+            }
+            set
+            {
+                this["SNLENGTH"] = value;
+            }
+        }
     }
     public class C_SKU_DETAIL
     {
@@ -355,6 +394,9 @@ namespace MESDataObject.Module
         public string EXTEND{get;set;}
         public string VERSION{get;set;}
         public string BASETEMPLATE{get;set;}
+        public string STATION_NAME { get; set; }
+        public double? SNLENGTH { get; set; }
+        public string SEQ_NO { get; set; }
         public string EDIT_EMP{get;set;}
         public DateTime? EDIT_TIME{get;set;}
         public string ID{get;set;}

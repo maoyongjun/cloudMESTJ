@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.Config
 {
-    public class DepartmentConfig : MESStation.BaseClass.MesAPIBase
+    public class DepartmentConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo alldepartment = new APIInfo()
         {

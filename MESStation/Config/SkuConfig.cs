@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using Newtonsoft.Json;
@@ -281,6 +281,43 @@ namespace MESStation.Config
 
         }
 
+        public void GetSingleSkuByName(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
+        {
+            OleExec sfcdb = null;
+            try
+            {
+                string SkuName = Data["Sku_Name"].ToString().Trim();
+                sfcdb = this.DBPools["SFCDB"].Borrow();
+                var res = sfcdb.ORM.Queryable<C_SKU>().Where(x => x.SKUNO == SkuName).ToList();
+                if (res.Count() == 0)
+                {
+                    //沒有獲取到數據
+                    StationReturn.Status = StationReturnStatusValue.Fail;
+                    StationReturn.MessageCode = "MES00000034";
+                    StationReturn.Data = new object();
+                }
+                else
+                {
+                    //獲取成功
+                    StationReturn.Status = StationReturnStatusValue.Pass;
+                    StationReturn.MessageCode = "MES00000033";
+                    StationReturn.MessagePara.Add(res.Count().ToString());
+                    StationReturn.Data = res;
+                }
+            }
+            catch (Exception e)
+            {
+                StationReturn.Status = StationReturnStatusValue.Fail;
+                StationReturn.MessageCode = "MES00000037";
+                StationReturn.MessagePara.Add(e.Message);
+                StationReturn.Data = e.Message;
+            }
+            finally
+            {
+                this.DBPools["SFCDB"].Return(sfcdb);
+            }
+        }
+
         public void GetSkuByRouteId(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             T_R_SKU_ROUTE table = null;
@@ -345,7 +382,7 @@ namespace MESStation.Config
                 Table = new T_C_SKU(sfcdb, DBTYPE);
                 SkuObject = Data["SkuObject"].ToString();
                 Sku = (C_SKU)JsonConvert.Deserialize(SkuObject, typeof(C_SKU));
-                Sku.LAST_EDIT_USER = LoginUser.EMP_NO;
+                Sku.EDIT_EMP = LoginUser.EMP_NO;
                 result= Table.UpdateSku(BU, Sku, "UPDATE", GetDBDateTime(),out SkuId, sfcdb);
 
                 if (Int32.Parse(result) > 0)
@@ -410,7 +447,7 @@ namespace MESStation.Config
                 Table = new T_C_SKU(sfcdb, DBTYPE);
                 SkuObject = Data["SkuObject"].ToString();
                 Sku = (C_SKU)JsonConvert.Deserialize(SkuObject, typeof(C_SKU));
-                Sku.LAST_EDIT_USER = LoginUser.EMP_NO;
+                Sku.EDIT_EMP = LoginUser.EMP_NO;
                 result = Table.UpdateSku(BU, Sku, "ADD", GetDBDateTime(),out SkuId, sfcdb);
 
                 if (Int32.Parse(result) > 0)

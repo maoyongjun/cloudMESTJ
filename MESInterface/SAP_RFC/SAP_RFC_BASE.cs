@@ -57,7 +57,7 @@ namespace MESInterface.SAP_RFC
             RfcPara.Clear();
             RfcPara = new RfcConfigParameters();
             //從App.Config中取得BU對應的SAP連接方式
-            if (true)
+            if (false)
             {
                 if (BU.Substring(0, 3) == "MBD")
                 {

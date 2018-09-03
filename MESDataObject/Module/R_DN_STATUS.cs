@@ -30,6 +30,7 @@ namespace MESDataObject.Module
         public R_DN_STATUS GetDataObject()
         {
             R_DN_STATUS DataObject = new R_DN_STATUS();
+            DataObject.ID = this.ID;
             DataObject.GTEVENT = this.GTEVENT;
             DataObject.EDITTIME = this.EDITTIME;
             DataObject.CREATETIME = this.CREATETIME;
@@ -46,6 +47,17 @@ namespace MESDataObject.Module
             DataObject.DN_LINE = this.DN_LINE;
             DataObject.DN_NO = this.DN_NO;
             return DataObject;
+        }
+        public string ID
+        {
+            get
+            {
+                return (string)this["ID"];
+            }
+            set
+            {
+                this["ID"] = value;
+            }
         }
         public string GTEVENT
         {
@@ -215,6 +227,7 @@ namespace MESDataObject.Module
     }
     public class R_DN_STATUS
     {
+        public string ID{ get; set; }
         public string GTEVENT{ get; set; }
         public DateTime? EDITTIME{ get; set; }
         public DateTime? CREATETIME{ get; set; }

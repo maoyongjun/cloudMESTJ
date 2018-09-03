@@ -1,7 +1,7 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace MESStation.WOManager
 {
-    public class SNRangeConfig : MESStation.BaseClass.MesAPIBase
+    public class SNRangeConfig : MESPubLab.MESStation.MesAPIBase
     {
         public SNRangeConfig()
         {

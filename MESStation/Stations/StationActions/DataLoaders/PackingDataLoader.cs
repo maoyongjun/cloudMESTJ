@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 namespace MESStation.Stations.StationActions.DataLoaders
 {
@@ -16,7 +16,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void LoadPalletFromInputForPrint(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LoadPalletFromInputForPrint(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             
             Packing.PalletBase pallet = new Packing.PalletBase(Input.Value.ToString(), Station.SFCDB);
@@ -48,7 +48,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
 
         }
 
-        public static void LoadPackingBySkuStation(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LoadPackingBySkuStation(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
             

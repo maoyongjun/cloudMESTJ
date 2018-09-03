@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESReport;
 using System.Reflection;
 using MESDBHelper;
 
 namespace MESStation.Report
 {
-    public class CallReport : MESStation.BaseClass.MesAPIBase
+    public class CallReport : MESPubLab.MESStation.MesAPIBase
     {
         static Dictionary<string, ReportSession> Session = new Dictionary<string, ReportSession>();
         protected APIInfo _GetReport = new APIInfo()

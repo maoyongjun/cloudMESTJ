@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MESDataObject.Module;
 using MESDBHelper;
+using MESPubLab.MESStation.LogicObject;
 using MESStation.Packing;
 
 namespace MESStation.LogicObject
@@ -23,6 +24,11 @@ namespace MESStation.LogicObject
         {
             get
             {
+                if (SLot == null)
+                {
+                    return "";
+                }
+
                 return SLot.LOT_NO;
             }
         }
@@ -260,7 +266,8 @@ namespace MESStation.LogicObject
             List<C_AQLTYPE> cAqlTypeList = tCAqlType.GetAqlTypeBySkunoAndLevel(rowRPacking.SKUNO, cSkuAql.DEFAULLEVEL, DB);
             if (cAqlTypeList.Count == 0)
             {
-                throw new Exception(MESDataObject.MESReturnMessage.GetMESReturnMessage("MSGCODE20180625165842", new string[] {  }));
+                throw new Exception(MESDataObject.MESReturnMessage.GetMESReturnMessage("MSGCODE20180625165842",
+                    new string[] { }));
             }
             Row_C_SKU rCSku = tCSku.GetSku(rowRPacking.SKUNO, DB, this.DBType);
             Row_R_LOT_STATUS rowRLotStatus = (Row_R_LOT_STATUS)tRLotStatus.NewRow();

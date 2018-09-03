@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 using MESDataObject.Module;
@@ -14,7 +14,7 @@ using System.IO;
 
 namespace MESStation.Stations
 {
-    public class CallStation : MESStation.BaseClass.MesAPIBase
+    public class CallStation : MESPubLab.MESStation.MesAPIBase
     {
         static Dictionary<string, MESStationBase> StationPool = new Dictionary<string, MESStationBase>();
 
@@ -116,7 +116,7 @@ namespace MESStation.Stations
                 retStation.LoginUser = LoginUser;
                 //給工站對象賦公共值               
                 retStation.Init(DisplayName, Line, BU, DBPools);
-                MESStation.MESReturnView.Station.CallStationReturn ret = new MESReturnView.Station.CallStationReturn();
+                MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 ret.Station = retStation;
                 //用以執行InitInput.Run()  2018/01/30 SDL
                 retStation.SFCDB = SFCDB;
@@ -130,6 +130,8 @@ namespace MESStation.Stations
                 }
                 if (retStation.FailStation != null)
                 {
+                    retStation.FailStation.StationName = retStation.StationName;
+                    retStation.FailStation.Line = retStation.Line;
                     InitInput = null;
                     InitInput = retStation.FailStation.Inputs.Find(t => t.Name == "StationINIT");
                     if (InitInput != null)
@@ -168,9 +170,9 @@ namespace MESStation.Stations
                 //給工站對象賦公共值
                 stationmodel.Init(DisplayName, SFCDB);
 
-            //    MESStation.BaseClass.test test = new MESStation.BaseClass.test();
+            //    MESPubLab.MESStation.test test = new MESPubLab.MESStation.test();
                 //    test.ccc();
-                //    MESStation.MESReturnView.Station.CallStationReturn ret = new MESReturnView.Station.CallStationReturn();
+                //    MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 //   ret.Station = retStation;
                 StationReturn.Data = stationmodel;
                 StationReturn.Status = StationReturnStatusValue.Pass;
@@ -246,8 +248,8 @@ namespace MESStation.Stations
                         }
                     }
                 }
-
-                MESStation.MESReturnView.Station.CallStationReturn ret = new MESReturnView.Station.CallStationReturn();
+                
+                MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 ret.ScanType = Data["ScanType"].ToString();
                 //add by ZGJ 2018-03-19 清空之前的輸入動作執行後輸出到前台的消息
                 CurrInput.Station.StationMessages.Clear();
@@ -336,9 +338,10 @@ namespace MESStation.Stations
 
                 Station.SFCDB = null;
                 Station.APDB = null;
-                MESStation.MESReturnView.Station.CallStationReturn ret = new MESReturnView.Station.CallStationReturn();
+                MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 ret.Station = Station;
-                Station.StationMessages.Add(new MESReturnView.Station.StationMessage() { Message = ee.Message, State = MESReturnView.Station.StationMessageState.Fail });
+                Station.StationMessages.Add(new MESPubLab.MESStation.MESReturnView.Station.StationMessage()
+                { Message = ee.Message, State = MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail });
                 Station.NextInput = CurrInput;
                 
                 StationReturn.Data = ret;

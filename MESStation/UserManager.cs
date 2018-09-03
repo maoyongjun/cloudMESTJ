@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.MESReturnView.Public;
-using MESStation.BaseClass;
+
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 using System.Data;
 using MESDataObject.Module;
+using MESPubLab.MESStation.MESReturnView.Public;
+using MESPubLab.MESStation.LogicObject;
 
 namespace MESStation
 {
@@ -337,7 +339,7 @@ namespace MESStation
                 
             }
 
-            LogicObject.User lu = new LogicObject.User();
+            User lu = new User();
             //if (user.EMP_PASSWORD == user.EMP_PASSWORD)
             if (true)
             {             
@@ -957,15 +959,7 @@ namespace MESStation
         //}
 
 
-        public void CreatMenuId(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
-        {
-
-            MESDBHelper.OleExec SFCDB = _DBPools["SFCDB"].Borrow();
-            LogicObject.User lu = new LogicObject.User();
-
-            lu.CreatMenuId(Data, SFCDB, StationReturn);
-            this.DBPools["SFCDB"].Return(SFCDB);
-        }
+       
 
 
 

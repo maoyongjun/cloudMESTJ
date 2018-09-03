@@ -121,6 +121,7 @@
     <Compile Include="Module\C_SKU_Label.cs" />
     <Compile Include="Module\C_SKU_MPN.cs" />
     <Compile Include="Module\C_SKU_SAMPLE.cs" />
+    <Compile Include="Module\C_SKU_VER_MAPPING.cs" />
     <Compile Include="Module\C_SN_RULE.cs" />
     <Compile Include="Module\C_SN_RULE_DETAIL.cs" />
     <Compile Include="Module\C_STATION.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Module\C_USER_PRIVILEGE.cs" />
     <Compile Include="Module\C_USER_ROLE.cs" />
     <Compile Include="Module\C_WORK_CLASS.cs" />
+    <Compile Include="Module\C_WT_CONFIG.cs" />
     <Compile Include="Module\H_MRB_GT.cs" />
     <Compile Include="Module\H_WO_HEADER.cs" />
     <Compile Include="Module\H_WO_ITEM.cs" />
@@ -160,6 +162,8 @@
     <Compile Include="Module\R_REPLACE_SN.cs" />
     <Compile Include="Module\R_SAPLOG.cs" />
     <Compile Include="Module\R_SAP_TEMP.cs" />
+    <Compile Include="Module\R_SHIP_DETAIL.cs" />
+    <Compile Include="Module\R_SN_DETAIL.cs" />
     <Compile Include="Module\R_SN_KEYPART_DETAIL.cs" />
     <Compile Include="Module\R_SN_KP.cs" />
     <Compile Include="Module\R_SN_LOCK.cs" />
@@ -171,7 +175,10 @@
     <Compile Include="Module\R_STATION_ACTION.cs" />
     <Compile Include="Module\R_STATION_ACTION_PARA.cs" />
     <Compile Include="Module\R_STATION_INPUT.cs" />
+    <Compile Include="Module\R_STOCK.cs" />
+    <Compile Include="Module\R_STOCK_GT.cs" />
     <Compile Include="Module\R_SYNC_LOCK.cs" />
+    <Compile Include="Module\R_TCQS_YIELD_RATE_DETAIL.cs" />
     <Compile Include="Module\R_TEST_DETAIL_VERTIV.cs" />
     <Compile Include="Module\R_TEST_RECORD.cs" />
     <Compile Include="Module\R_TO_DETAIL.cs" />

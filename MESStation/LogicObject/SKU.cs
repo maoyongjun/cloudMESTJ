@@ -99,7 +99,7 @@ namespace MESStation.LogicObject
         {
             get
             {
-                return SkuBase.LAST_EDIT_USER;
+                return SkuBase.EDIT_EMP;
             }
         }
 
@@ -107,7 +107,7 @@ namespace MESStation.LogicObject
         {
             get
             {
-                return SkuBase.LAST_EDIT_TIME;
+                return SkuBase.EDIT_TIME;
             }
         }
 

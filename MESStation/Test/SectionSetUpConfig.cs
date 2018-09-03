@@ -1,7 +1,7 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MESStation.Test
 {
-    public class SectionSetUpConfig : MESStation.BaseClass.MesAPIBase
+    public class SectionSetUpConfig : MESPubLab.MESStation.MesAPIBase
     {
         public SectionSetUpConfig()
         {

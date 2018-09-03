@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 
@@ -12,7 +12,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
 {
     class CheckEmp
     {
-        public static void InputEmpPrivchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InputEmpPrivchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -53,7 +53,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             if (bPrivilege)
             {
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
@@ -61,7 +61,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
         }
 
-        public static void LoginEmpPrivchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LoginEmpPrivchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -100,7 +100,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             if (bPrivilege)
             {
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
@@ -114,7 +114,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void EmpPasswordChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void EmpPasswordChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 2)
             {
@@ -138,7 +138,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             if (!rowUser.EMP_PASSWORD.Equals(sessionPwd.Value.ToString()))
             {
-                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180622171929", new string[] {})); 
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180813154717", new string[] { sessionEmp.Value.ToString() }));
             }
         }
     }

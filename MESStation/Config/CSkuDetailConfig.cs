@@ -1,7 +1,7 @@
 ﻿using MESDataObject;
 using MESDataObject.Module;
 using MESDBHelper;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,7 +25,8 @@ namespace MESStation.Config
                 new APIInputInfo() {InputName = "VALUE", InputType = "string", DefaultValue = "" },
                 new APIInputInfo() {InputName = "EXTEND", InputType = "string", DefaultValue = "" },
                 new APIInputInfo() {InputName = "VERSION", InputType = "string", DefaultValue = "" },
-                new APIInputInfo() {InputName = "BASETEMPLATE", InputType = "string", DefaultValue = "" }
+                new APIInputInfo() {InputName = "BASETEMPLATE", InputType = "string", DefaultValue = "" },
+                new APIInputInfo() {InputName = "STATION_NAME", InputType = "string", DefaultValue = "" }
             },
             Permissions = new List<MESPermission>() { }
         };
@@ -65,7 +66,8 @@ namespace MESStation.Config
                 new APIInputInfo() {InputName = "VALUE", InputType = "string", DefaultValue = "" },
                 new APIInputInfo() {InputName = "EXTEND", InputType = "string", DefaultValue = "" },
                 new APIInputInfo() {InputName = "VERSION", InputType = "string", DefaultValue = "" },
-                new APIInputInfo() {InputName = "BASETEMPLATE", InputType = "string", DefaultValue = "" }
+                new APIInputInfo() {InputName = "BASETEMPLATE", InputType = "string", DefaultValue = "" },
+                new APIInputInfo() {InputName = "STATION_NAME", InputType = "string", DefaultValue = "" }
             },
             Permissions = new List<MESPermission>() { }
         };
@@ -95,6 +97,7 @@ namespace MESStation.Config
                 r.EXTEND = (Data["EXTEND"].ToString()).Trim();
                 r.VERSION = (Data["VERSION"].ToString()).Trim();
                 r.BASETEMPLATE = (Data["BASETEMPLATE"].ToString()).Trim();
+                r.STATION_NAME = (Data["STATION_NAME"].ToString()).Trim();
                 r.EDIT_EMP = this.LoginUser.EMP_NO;
                 r.EDIT_TIME= GetDBDateTime();
                 string strRet = sfcdb.ExecSQL(r.GetInsertString(DB_TYPE_ENUM.Oracle));
@@ -158,13 +161,14 @@ namespace MESStation.Config
                 sfcdb = this.DBPools["SFCDB"].Borrow();
                 cSkuDetail = new T_C_SKU_DETAIL(sfcdb, DB_TYPE_ENUM.Oracle);
                 Row_C_SKU_DETAIL r = (Row_C_SKU_DETAIL)cSkuDetail.getC_SKU_DETAILbyID((Data["ID"].ToString()).Trim(),sfcdb);
-                r.SKUNO = (Data["SKUNO"].ToString()).Trim();
+                //r.SKUNO = (Data["SKUNO"].ToString()).Trim();
                 r.CATEGORY = (Data["CATEGORY"].ToString()).Trim();
                 r.CATEGORY_NAME = (Data["CATEGORY_NAME"].ToString()).Trim();
                 r.VALUE = (Data["VALUE"].ToString()).Trim();
                 r.EXTEND = (Data["EXTEND"].ToString()).Trim();
                 r.VERSION = (Data["VERSION"].ToString()).Trim();
                 r.BASETEMPLATE = (Data["BASETEMPLATE"].ToString()).Trim();
+                r.STATION_NAME = (Data["STATION_NAME"].ToString()).Trim();
                 r.EDIT_EMP = this.LoginUser.EMP_NO;
                 r.EDIT_TIME = GetDBDateTime();
                 string strRet = sfcdb.ExecSQL(r.GetUpdateString(DB_TYPE_ENUM.Oracle));

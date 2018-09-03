@@ -67,6 +67,10 @@
       <Project>{c8bdb8fc-44f6-4109-a779-34ee99903270}</Project>
       <Name>MESDBHelper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MESPubLab\MESPubLab.csproj">
+      <Project>{FA7C2F99-A446-47D3-9344-FAA3FA8CC40C}</Project>
+      <Name>MESPubLab</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MESStation\MESStation.csproj">
       <Project>{cd0dde64-8cc7-4453-99b1-ca7558442af7}</Project>
       <Name>MESStation</Name>

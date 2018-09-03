@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESDataObject;
 using Newtonsoft.Json.Linq;
@@ -320,8 +320,8 @@ namespace MESStation.FileUpdate
             try
             {
                 T_R_FILE TRF = new T_R_FILE(SFCDB, DB_TYPE_ENUM.Oracle);
-                R_FILE R = TRF.GetFileByName(Data["Name"].ToString(),Data["UseType"].ToString(),SFCDB );
-
+                //R_FILE R = TRF.GetFileByName(Data["Name"].ToString(),Data["UseType"].ToString(),SFCDB );
+                R_FILE R = TRF.GetFileByFileName(Data["Name"].ToString(), Data["UseType"].ToString(), SFCDB);
 
                 StationReturn.Data = R;
                 StationReturn.Status = StationReturnStatusValue.Pass;

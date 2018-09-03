@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 using MESDBHelper;
+using SqlSugar;
 
 namespace MESStation.Stations.StationActions.DataLoaders
 {
@@ -22,7 +23,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SkuAPInfoDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SkuAPInfoDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string StrSku = "";
             string StrVer = "";
@@ -85,7 +86,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 APInfo.Add("R_PCBA_LINK", PCBALinkList);
                 APConfig_Session.Value = APInfo;
                
-                Station.AddMessage("MES00000001", new string[] { StrSku }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { StrSku }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 //Modify By LLF 2018-01-25 For 料號&版本從工單對象中獲取，而不是從C_SKU 中獲取
                 /* List<DataRow> ConfigList = APDLL.C_Product_Config_GetBYSkuAndVerson(sku.SkuNo, sku.Version, apdb);
                 if (ConfigList.Count <= 0)
@@ -101,7 +102,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 APInfo.Add("R_PCBA_LINK", PCBALinkList);
                 APConfig_Session.Value = APInfo;
                 Station.DBS["APDB"].Return(apdb);
-                Station.AddMessage("MES00000001", new string[] { sku.SkuNo }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { sku.SkuNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 */
             }
             catch (Exception ex)
@@ -120,7 +121,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void TRSNDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void TRSNDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             Dictionary<string, DataRow> APInfo = new Dictionary<string, DataRow>();
             string strTRSN = "";
@@ -175,7 +176,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
                 TRSN_Session.Value = APInfo;
                 
-                Station.AddMessage("MES00000001", new string[] { TRSN_Session.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { TRSN_Session.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
@@ -188,7 +189,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         }
 
         //Add by LLF 2017-01-26 Begin
-        public static void TrCodeDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void TrCodeDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string Process = "";
             string Message = "";
@@ -235,7 +236,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
 
                 TrCodeSession.Value = StrCode;
-                Station.AddMessage("MES00000001", new string[] { TrCodeSession.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { TrCodeSession.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch(Exception ex)
             {
@@ -251,7 +252,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void LoadDataFromTRSNDataLoader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LoadDataFromTRSNDataLoader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             object TRSN_SessionObject;
             if (Paras.Count == 0)
@@ -303,7 +304,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 {
                     ret3.Add(tr["LOT_CODE"].ToString());
                 }
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
 
             }
             catch (Exception ex)
@@ -320,7 +321,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RepairTRSNObjDataLoader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RepairTRSNObjDataLoader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -358,7 +359,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     sessionTRSN.InputValue = inputValue;
                     sessionTRSN.ResetInput = Input;
                     Station.NextInput = Station.Inputs.Find(input => input.DisplayName == "Description");
-                    Station.AddMessage("MES00000001", new string[] { inputValue }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000001", new string[] { inputValue }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 }
             }
             catch (Exception ex)
@@ -375,7 +376,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void TRSNInfoDataLoader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void TRSNInfoDataLoader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             object TRSN_SessionObject;
             if (Paras.Count == 0)
@@ -437,7 +438,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     Station.Inputs.Find(input => input.Name == Paras[3].SESSION_TYPE).Value = tr["DATE_CODE"].ToString();
                     Station.Inputs.Find(input => input.Name == Paras[4].SESSION_TYPE).Value = tr["Lot_Code"].ToString();
                 }  
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
             }
             catch (Exception ex)
             {
@@ -455,7 +456,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void LocationFromSNDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LocationFromSNDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             List<string> LocationList = new List<string>();
             string ErrMessage = "";
@@ -496,7 +497,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     }
                 }
                 
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
@@ -509,7 +510,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         }
 
         //Add by LLF 2018-02-19 Begin
-        public static void PTHTrCodeDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void PTHTrCodeDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string Message = "";
             string StrWO = "";
@@ -566,7 +567,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
 
                 PTHTrSnSession.Value = StrCode;
-                Station.AddMessage("MES00000001", new string[] { PTHTrSnSession.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { PTHTrSnSession.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
@@ -575,5 +576,33 @@ namespace MESStation.Stations.StationActions.DataLoaders
             }
         }
         //Add by LLF 2018-02-19 End
+
+        /// <summary>
+        /// 加載輸入的字符串到指定的 MESStationSession
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras">      
+        /// </param>
+        public static void GetWaitShipToData(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        {
+            try
+            {
+                var res = Station.SFCDB.ORM
+                    .Queryable<R_TO_HEAD, R_TO_DETAIL, R_DN_STATUS>((rth, rtd, rds) =>
+                        rth.TO_NO == rtd.TO_NO && rtd.DN_NO == rds.DN_NO && rds.DN_FLAG == "0")
+                    .OrderBy((rth) => rth.TO_CREATETIME, OrderByType.Desc)
+                    .GroupBy(rth => new { rth.TO_NO, rth.PLAN_STARTIME, rth.PLAN_ENDTIME, rth.TO_CREATETIME })
+                    .Select(rth => new { rth.TO_NO, rth.PLAN_STARTIME, rth.PLAN_ENDTIME, rth.TO_CREATETIME }).ToList();
+
+                MESStationInput s = Station.Inputs.Find(t => t.DisplayName == "TO_LIST"); 
+                s.Value = res;
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+        
     }
 }

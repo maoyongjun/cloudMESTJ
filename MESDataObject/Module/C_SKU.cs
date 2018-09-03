@@ -21,7 +21,7 @@ namespace MESDataObject.Module
         public T_C_SKU(OleExec DB, DB_TYPE_ENUM DBType)
         {
             RowType = typeof(Row_C_SKU);
-            TableName = "C_SKU".ToUpper();
+            TableName = "C_SKU".ToUpper().Trim();
             DataInfo = GetDataObjectInfo(TableName, DB, DBType);
         }
         #endregion
@@ -47,22 +47,35 @@ namespace MESDataObject.Module
             row_sku.loadData(dr);
             sku.SkuBase = row_sku.GetDataObject();
 
-            T_C_SERIES table = new T_C_SERIES(DB, DBType);
-            sql = "SELECT ID,ID AS SERIES_ID,CUSTOMER_ID,SERIES_NAME,DESCRIPTION,EDIT_TIME,EDIT_EMP FROM C_SERIES WHERE ID=:ID AND ROWNUM=1";
-            OleDbParameter[] parameters = new OleDbParameter[] { new OleDbParameter("ID", dr["C_SERIES_ID"].ToString()) };
-            C_SERIES _SkuSeries = new C_SERIES();
-            Row_C_SERIES row_series = (Row_C_SERIES)table.NewRow();
+            //T_C_SERIES table = new T_C_SERIES(DB, DBType);
+            //sql = "SELECT ID,ID AS SERIES_ID,CUSTOMER_ID,SERIES_NAME,DESCRIPTION,EDIT_TIME,EDIT_EMP FROM C_SERIES WHERE ID=:ID AND ROWNUM=1";
+            C_SERIES _SkuSeries = DB.ORM.Queryable<C_SERIES>().Where(series => series.ID == dr["C_SERIES_ID"].ToString()).First();
+            //OleDbParameter[] parameters = new OleDbParameter[] { new OleDbParameter("ID", dr["C_SERIES_ID"].ToString()) };
+            //C_SERIES _SkuSeries = new C_SERIES();
+           // Row_C_SERIES row_series = (Row_C_SERIES)table.NewRow();
             //row_series.loadData(DB.ExecSelect(sql,parameters).Tables[0].Rows[0]);
-            DataTable dt = DB.ExecSelect(sql, parameters).Tables[0];
-            if (dt.Rows.Count > 0)
-            {
-                row_series.loadData(dt.Rows[0]);
-                _SkuSeries = row_series.GetDataObject();
-            }
+            //DataTable dt = DB.ExecSelect(sql, parameters).Tables[0];
+            //if (dt.Rows.Count > 0)
+            //{
+                //row_series.loadData(dt.Rows[0]);
+                //_SkuSeries = row_series.GetDataObject();
+            //}
             //sku.SERIES = series;
             sku.SkuSeries = _SkuSeries;
 
             return sku;
+        }
+
+        public SkuObject ConstructSku(C_SKU sku, OleExec DB)
+        {
+            SkuObject so = new SkuObject();
+            so.SkuBase = sku;
+
+            C_SERIES SkuSeries= DB.ORM.Queryable<C_SERIES>().Where(series => series.ID == sku.C_SERIES_ID).First();
+            so.SkuSeries = SkuSeries;
+            return so;
+
+
         }
 
         /// <summary>
@@ -73,29 +86,33 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public List<C_SKU> GetAllCSku(OleExec DB)
         {
-            List<C_SKU> SkuList = new List<C_SKU>();
-            string sql = "SELECT * FROM C_SKU WHERE SKUNO IS NOT NULL ORDER BY EDIT_TIME DESC";
-            DataTable dt = null;
+        //    List<C_SKU> SkuList = new List<C_SKU>();
+        //    string sql = "SELECT * FROM C_SKU WHERE SKUNO IS NOT NULL ORDER BY EDIT_TIME DESC";
+            //DataTable dt = null;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        Row_C_SKU rowCSku = (Row_C_SKU)this.NewRow();
-                        rowCSku.loadData(dr);
-                        SkuList.Add(rowCSku.GetDataObject());
-                    }
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
-            return SkuList;
+            //dt= DB.ORM.Queryable<C_SKU>().Where(t=>t.SKUNO!=null).OrderBy(t => t.EDIT_TIME, SqlSugar.OrderByType.Desc).ToDataTable();
+            //SqlSugar.ISugarQueryable<C_SKU> query = DB.ORM.Queryable<C_SKU>("SKUNO").Where(t => t.SKUNO != null).OrderBy(t => t.EDIT_TIME, SqlSugar.OrderByType.Desc);
+            return DB.ORM.Queryable<C_SKU>().Where(t => t.SKUNO != null).OrderBy(t => t.EDIT_TIME, SqlSugar.OrderByType.Desc).ToList();
+            //return query.ToList();
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    //dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            Row_C_SKU rowCSku = (Row_C_SKU)this.NewRow();
+            //            rowCSku.loadData(dr);
+            //            SkuList.Add(rowCSku.GetDataObject());
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+            //return SkuList;
         }
 
         /// <summary>
@@ -106,27 +123,30 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public List<SkuObject> GetAllSku(OleExec DB)
         {
-            List<SkuObject> SkuList = new List<SkuObject>();
-            string sql = "SELECT * FROM (SELECT * FROM C_SKU ORDER BY EDIT_TIME DESC) WHERE ROWNUM<200";
-            DataTable dt = null;
+            //string sql = "SELECT * FROM (SELECT * FROM C_SKU ORDER BY EDIT_TIME DESC) WHERE ROWNUM<200";
+            //DataTable dt = null;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        SkuList.Add(ConstructSku(dr, DB));
-                    }
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
-            return SkuList;
+            return DB.ORM.Queryable<C_SKU,C_SERIES>((sku,series)=>sku.C_SERIES_ID==series.ID)
+                    .Select((sku, series) => new SkuObject { SkuBase = sku, SkuSeries = series })
+                    .OrderBy(so=>so.SkuBase.EDIT_TIME,SqlSugar.OrderByType.Desc)
+                    .Take(200).ToList();
+           
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            SkuList.Add(ConstructSku(dr, DB));
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
         }
 
         public List<string> GetStationBySku(OleExec DB,string Skuno)
@@ -139,23 +159,33 @@ namespace MESDataObject.Module
                           ORDER BY C.SEQ_NO";
             DataTable dt = null;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        StationList.Add(dr[0].ToString());
-                    }
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
-            return StationList;
+            List<string> list = DB.ORM.Queryable<C_SKU, R_SKU_ROUTE, C_ROUTE_DETAIL>(
+                (sku, sku_route, route_detail) => new object[] { sku.ID == sku_route.ID && sku_route.ID == route_detail.ID })
+                .Where(sku => sku.SKUNO == Skuno)
+                .GroupBy((sku,sku_route,route_detail)=>route_detail.STATION_NAME)
+                .Select((sku,sku_route,route_detail)=> route_detail.STATION_NAME)
+                .ToList();
+            return list;
+            
+                
+
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            StationList.Add(dr[0].ToString());
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+            //return StationList;
         }
         public string GetModelTypeBySku(OleExec DB, string Skuno)
         {
@@ -175,6 +205,7 @@ namespace MESDataObject.Module
                 string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
                 throw new MESReturnMessage(errMsg);
             }
+            
             return strModelType;
         }
 
@@ -187,21 +218,29 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public SkuObject GetSkuByID(string SkuID, OleExec DB)
         {
-            SkuObject NowSku = new SkuObject();
-            string sql = string.Empty;
+            //SkuObject NowSku = new SkuObject();
+            //string sql = string.Empty;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                sql = "SELECT * FROM C_SKU WHERE ID='" + SkuID + "'";
-                DataRow dr = DB.ExecSelect(sql).Tables[0].Rows[0];
-                NowSku = ConstructSku(dr, DB);
-                return NowSku;
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
+            
+            return DB.ORM.Queryable<C_SKU, C_SERIES>((t1, t2) => new object[] { t1.C_SERIES_ID == t2.ID,t1.BU==t2.CUSTOMER_ID })
+                .Where((t1, t2) => t1.ID == SkuID && t1.VERSION=="")
+                .Select((t1, t2) => new SkuObject { SkuBase = t1, SkuSeries = t2 }).ToList().First();
+
+
+            //DataRow dr =DB.ORM.Queryable<C_SKU>().Where(sku => sku.ID == SkuID).ToDataTable().Rows[0];
+
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    //sql = "SELECT * FROM C_SKU WHERE ID='" + SkuID + "'";
+            //    //DataRow dr = DB.ExecSelect(sql).Tables[0].Rows[0];
+            //    NowSku = ConstructSku(DB.ORM.Queryable<C_SKU>().Where(sku => sku.ID == SkuID).ToDataTable().Rows[0], DB);
+            //    return NowSku;
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
         }
 
         //add by LLF 2017-12-08 begin
@@ -213,23 +252,24 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public bool CheckSku(string Skuno, OleExec DB)
         {
-            bool CheckSku = false;
-            string sql = string.Empty;
+            //bool CheckSku = false;
+            //string sql = string.Empty;
 
-            try
-            {
-                sql = $@"SELECT * FROM C_SKU WHERE SKUNO='{Skuno}'";
-                DataTable dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    CheckSku = true;
-                }
-            }
-            catch
-            {
-                CheckSku = false;
-            }
-            return CheckSku;
+            //try
+            //{
+            //    sql = $@"SELECT * FROM C_SKU WHERE SKUNO='{Skuno}'";
+            //    DataTable dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        CheckSku = true;
+            //    }
+            //}
+            //catch
+            //{
+            //    CheckSku = false;
+            //}
+            return DB.ORM.Queryable<C_SKU>().Where(t => t.SKUNO == Skuno).ToList().Count > 0;
+            //return CheckSku;
         }
         /// <summary>
         /// 獲取料號
@@ -264,31 +304,34 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public List<SkuObject> GetSkuByName(string SkuNo, OleExec DB)
         {
-            List<SkuObject> SkuList = new List<SkuObject>();
-            string sql = $@"SELECT * FROM 
-                                (SELECT * FROM C_SKU WHERE INSTR(SKUNO,:SKUNO)>0 ORDER BY EDIT_TIME DESC) 
-                            WHERE ROWNUM<=20";
-            OleDbParameter[] parameters = new OleDbParameter[] { new OleDbParameter("SKUNO", SkuNo) };
-            DataTable dt = null;
+            //List<SkuObject> SkuList = new List<SkuObject>();
+            //string sql = $@"SELECT * FROM 
+            //                    (SELECT * FROM C_SKU WHERE INSTR(SKUNO,:SKUNO)>0 ORDER BY EDIT_TIME DESC) 
+            //                WHERE ROWNUM<=20";
+            //OleDbParameter[] parameters = new OleDbParameter[] { new OleDbParameter("SKUNO", SkuNo) };
+            //DataTable dt = null;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                dt = DB.ExecSelect(sql, parameters).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        SkuList.Add(ConstructSku(dr, DB));
-                    }
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
+            return DB.ORM.Queryable<C_SKU, C_SERIES>((sku, series) => new object[] { sku.C_SERIES_ID == series.ID }).Where((sku, series) => sku.SKUNO == SkuNo)
+                .Select((sku, series) => new SkuObject { SkuBase = sku, SkuSeries = series }).ToList();
 
-            return SkuList;
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    dt = DB.ExecSelect(sql, parameters).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            SkuList.Add(ConstructSku(dr, DB));
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+
+            //return SkuList;
         }
 
         /// <summary>
@@ -300,73 +343,126 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public SkuObject GetSkuByNameAndVersion(string SkuNo, string version, OleExec DB)
         {
-            SkuObject sku = null;
-            DataTable dt = null;
-            string sql = string.Empty;
+            //SkuObject sku = null;
+            //DataTable dt = null;
+            //string sql = string.Empty;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                sql = $@"SELECT * FROM C_SKU WHERE SKUNO='{SkuNo}' AND VERSION='{version}' AND ROWNUM=1";
-                dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    sku = ConstructSku(dt.Rows[0], DB);
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
-            return sku;
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    sql = $@"SELECT * FROM C_SKU WHERE SKUNO='{SkuNo}' AND VERSION='{version}' AND ROWNUM=1";
+            //    dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        sku = ConstructSku(dt.Rows[0], DB);
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+            //return sku;
+
+            return DB.ORM.Queryable<C_SKU, C_SERIES>((sku, series) => new object[] { sku.C_SERIES_ID == series.ID })
+                .Where((sku, series) => sku.SKUNO == SkuNo && sku.VERSION == version)
+                .Select((sku, series) => new SkuObject { SkuBase = sku, SkuSeries = series })
+                .First();
 
         }
 
         public SkuObject GetSkuBySkuno(string SkuNo, OleExec DB)
         {
-            SkuObject sku = null;
-            DataTable dt = null;
-            string sql = string.Empty;
+            //SkuObject sku = null;
+            //DataTable dt = null;
+            //string sql = string.Empty;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                sql = $@"SELECT * FROM C_SKU WHERE SKUNO='{SkuNo}' ";
-                dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    sku = ConstructSku(dt.Rows[0], DB);
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
-            return sku;
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    sql = $@"SELECT * FROM C_SKU WHERE SKUNO='{SkuNo}' ";
+            //    dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        sku = ConstructSku(dt.Rows[0], DB);
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+            //return sku;
+            var skuObject= DB.ORM.Queryable<C_SKU, C_SERIES>((sku, series) =>  sku.C_SERIES_ID == series.ID )
+                .Where((sku, series) => sku.SKUNO == SkuNo)
+                .Select((sku, series) => new { SkuBase = sku, SkuSeries = series })
+                .First();
 
+            return new SkuObject { SkuBase = skuObject.SkuBase, SkuSeries = skuObject.SkuSeries };
         }
 
         public SkuObject GetSkuBySn(string Sn, OleExec DB)
         {
-            SkuObject sku = null;
-            DataTable dt = null;
-            string sql = string.Empty;
+            //SkuObject sku = null;
+            //DataTable dt = null;
+            //string sql = string.Empty;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    sql = $@" SELECT * FROM C_SKU WHERE SKUNO IN (SELECT SKUNO FROM R_SN WHERE SN='{Sn}' ) ";
+            //    dt = DB.ExecSelect(sql).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //sku = ConstructSku(dt.Rows[0], DB);
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+            try
             {
-                sql = $@" SELECT * FROM C_SKU WHERE SKUNO IN (SELECT SKUNO FROM R_SN WHERE SN='{Sn}' ) ";
-                dt = DB.ExecSelect(sql).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    sku = ConstructSku(dt.Rows[0], DB);
-                }
+
+                return DB.ORM.Queryable<C_SKU, C_SERIES, R_SN, R_WO_BASE>(
+                        (sku, series, sn, wo) =>
+                            sku.C_SERIES_ID == series.ID &&
+                            sn.WORKORDERNO == wo.WORKORDERNO &&
+                            wo.SKUNO == sku.SKUNO &&
+                            wo.SKU_VER == sku.VERSION)
+                         .Where((sku, series, sn, wo) => sn.SN == Sn)
+                         .Select((sku, series) => new SkuObject { SkuBase = sku, SkuSeries = series })
+                         .ToList().First();
+               
+
+
+                //List<SkuObject> skus= DB.ORM
+                //    .Queryable<C_SKU, C_SERIES, R_SN,R_WO_BASE>(
+                //        (_sku, _series, _sn,_wo) => 
+                //            _sku.C_SERIES_ID == _series.ID && 
+                //            _sn.WORKORDERNO==_wo.WORKORDERNO && 
+                //            _wo.SKUNO==_sku.SKUNO && 
+                //            _wo.SKU_VER==_sku.VERSION)
+                //    .Where((_sku, _series, _sn) => _sn.SN == Sn)
+                //    .Select((_sku, _series) => new SkuObject { SkuBase = _sku, SkuSeries = _series }).ToList();
+               
             }
-            else
+            catch (Exception e)
             {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
+                return null;
             }
-            return sku;
+
+            //SkuObject so= DB.ORM.Queryable<C_SKU, C_SERIES, R_SN>((_sku, _series, _sn) => new object[] { _sku.C_SERIES_ID == _series.ID && _sku.SKUNO == _sn.SKUNO })
+            //    .Where((_sku, _series, _sn) => _sn.SN == Sn).Select((_sku, _series, SN) => new SkuObject { SkuBase = _sku, SkuSeries = _series }).First();
+
+ 
+
+            //C_SKU _sku = DB.ORM.Queryable<C_SKU, R_SN>((Sku, sn) => new object[] { Sku.SKUNO == sn.SKUNO }).Where((Sku, sn) => sn.SN == Sn).Select((Sku, SN) => Sku).First();
+
+            //return ConstructSku(_sku, DB);
+
+
+            //DB.ORM.Queryable<C_SKU>().In<string>(t => t.SKUNO, DB.ORM.Queryable<R_SN>().Where(t=>t.SN==Sn).Select(t=>t.SKUNO).ToList().ToArray().ToList());
+            //return sku;
+
 
         }
 
@@ -382,74 +478,106 @@ namespace MESDataObject.Module
         public string UpdateSku(string BU, C_SKU Sku, string Operation, DateTime EditTime,out StringBuilder SkuId, OleExec DB)
         {
             string result = string.Empty;
-            string sql = string.Empty;
-            string format = "yyyy-MM-dd HH:mm:ss";
-            Row_C_SKU row = (Row_C_SKU)NewRow();
+            bool changed = false;
+            int i = 0;
             SkuId = new StringBuilder();
+            //string sql = string.Empty;
+            //string format = "yyyy-MM-dd HH:mm:ss";
+            //Row_C_SKU row = (Row_C_SKU)NewRow();
+            //SkuId = new StringBuilder();
 
-            if (Sku.ID != null && Sku.ID!="")
-            {
-                row = (Row_C_SKU)GetObjByID(Sku.ID, DB);
-                row.ID = Sku.ID;
-            }
-            row.BU = Sku.BU;
-            row.SKUNO = Sku.SKUNO;
-            row.VERSION = Sku.VERSION;
-            row.SKU_NAME = Sku.SKU_NAME;
-            row.SKU_TYPE = Sku.SKU_TYPE;
-            row.C_SERIES_ID = Sku.C_SERIES_ID;
-            row.CUST_PARTNO = Sku.CUST_PARTNO;
-            row.CUST_SKU_CODE = Sku.CUST_SKU_CODE;
-            row.SN_RULE = Sku.SN_RULE;
-            row.PANEL_RULE = Sku.PANEL_RULE;
-            row.DESCRIPTION = Sku.DESCRIPTION;
-            row.LAST_EDIT_USER = Sku.LAST_EDIT_USER;
+            //if (Sku.ID != null && Sku.ID!="")
+            //{
+            //    row = (Row_C_SKU)GetObjByID(Sku.ID, DB);
+            //    row.ID = Sku.ID;
+            //}
+            //row.BU = Sku.BU;
+            //row.SKUNO = Sku.SKUNO;
+            //row.VERSION = Sku.VERSION;
+            //row.SKU_NAME = Sku.SKU_NAME;
+            //row.SKU_TYPE = Sku.SKU_TYPE;
+            //row.C_SERIES_ID = Sku.C_SERIES_ID;
+            //row.CUST_PARTNO = Sku.CUST_PARTNO;
+            //row.CUST_SKU_CODE = Sku.CUST_SKU_CODE;
+            //row.SN_RULE = Sku.SN_RULE;
+            //row.PANEL_RULE = Sku.PANEL_RULE;
+            //row.DESCRIPTION = Sku.DESCRIPTION;
+            //row.EDIT_EMP = Sku.EDIT_EMP;
 
 
             switch (Operation.ToUpper())
             {
                 case "ADD":
-                    //插入之前先檢查是否已經存在
-                    if (SkuIsExist(Sku.SKUNO, Sku.VERSION, DB))
+                    ////插入之前先檢查是否已經存在
+                    //if (SkuIsExist(Sku.SKUNO, Sku.VERSION, DB))
+                    //{
+                    //    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000151", new string[] { Sku.SKUNO, Sku.VERSION }));
+                    //}
+                    //row.ID = GetNewID(BU, DB);
+                    //row.EDIT_TIME = EditTime;
+                    //sql = row.GetInsertString(DBType);
+
+                    Sku.ID = GetNewID(BU, DB);
+                    Sku.EDIT_TIME = EditTime;
+
+                    i = DB.ORM.Insertable<C_SKU>(Sku).ExecuteCommand();
+                    //i = DB.ORM.Insertable<C_SKU>(Sku).ExecuteReturnIdentity();
+                    if(i>0)
                     {
-                        throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000151", new string[] { Sku.SKUNO, Sku.VERSION }));
+                        
+                        SkuId.Append(Sku.ID);
                     }
-                    row.ID = GetNewID(BU, DB);
-                    row.LAST_EDIT_TIME = EditTime;
-                    sql = row.GetInsertString(DBType);
-                    
+                    result = i.ToString();
                     break;
                 case "UPDATE":
-                    SkuObject NowSku = GetSkuByID(Sku.ID, DB);
-                    string Current = NowSku.LastEditTime.ToString(format);
-                    string Before = Sku.LAST_EDIT_TIME.ToString(format).Replace('T', ' ');
-                    // 模擬樂觀鎖機制，如果出現贓讀情況，重新從數據庫加載實例
-                    if (Before.Equals("") && !Current.Equals(Before))
+                    //SkuObject NowSku = GetSkuByID(Sku.ID, DB);
+                    //string Current = NowSku.LastEditTime.ToString(format);
+                    //string Before = Sku.EDIT_TIME.ToString(format).Replace('T', ' ');
+                    //// 模擬樂觀鎖機制，如果出現贓讀情況，重新從數據庫加載實例
+                    //if (Before.Equals("") && !Current.Equals(Before))
+                    //{
+                    //    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000152", new string[] { }));
+                    //}
+                    //row.EDIT_TIME = EditTime;
+                    //sql = row.GetUpdateString(DBType);
+
+                    i = DB.ORM.Updateable<C_SKU>(Sku).Where(t=>t.ID==Sku.ID).ExecuteCommand();
+                    
+                    if(i>0)
                     {
-                        throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000152", new string[] { }));
+                        SkuId.Append(Sku.ID);
                     }
-                    row.LAST_EDIT_TIME = EditTime;
-                    sql = row.GetUpdateString(DBType);
+                    result = i.ToString();
                     break;
                 case "DELETE":
-                    sql = row.GetDeleteString(DBType);
+                    //sql = row.GetDeleteString(DBType);
+                    //result = DB.ORM.Deleteable<C_SKU>(Sku).ExecuteCommandHasChange().ToString();
+
+                    //result =  DB.ORM.Deleteable<C_SKU>().Where(t => t.ID == Sku.ID).ExecuteCommandHasChange().ToString();
+                    //changed = DB.ORM.Updateable<C_SKU>().Where(t => t.ID == Sku.ID).ExecuteCommandHasChange();
+                    i = DB.ORM.Updateable<C_SKU>().Where(t => t.ID == Sku.ID).ExecuteCommand();
+                    if (i>0)
+                    {
+                        SkuId.Append(Sku.ID);
+                    }
+                    result = i.ToString();
                     break;
                 default:
                     break;
             }
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                DB.BeginTrain();
-                result = DB.ExecSQL(sql);
-                SkuId.Append(row.ID);
-                DB.CommitTrain();
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    DB.BeginTrain();
+            //    result = DB.ExecSQL(sql);
+            //    SkuId.Append(row.ID);
+            //    DB.CommitTrain();
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
 
             return result;
         }
@@ -463,32 +591,33 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public bool SkuIsExist(string SkuName, OleExec DB)
         {
-            string sql = string.Empty;
-            DataTable dt = new DataTable();
+            return DB.ORM.Queryable<C_SKU>().Where(t => t.SKU_NAME == SkuName).ToList().Count > 0;
+            //string sql = string.Empty;
+            //DataTable dt = new DataTable();
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                if (string.IsNullOrEmpty(SkuName))
-                {
-                    return false;
-                }
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    if (string.IsNullOrEmpty(SkuName))
+            //    {
+            //        return false;
+            //    }
 
-                sql = "SELECT * FROM C_SKU WHERE SKUNO=:SKUNO ";
-                OleDbParameter[] parameters = new OleDbParameter[] {
-                new OleDbParameter("SKUNO",SkuName)
-                };
-                dt = DB.ExecSelect(sql, parameters).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
+            //    sql = "SELECT * FROM C_SKU WHERE SKUNO=:SKUNO ";
+            //    OleDbParameter[] parameters = new OleDbParameter[] {
+            //    new OleDbParameter("SKUNO",SkuName)
+            //    };
+            //    dt = DB.ExecSelect(sql, parameters).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        return true;
+            //    }
+            //    return false;
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
         }
 
         /// <summary>
@@ -501,66 +630,70 @@ namespace MESDataObject.Module
         /// <returns></returns>
         public bool SkuIsExist(string SkuName, string Version, OleExec DB)
         {
-            string sql = string.Empty;
-            DataTable dt = new DataTable();
+            //string sql = string.Empty;
+            //DataTable dt = new DataTable();
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                if (string.IsNullOrEmpty(SkuName) || string.IsNullOrEmpty(Version))
-                {
-                    return false;
-                }
+            return DB.ORM.Queryable<C_SKU>().Where(t => t.SKU_NAME == SkuName && t.VERSION == Version).ToList().Count > 0;
 
-                sql = "SELECT * FROM C_SKU WHERE SKUNO=:SKUNO AND VERSION=:VERSION";
-                OleDbParameter[] parameters = new OleDbParameter[] {
-                new OleDbParameter("SKUNO",SkuName),
-                new OleDbParameter("VERSION",Version)
-            };
-                dt = DB.ExecSelect(sql, parameters).Tables[0];
-                if (dt.Rows.Count > 0)
-                {
-                    return true;
-                }
-                return false;
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    if (string.IsNullOrEmpty(SkuName) || string.IsNullOrEmpty(Version))
+            //    {
+            //        return false;
+            //    }
+
+            //    sql = "SELECT * FROM C_SKU WHERE SKUNO=:SKUNO AND VERSION=:VERSION";
+            //    OleDbParameter[] parameters = new OleDbParameter[] {
+            //    new OleDbParameter("SKUNO",SkuName),
+            //    new OleDbParameter("VERSION",Version)
+            //};
+            //    dt = DB.ExecSelect(sql, parameters).Tables[0];
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        return true;
+            //    }
+            //    return false;
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
         }
 
         public DataTable GetALLSkuno(OleExec db)
         {
-            List<string> skulist = new List<string>();
-            DataTable dt = new DataTable();
-            string sql = $@"select * from c_sku order by skuno";
-            dt = db.ExecSelect(sql).Tables[0];
-            return dt;
+            //List<string> skulist = new List<string>();
+            //DataTable dt = new DataTable();
+            //string sql = $@"select * from c_sku order by skuno";
+            //dt = db.ExecSelect(sql).Tables[0];
+            //return dt;
+            return db.ORM.Queryable<C_SKU>().OrderBy(t => t.SKUNO, SqlSugar.OrderByType.Asc).ToDataTable();
         }
 
         public List<string> GetAllSkunoList(OleExec DB)
         {
-            List<string> SkuList = new List<string>();
-            DataTable dt = null;
+            //List<string> SkuList = new List<string>();
+            //DataTable dt = null;
 
-            if (DBType.Equals(DB_TYPE_ENUM.Oracle))
-            {
-                dt = GetALLSkuno(DB);
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        SkuList.Add(dr["SKUNO"].ToString());
-                    }
-                }
-            }
-            else
-            {
-                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
-                throw new MESReturnMessage(errMsg);
-            }
-            return SkuList;
+            //if (DBType.Equals(DB_TYPE_ENUM.Oracle))
+            //{
+            //    dt = GetALLSkuno(DB);
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        foreach (DataRow dr in dt.Rows)
+            //        {
+            //            SkuList.Add(dr["SKUNO"].ToString());
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+            //    throw new MESReturnMessage(errMsg);
+            //}
+            //return SkuList;
+            return DB.ORM.Queryable<C_SKU>().Select(t => t.SKUNO ).ToList();
         }
         #endregion
 
@@ -587,10 +720,9 @@ namespace MESDataObject.Module
             DataObject.SN_RULE = this.SN_RULE;
             DataObject.PANEL_RULE = this.PANEL_RULE;
             DataObject.DESCRIPTION = this.DESCRIPTION;
-            DataObject.LAST_EDIT_USER = this.LAST_EDIT_USER;
-            DataObject.LAST_EDIT_TIME = this.LAST_EDIT_TIME;
+            DataObject.EDIT_EMP = this.EDIT_EMP;
+            DataObject.EDIT_TIME = this.EDIT_TIME;
             DataObject.SKU_TYPE = this.SKU_TYPE;
-            DataObject.AQLTYPE = this.AQLTYPE;
             return DataObject;
         }
         public string ID
@@ -727,7 +859,7 @@ namespace MESDataObject.Module
                 this["DESCRIPTION"] = value;
             }
         }
-        public string LAST_EDIT_USER
+        public string EDIT_EMP
         {
             get
             {
@@ -738,7 +870,7 @@ namespace MESDataObject.Module
                 this["EDIT_EMP"] = value;
             }
         }
-        public DateTime LAST_EDIT_TIME
+        public DateTime EDIT_TIME
         {
             get
             {
@@ -757,38 +889,25 @@ namespace MESDataObject.Module
             }
         }
 
-        public string AQLTYPE
-        {
-            get
-            {
-                return (string)this["AQLTYPE"];
-            }
-            set
-            {
-                this["AQLTYPE"] = value;
-            }
-        }
-
         #endregion
     }
     public class C_SKU
     {
         #region 機種實體類
-        public string ID;
-        public string BU;
-        public string SKUNO;
-        public string VERSION;
-        public string SKU_NAME;
-        public string C_SERIES_ID;
-        public string CUST_PARTNO;
-        public string CUST_SKU_CODE;
-        public string SN_RULE;
-        public string PANEL_RULE;
-        public string DESCRIPTION;
-        public string LAST_EDIT_USER;
-        public DateTime LAST_EDIT_TIME;
-        public string SKU_TYPE;
-        public string AQLTYPE;
+        public string ID{ get; set; }
+        public string BU{ get; set; }
+        public string SKUNO{ get; set; }
+        public string VERSION{ get; set; }
+        public string SKU_NAME{ get; set; }
+        public string C_SERIES_ID{ get; set; }
+        public string CUST_PARTNO{ get; set; }
+        public string CUST_SKU_CODE{ get; set; }
+        public string SN_RULE{ get; set; }
+        public string PANEL_RULE{ get; set; }
+        public string DESCRIPTION{ get; set; }
+        public string EDIT_EMP { get; set; }
+        public DateTime EDIT_TIME{ get; set; }
+        public string SKU_TYPE{ get; set; }
 
         public override string ToString()
         {
@@ -939,22 +1058,22 @@ namespace MESDataObject.Module
         {
             get
             {
-                return SkuBase.LAST_EDIT_USER;
+                return SkuBase.EDIT_EMP;
             }
             set
             {
-                SkuBase.LAST_EDIT_USER = value;
+                SkuBase.EDIT_EMP = value;
             }
         }
         public DateTime LastEditTime
         {
             get
             {
-                return SkuBase.LAST_EDIT_TIME;
+                return SkuBase.EDIT_TIME;
             }
             set
             {
-                SkuBase.LAST_EDIT_TIME = value;
+                SkuBase.EDIT_TIME = value;
             }
         }
         public string SeriesId
@@ -1021,18 +1140,6 @@ namespace MESDataObject.Module
             set
             {
                 SkuSeries.EDIT_TIME = value;
-            }
-        }
-
-        public string AqlType
-        {
-            get
-            {
-                return SkuBase.AQLTYPE;
-            }
-            set
-            {
-                SkuBase.AQLTYPE = value;
             }
         }
 

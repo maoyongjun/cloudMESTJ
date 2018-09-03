@@ -535,6 +535,23 @@ namespace MESDataObject.Module
         public List<MENUS> MENU_ITEM { get; set; }
     }
 
+    public class C_MENU
+    {
+        public string ID { get; set; }
+        public string SYSTEM_NAME { get; set; }
+        public string MENU_NAME { get; set; }
+        public string PAGE_PATH { get; set; }
+        public string PARENT_CODE { get; set; }
+        public string SORT { get; set; }
+        public string STYLE_NAME { get; set; }
+        public string CLASS_NAME { get; set; }
+        public string LANGUAGE_ID { get; set; }
+        public string MENU_DESC { get; set; }
+        public DateTime? EDIT_TIME { get; set; }
+        public string EDIT_EMP { get; set; }
+
+    }
+
     public class MenuInformation
     {
         public string ID{get;set;}

@@ -1,5 +1,5 @@
 ﻿using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
 using System;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Paras">
         /// IntSavePoint：保存到指定位置
         /// </param>
-        public static void IntegerDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void IntegerDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -41,18 +41,18 @@ namespace MESStation.Stations.StationActions.DataLoaders
             long Num;
             if (IntData == "")
             {
-                Station.AddMessage("MES00000006", new string[] { "InputData" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000006", new string[] { "InputData" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 //Station.NextInput = Station.Inputs[2];
             }
             else if (long.TryParse(IntData.ToString(), out Num) && long.Parse(IntData) >= 0)
             {
                 s.Value = IntData;
-                Station.AddMessage("MES00000029", new string[] { "InputData", Num.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "InputData", Num.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 //Station.NextInput = Station.Inputs[3];
             }
             else
             {
-                Station.AddMessage("MES00000020", new string[] { "InputData", "Number" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000020", new string[] { "InputData", "Number" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 //Station.NextInput = Station.Inputs[2];
             }
         }
@@ -63,7 +63,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Input"></param>
         /// <param name="Paras">      
         /// </param>
-        public static void InputDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void InputDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count <= 0)
             {
@@ -80,7 +80,34 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 s.Value = Input.Value.ToString();
                 s.InputValue = Input.Value.ToString();
                 s.ResetInput = Input;
-                Station.AddMessage("MES00000029", new string[] { Paras[i].SESSION_TYPE, Input.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { Paras[i].SESSION_TYPE, Input.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
+            }
+        }
+
+        /// <summary>
+        /// 加載輸入的密碼到指定的 MESStationSession
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void PwdInputDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count <= 0)
+            {
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000050"));
+            }
+            for (int i = 0; i < Paras.Count; i++)
+            {
+                MESStationSession s = Station.StationSession.Find(t => t.MESDataType == Paras[i].SESSION_TYPE && t.SessionKey == Paras[i].SESSION_KEY);
+                if (s == null)
+                {
+                    s = new MESStationSession() { MESDataType = Paras[i].SESSION_TYPE, InputValue = Input.Value.ToString(), SessionKey = Paras[i].SESSION_KEY, ResetInput = Input };
+                    Station.StationSession.Add(s);
+                }
+                s.Value = Input.Value.ToString();
+                s.InputValue = Input.Value.ToString();
+                s.ResetInput = Input;
+                Station.AddMessage("MES00000029", new string[] { Paras[i].SESSION_TYPE, "" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -94,7 +121,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// Change：0轉小寫,1轉大寫,2保持不變；
         /// Trim：0不變,1 去前空,2去后空,3前後去空；
         /// </param>
-        public static void StringDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void StringDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 3)
             {
@@ -115,7 +142,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     }
                     //else if (Paras[i].VALUE != "0"&& Paras[i].VALUE != "1"&& Paras[i].VALUE != "2")
                     //{
-                    //    Station.AddMessage("MES00000020", new string[] { "SESSION_TYPE为\"Change\"的", "0,1,2" }, MESReturnView.Station.StationMessageState.Fail);
+                    //    Station.AddMessage("MES00000020", new string[] { "SESSION_TYPE为\"Change\"的", "0,1,2" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     //}
                 }
                 else if (Paras[i].SESSION_TYPE == "Trim")
@@ -134,7 +161,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     }
                     //else if (Paras[i].VALUE != "0" && Paras[i].VALUE != "1" && Paras[i].VALUE != "2" && Paras[i].VALUE != "3")
                     //{
-                    //    Station.AddMessage("MES00000020", new string[] { "SESSION_TYPE为\"Trim\"的", "0,1,2,3" }, MESReturnView.Station.StationMessageState.Fail);
+                    //    Station.AddMessage("MES00000020", new string[] { "SESSION_TYPE为\"Trim\"的", "0,1,2,3" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     //}
                 }
 
@@ -166,7 +193,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input">輸入的ActionCode轉換為大寫</param>
         /// <param name="Paras">ActionCode</param>
-        public static void ActionCodeDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void ActionCodeDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -176,7 +203,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             MESStationSession strInput = Station.StationSession.Find(t => t.MESDataType == "StrSavePoint" && t.SessionKey == "1");
             if (strInput == null)
             {
-                //Station.AddMessage("MES00000076", new string[] { "Sn", Sn }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000076", new string[] { "Sn", Sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else
             {
@@ -189,7 +216,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             if (res.Rows.Count <= 0)
             {
                 Station.NextInput = Input;
-                Station.AddMessage("MES00000007", new string[] { "ActionCode", ActionCodeInput }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000007", new string[] { "ActionCode", ActionCodeInput }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else
             {
@@ -209,7 +236,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input">RootCause輸入值轉換為大寫</param>
         /// <param name="Paras">ErrorCode</param>
-        public static void RootCauseDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RootCauseDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -220,7 +247,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             //MESStationSession strInput = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             //if (strInput == null)
             //{
-            //    //Station.AddMessage("MES00000076", new string[] { "Sn", Sn }, MESReturnView.Station.StationMessageState.Fail);
+            //    //Station.AddMessage("MES00000076", new string[] { "Sn", Sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //}
             //else
             //{
@@ -252,7 +279,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             //if (res.Rows.Count <= 0)
             //{
             //    Station.NextInput = Input;
-            //    Station.AddMessage("MES00000007", new string[] { "RootCause", RootCauseInput }, MESReturnView.Station.StationMessageState.Fail);
+            //    Station.AddMessage("MES00000007", new string[] { "RootCause", RootCauseInput }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //}
             //else
             //{
@@ -273,7 +300,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input">RootCause輸入值轉換為大寫</param>
         /// <param name="Paras">ErrorCode</param>
-        public static void RepairItemsDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RepairItemsDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -289,6 +316,22 @@ namespace MESStation.Stations.StationActions.DataLoaders
             RepairItemsSession.Value = Input.Value.ToString();
             //  Input.DataForUse.Add(Input.Value.ToString());
         }
+        public static void StationItemsDataloader(MESStationBase Station, MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 1)
+            {
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MES00000050"));
+            }
+
+            MESStationSession ReturnStationItemsSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (ReturnStationItemsSession == null)
+            {
+                ReturnStationItemsSession = new MESStationSession() { MESDataType = Paras[0].SESSION_TYPE, InputValue = Input.Value.ToString(), SessionKey = Paras[0].SESSION_KEY, ResetInput = Input };
+                Station.StationSession.Add(ReturnStationItemsSession);
+            }
+            ReturnStationItemsSession.Value = Input.Value.ToString();
+            //  Input.DataForUse.Add(Input.Value.ToString());
+        }
 
         /// <summary>
         /// 從輸入加載維修小項 
@@ -296,7 +339,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input">RootCause輸入值轉換為大寫</param>
         /// <param name="Paras">ErrorCode</param>
-        public static void RepairItemsSonDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RepairItemsSonDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -319,7 +362,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input">RootCause輸入值轉換為大寫</param>
         /// <param name="Paras">ErrorCode</param>
-        public static void RepairItemsSonFromRepairItemsDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RepairItemsSonFromRepairItemsDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             T_C_REPAIR_ITEMS RepairItems = new T_C_REPAIR_ITEMS(Station.SFCDB, Station.DBType);
             Row_C_REPAIR_ITEMS RowItems;
@@ -349,7 +392,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 }
 
 
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
             }
             catch (Exception ex)
             {
@@ -365,7 +408,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input">RootCause輸入值轉換為大寫</param>
         /// <param name="Paras">ErrorCode</param>
-        public static void RepairItemsInitDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void RepairItemsInitDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             T_C_REPAIR_ITEMS RepairItems = new T_C_REPAIR_ITEMS(Station.SFCDB, Station.DBType);
             Row_C_REPAIR_ITEMS RowItems;
@@ -387,7 +430,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 RepairItemsSonList = RepairItemsSon.GetRepairItemsSonList(RowItems.ID, Station.SFCDB);
                 Input.DataForUse.Add(RepairItemsSonList);   //初始化維修小項
 
-                Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
             }
             catch (Exception ex)
             {
@@ -404,7 +447,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void FailDescDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void FailDescDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             MESStationSession FailDescSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             if (FailDescSession == null)
@@ -421,7 +464,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNFailCollectDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNFailCollectDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             string StrSn = "";
@@ -531,7 +574,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         }
 
         ///Add by LLF 2018-01-28 AOI1&AOI2,Print1&Print2,VI1&VI2  工站可以相互轉換
-        public static void ChangeCurrentStationDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void ChangeCurrentStationDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string StrStation = Paras[0].VALUE.ToString();
             string StrChangeStation = Paras[1].VALUE.ToString();
@@ -554,10 +597,12 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 Station.StationName = StrStation;
             }
 
-            Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+            
+
+            Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
-        public static void SNSampleFailInfoDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNSampleFailInfoDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             string StrSn = "";
@@ -625,7 +670,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void InputValueLoaderToSelectList(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InputValueLoaderToSelectList(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             string strPanel = "";
@@ -779,7 +824,8 @@ namespace MESStation.Stations.StationActions.DataLoaders
             }
             T_R_SN r_sn = new T_R_SN(Station.SFCDB, Station.DBType);
             sessionSN.Value = r_sn.GetPanelWaitReplaceSn(sessionPanel.InputValue.ToString(), Station.SFCDB);
-            Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Message);
+            Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
         }
+
     }
 }

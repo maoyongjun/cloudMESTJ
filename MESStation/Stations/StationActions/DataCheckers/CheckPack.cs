@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 using MESStation.HateEmsGetDataService;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Data;
+using MESStation.Packing;
 
 namespace MESStation.Stations.StationActions.DataCheckers
 {
@@ -22,7 +23,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckPackStatusInOba(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CheckPackStatusInOba(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             DisplayOutPut Dis_LotNo = Station.DisplayOutput.Find(t => t.Name == "LOTNO");
             DisplayOutPut Dis_SkuNo = Station.DisplayOutput.Find(t => t.Name == "SKUNO");
@@ -53,10 +54,13 @@ namespace MESStation.Stations.StationActions.DataCheckers
             if (Dis_LotNo.Value.Equals(""))
             {
                 #region 當前Lot為空=>檢查當前Pack無有效LOT?新建LOT:加載LOT;
+
                 if (rLotPackList.Count == 0)
                 {
-                    rLotStatus = LotNo.CreateLotByPackno(Station.LoginUser, packSession.Value.ToString(), Station.SFCDB);
-                    rLotPackList.Add(new R_LOT_PACK() { LOTNO = rLotStatus.LOT_NO, PACKNO = packSession.Value.ToString() });
+                    rLotStatus =
+                        LotNo.CreateLotByPackno(Station.LoginUser, packSession.Value.ToString(), Station.SFCDB);
+                    rLotPackList.Add(
+                        new R_LOT_PACK() {LOTNO = rLotStatus.LOT_NO, PACKNO = packSession.Value.ToString()});
                 }
                 else
                     rLotStatus = rLotStatusList.Find(t => t.CLOSED_FLAG == "0");
@@ -127,7 +131,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckPackSnStatusIsLock(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CheckPackSnStatusIsLock(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             MESStationSession packSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             T_R_SN_LOCK tRSnLock = new T_R_SN_LOCK(Station.SFCDB, Station.DBType);
@@ -145,7 +149,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckPackCloseStatus(MESStation.BaseClass.MESStationBase Station,MESStation.BaseClass.MESStationInput Input,List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CheckPackCloseStatus(MESPubLab.MESStation.MESStationBase Station,MESPubLab.MESStation.MESStationInput Input,List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -176,12 +180,26 @@ namespace MESStation.Stations.StationActions.DataCheckers
         }
 
         /// <summary>
+        ///  檢查當前Pack是否關閉
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void CheckPackIsClose(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            MESStationSession packNoSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            var res = Station.SFCDB.ORM.Queryable<R_PACKING>()
+                .Where(x => x.PACK_NO == packNoSession.Value.ToString() && x.CLOSED_FLAG == "1").Any();
+            if (!res)
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180611104338", new string[] { packNoSession.Value.ToString() }));
+        }
+        /// <summary>
         /// 移棧板或卡通檢查移動數量是否超出最大值
         /// </summary>
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckMoveValueIsOK(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CheckMoveValueIsOK(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 2)
             {
@@ -236,7 +254,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckPackingIsExist(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CheckPackingIsExist(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -266,7 +284,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckPackNoIsOnOBASamping(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void CheckPackNoIsOnOBASamping(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {            
             if (Paras.Count != 1)
             {
@@ -286,12 +304,12 @@ namespace MESStation.Stations.StationActions.DataCheckers
         }
 
         /// <summary>
-        /// 移棧板檢查棧板中SN是否有被鎖定
+        /// 檢查棧板或卡通中SN是否有被鎖定
         /// </summary>
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void MovePackCheckSnStatusIsLock(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void MovePackCheckSnStatusIsLock(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {           
             if (Paras.Count != 1)
             {
@@ -302,19 +320,129 @@ namespace MESStation.Stations.StationActions.DataCheckers
             if (sessionPackObject == null || sessionPackObject.Value == null)
             {
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE + Paras[0].SESSION_KEY }));
-            }
-            LogicObject.Packing packObject = (LogicObject.Packing)sessionPackObject.Value;
-            T_R_SN_LOCK tRSnLock = new T_R_SN_LOCK(Station.SFCDB, Station.DBType);
-            List<R_SN_LOCK> rSnLockList = tRSnLock.GetLockListByPackNo(packObject.PackNo, Station.SFCDB);
-            string strSnList = "";
-            foreach (R_SN_LOCK VARIABLE in rSnLockList)
+            }          
+            R_PACKING packObject = Station.SFCDB.ORM.Queryable<R_PACKING>().Where(p=>p.PACK_NO== sessionPackObject.Value.ToString()).ToList().FirstOrDefault();
+            if (packObject != null)
             {
-                strSnList += VARIABLE.SN + ",";
+                T_R_SN_LOCK tRSnLock = new T_R_SN_LOCK(Station.SFCDB, Station.DBType);
+                List<R_SN_LOCK> rSnLockList = new List<R_SN_LOCK>();
+                string strSnList = "";
+                if (packObject.PACK_TYPE == LogicObject.PackType.PALLET.ToString())
+                {
+                    rSnLockList = tRSnLock.GetLockListByPackNo(packObject.PACK_NO, Station.SFCDB);                   
+                }
+                else if (packObject.PACK_TYPE == LogicObject.PackType.CARTON.ToString())
+                {
+                    rSnLockList = tRSnLock.GetLockListByCartonNo(packObject.PACK_NO, Station.SFCDB);                   
+                }
+                else
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180529094259", new string[] { })); 
+                }
+
+                foreach (R_SN_LOCK snLock in rSnLockList)
+                {
+                    strSnList += snLock.SN + ",";
+                }
+                if (rSnLockList.Count > 0 && packObject.PACK_TYPE == LogicObject.PackType.PALLET.ToString())
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180531114237", new string[] { packObject.PACK_NO, rSnLockList.Count().ToString(), strSnList }));
+                }
+                if (rSnLockList.Count > 0 && packObject.PACK_TYPE == LogicObject.PackType.CARTON.ToString())
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808141643", new string[] { packObject.PACK_NO, rSnLockList.Count().ToString(), strSnList }));
+                }
             }
-            if (rSnLockList.Count > 0)
+            else
             {
-                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180531114237", new string[] { packObject.PackNo.ToString(), rSnLockList.Count().ToString(), strSnList }));
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180613093329", new string[] { sessionPackObject.Value.ToString() }));
+            }            
+        }
+
+        /// <summary>
+        /// 檢查棧板或卡通中SN是否已出貨
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void CheckSnIsShippedByCartonOrPallet(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 1)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000057", new string[] { }));
             }
+
+            MESStationSession sessionPackObject = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionPackObject == null || sessionPackObject.Value == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE + Paras[0].SESSION_KEY }));
+            }
+
+            R_PACKING packObject = Station.SFCDB.ORM.Queryable<R_PACKING>().Where(p => p.PACK_NO == sessionPackObject.Value.ToString()).ToList().FirstOrDefault();
+            if (packObject != null)
+            {               
+                List<R_SN> snList = new List<R_SN>();
+                T_R_PACKING t_r_packing = new T_R_PACKING(Station.SFCDB,Station.DBType);
+                string strSnList = "";               
+                if (packObject.PACK_TYPE == LogicObject.PackType.PALLET.ToString())
+                {
+                    snList = t_r_packing.GetSnListByPalletID(packObject.ID, Station.SFCDB);                  
+                }
+                else if (packObject.PACK_TYPE == LogicObject.PackType.CARTON.ToString())
+                {
+                    snList = t_r_packing.GetSnListByCartonID(packObject.ID, Station.SFCDB);                   
+                }
+                else
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180529094259", new string[] { }));
+                }
+
+                foreach (R_SN sn in snList)
+                {
+                    strSnList += sn.SN + ",";
+                }
+                if (snList.Count > 0 && packObject.PACK_TYPE == LogicObject.PackType.PALLET.ToString())
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808142945", new string[] { packObject.PACK_NO, snList.Count().ToString(), strSnList }));
+                }
+                if (snList.Count > 0 && packObject.PACK_TYPE == LogicObject.PackType.CARTON.ToString())
+                {
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808141806", new string[] { packObject.PACK_NO, snList.Count().ToString(), strSnList }));
+                }
+            }
+            else
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180613093329", new string[] { sessionPackObject.Value.ToString() }));
+            }
+        }
+
+        public static void CheckPackNoAndDnLineStatus(MESPubLab.MESStation.MESStationBase Station,
+            MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        {
+            string packNo = Input.Value.ToString(),
+                   dnNo = Station.DisplayOutput.Find(t => t.Name == "DN_NO").Value.ToString(),
+                   dnLine = Station.DisplayOutput.Find(t => t.Name == "DN_ITEM").Value.ToString(),
+                   skuNo = Station.DisplayOutput.Find(t => t.Name == "SKU_NO").Value.ToString();
+            if(dnNo.Length==0&& dnLine.Length==0)
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180801113040"));
+            var rPacking = new PalletBase(packNo, Station.SFCDB);
+            if(rPacking.GetCount(Station.SFCDB) !=1)
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180602102010", new string[] { packNo }));
+            if (!rPacking.DATA.SKUNO.Equals(skuNo))
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180801085546", new string[] { packNo, rPacking.DATA.SKUNO, dnNo, dnLine, skuNo }));
+            var rDnStatus = Station.SFCDB.ORM.Queryable<R_DN_STATUS>()
+                .Where(x => x.DN_NO == dnNo && x.DN_LINE == dnLine && x.DN_FLAG == "0").ToList();
+            if(rDnStatus.Count!=1)
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180731133647", new string[] { dnNo, dnLine }));
+            var rShipDetail = Station.SFCDB.ORM.Queryable<R_SHIP_DETAIL>()
+                .Where(x => x.DN_NO == dnNo && x.DN_LINE == dnLine).ToList();
+            var packSnQty = rPacking.GetSnCount(Station.SFCDB);
+            if (packSnQty > rDnStatus.FirstOrDefault().QTY - rShipDetail.Count) 
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180801091520", new string[] { packNo, packSnQty.ToString(), rDnStatus.FirstOrDefault().QTY.ToString() }));
+            rShipDetail = Station.SFCDB.ORM.Queryable<R_SHIP_DETAIL, R_PACKING, R_SN_PACKING>((rsd, rp, rsp) =>
+                rsd.ID == rsp.SN_ID && rp.ID == rsp.PACK_ID && rp.PARENT_PACK_ID == rPacking.DATA.ID).Select((rsd, rp, rsp) =>rsd).ToList();
+            if(rShipDetail.Count>0)
+                throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180802105858", new string[] { packNo }));
         }
     }
 }

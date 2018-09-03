@@ -8,7 +8,7 @@ using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 using System.Data;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using Newtonsoft.Json.Linq;
 
 namespace MESStation.Interface
@@ -287,13 +287,15 @@ namespace MESStation.Interface
                 if (Interface.IsMonthly(SFCDB, DB_TYPE_ENUM.Oracle))
                 {
                     //月結不給拋賬
-                    throw new Exception("This time is monthly,can't BackFlush");
+                    //throw new Exception("This time is monthly,can't BackFlush");
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180803152122", new string[] { }));
                 }
 
                 IsRuning = synLock.IsLock("HWD_WOToMRBBackFlush", SFCDB, DB_TYPE_ENUM.Oracle, out lockIp);
                 if (IsRuning)
                 {
-                    throw new Exception("HWD WOToMRBBackFlush interface is running on " + lockIp + ",Please try again later");
+                    //throw new Exception("HWD WOToMRBBackFlush interface is running on " + lockIp + ",Please try again later");
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180803152222", new string[] { lockIp }));
                 }
                 synLock.SYNC_Lock(BU, this.IP, "HWD_WOToMRBBackFlush", "HWD_WOToMRBBackFlush", this.LoginUser.EMP_NO, SFCDB, DB_TYPE_ENUM.Oracle);
 
@@ -310,6 +312,10 @@ namespace MESStation.Interface
                 }
 
                 postDate = Interface.GetPostDate(SFCDB);
+
+               
+
+
 
                 if (MRBGTList != null && MRBGTList.Count > 0)
                 {
@@ -397,13 +403,15 @@ namespace MESStation.Interface
                 if (Interface.IsMonthly(SFCDB, DB_TYPE_ENUM.Oracle))
                 {
                     //月結不給拋賬
-                    throw new Exception("This time is monthly,can't BackFlush");
+                    //throw new Exception("This time is monthly,can't BackFlush");
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180803152122", new string[] { }));
                 }
 
                 IsRuning = synLock.IsLock("HWD_AssyToMrbBackFlush", SFCDB, DB_TYPE_ENUM.Oracle, out lockIp);
                 if (IsRuning)
                 {
-                    throw new Exception("HWD AssyToMrbBackFlush interface is running on " + lockIp + ",Please try again later");
+                    //throw new Exception("HWD AssyToMrbBackFlush interface is running on " + lockIp + ",Please try again later");
+                    throw new Exception(MESReturnMessage.GetMESReturnMessage("MSGCODE20180803152222", new string[] { lockIp }));
                 }
                 synLock.SYNC_Lock(BU, this.IP, "HWD_AssyToMrbBackFlush", "HWD_AssyToMrbBackFlush", this.LoginUser.EMP_NO, SFCDB, DB_TYPE_ENUM.Oracle);
 

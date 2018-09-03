@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 
 namespace MESStation.Stations.StationActions.DataLoaders
 {
@@ -19,7 +19,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void LoadWoFromInput(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void LoadWoFromInput(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             
             //if (Paras.Count == 0)
@@ -41,10 +41,10 @@ namespace MESStation.Stations.StationActions.DataLoaders
             s.Value = WO;
             s.InputValue = Input.Value.ToString();
             s.ResetInput = Input;
-            Station.AddMessage("MES00000029", new string[] { "Workorder", WO.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000029", new string[] { "Workorder", WO.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
-        public static void WoInputCountDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void WoInputCountDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count == 0)
@@ -69,7 +69,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
             MESDataObject.Module.T_R_WO_BASE trwb = new MESDataObject.Module.T_R_WO_BASE(Station.SFCDB, MESDataObject.DB_TYPE_ENUM.Oracle);
             MESDataObject.Module.Row_R_WO_BASE rrwb = (MESDataObject.Module.Row_R_WO_BASE)trwb.NewRow();
             rrwb = worder.GetWoMode(workorder, Station.SFCDB, MESDataObject.DB_TYPE_ENUM.Oracle);
-            Station.AddMessage("MES00000029", new string[] { "Workorder", wo.ToString() }, MESReturnView.Station.StationMessageState.Message);
+            Station.AddMessage("MES00000029", new string[] { "Workorder", wo.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
 
         }
 
@@ -155,7 +155,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 WoQty_Session.Value = wo.WORKORDER_QTY;
                 T_R_SN_STATION_DETAIL TR_SN_STATION_DETAIL = new T_R_SN_STATION_DETAIL(Station.SFCDB, Station.DBType);
                 StationQTY_Session.Value = TR_SN_STATION_DETAIL.GetCountByWOAndStation(wo.ToString(), Station.StationName, Station.SFCDB);
-                Station.AddMessage("MES00000001", new string[] { Input.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { Input.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {

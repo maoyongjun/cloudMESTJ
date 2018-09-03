@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 
 namespace MESStation.Test
 {
-   public class CreateClass : BaseClass.MesAPIBase
+   public class CreateClass : MesAPIBase
     {
         protected APIInfo FCreateClassAPI = new APIInfo()
         {

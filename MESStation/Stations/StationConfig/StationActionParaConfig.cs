@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.Stations.StationConfig
 {
-    public class StationActionParaConfig : MESStation.BaseClass.MesAPIBase
+    public class StationActionParaConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo getid = new APIInfo()
         {

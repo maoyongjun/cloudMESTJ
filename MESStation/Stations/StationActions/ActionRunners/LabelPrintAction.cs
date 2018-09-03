@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
 using System.Collections;
 using MESDataObject;
 using System.Data;
@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using MESDataObject.Module;
 using System.Reflection;
 using MESStation.Label;
+using MESPubLab.MESStation.Label;
 
 namespace MESStation.Stations.StationActions.ActionRunners
 {
@@ -25,7 +26,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void PrintStationLabelAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void PrintStationLabelAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             OleExec SFCDB = Station.SFCDB;
             string Run = "";
@@ -58,7 +59,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             //獲取label配置
             List<Row_C_SKU_Label> labs = TCSL.GetLabelConfigBySkuStation(SKU.SkuBase.SKUNO, Station.StationName, SFCDB);
 
-            List<Label.LabelBase> PrintLabs = new List<Label.LabelBase>();
+            List<LabelBase> PrintLabs = new List<LabelBase>();
             T_R_Label TRL = new T_R_Label(SFCDB, DB_TYPE_ENUM.Oracle);
             T_C_Label_Type TCLT = new T_C_Label_Type(SFCDB, DB_TYPE_ENUM.Oracle);
             for (int i = 0; i < labs.Count; i++)
@@ -90,7 +91,8 @@ namespace MESStation.Stations.StationActions.ActionRunners
                     MESStationSession S = Station.StationSession.Find(T => T.MESDataType == Lab.Inputs[j].StationSessionType && T.SessionKey == Lab.Inputs[j].StationSessionKey);
                     if (S != null)
                     {
-                        Lab.Inputs[i].Value = S.Value;
+                        //Lab.Inputs[i].Value = S.Value;
+                        Lab.Inputs[j].Value = S.Value;
                     }
                 }
                 Lab.LabelName = RL.LABELNAME;

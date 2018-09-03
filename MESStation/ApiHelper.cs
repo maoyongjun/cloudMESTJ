@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using System.Reflection;
-using MESStation.MESReturnView;
+using MESPubLab.MESStation.MESReturnView;
 
 namespace MESStation
 {
-    public class ApiHelper:BaseClass.MesAPIBase
+    public class ApiHelper:MesAPIBase
     {
         protected APIInfo FGetApiClassList = new APIInfo()
         {
@@ -33,9 +33,10 @@ namespace MESStation
 
         public void GetApiClassList(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JToken Data, MESStationReturn StationReturn)
         {
-            MESReturnView.Public.GetApiClassListReturncs ret = new MESReturnView.Public.GetApiClassListReturncs();
+            //MESPubLab.MESStation.MESPubLab.MESStation.MESReturnView.Public.GetApiClassListReturncs
+            MESPubLab.MESStation.MESReturnView.Public.GetApiClassListReturncs ret = new MESPubLab.MESStation.MESReturnView.Public.GetApiClassListReturncs();
             Assembly assenbly = Assembly.Load("MESStation");
-            Type tagType = typeof(BaseClass.MesAPIBase);
+            Type tagType = typeof(MesAPIBase);
             Type[] t = assenbly.GetTypes();
             for (int i = 0; i < t.Length; i++)
             {
@@ -58,7 +59,7 @@ namespace MESStation
             Type t = assemby.GetType(ClassName);
             object obj = assemby.CreateInstance(ClassName);
             MesAPIBase API = (MesAPIBase)obj;
-            MESReturnView.Public.GetApiFunctionsListReturn ret = new MESReturnView.Public.GetApiFunctionsListReturn();
+            MESPubLab.MESStation.MESReturnView.Public.GetApiFunctionsListReturn ret = new MESPubLab.MESStation.MESReturnView.Public.GetApiFunctionsListReturn();
             ret.APIS = API.Apis;
             StationReturn.Data = ret;
             StationReturn.Status = "Pass";

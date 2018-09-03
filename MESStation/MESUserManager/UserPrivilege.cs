@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.MESReturnView.Public;
-using MESStation.BaseClass;
+using MESPubLab.MESStation.MESReturnView.Public;
+using MESPubLab.MESStation;
 using MESDataObject;
 using System.Data;
 
@@ -270,14 +270,14 @@ namespace MESStation.MESUserManager
             DataTable TablePrivilege = new DataTable();
             TablePrivilege = RolerPrivilege.SelectPrivilegeID(SFCDB, DB_TYPE_ENUM.Oracle);
 
-            List<Privilegesid> Privilegesid = new List<Privilegesid>();
+            List<object> Privilegesid = new List<object>();
             if (TablePrivilege.Rows.Count > 0)
             {
                 foreach (DataRow item in TablePrivilege.Rows)
                 {
                     List<string> menu = new List<string>();
 
-                    Privilegesid.Add(new Privilegesid
+                    Privilegesid.Add(new 
                     {
                         PRIVILEGE_ID = item["PRIVILEGE_ID"].ToString(),
                         PRIVILEGE_NAME = item["PRIVILEGE_NAME"].ToString(),
@@ -331,56 +331,60 @@ namespace MESStation.MESUserManager
             MESDBHelper.OleExec SFCDB = _DBPools["SFCDB"].Borrow();
             string GEMP_NO = Data["GEMP_NO"].ToString().ToUpper();
             string SEMP_NO = Data["SEMP_NO"].ToString().ToUpper();
-            string EMP_ID = "", P_code = "";
+            //string EMP_ID = "", P_code = "";
+            Int32 Counter = 0;
             SFCDB.BeginTrain();
             try
             {
-                MESDataObject.Module.T_c_user GetInformation = new MESDataObject.Module.T_c_user(SFCDB, this.DBTYPE);
+                //MESDataObject.Module.T_c_user GetInformation = new MESDataObject.Module.T_c_user(SFCDB, this.DBTYPE);
                 MESDataObject.Module.T_C_USER_PRIVILEGE tcup = new MESDataObject.Module.T_C_USER_PRIVILEGE(SFCDB, this.DBTYPE);
-                MESDataObject.Module.Row_C_USER_PRIVILEGE rcup = (MESDataObject.Module.Row_C_USER_PRIVILEGE)tcup.NewRow();
-                MESDataObject.Module.T_C_MENU tcm = new MESDataObject.Module.T_C_MENU(SFCDB, this.DBTYPE);
-                MESDataObject.Module.Row_C_MENU rcm = (MESDataObject.Module.Row_C_MENU)tcm.NewRow();
-                DataTable dt = GetInformation.SelectC_Userbyempno(SEMP_NO, SFCDB, this.DBTYPE);
-                EMP_ID = dt.Rows[0]["ID"].ToString();
-                string insql = "";
-                if (dt.Rows.Count > 0)
-                {
+                //MESDataObject.Module.Row_C_USER_PRIVILEGE rcup = (MESDataObject.Module.Row_C_USER_PRIVILEGE)tcup.NewRow();
+                //MESDataObject.Module.T_C_MENU tcm = new MESDataObject.Module.T_C_MENU(SFCDB, this.DBTYPE);
+                //MESDataObject.Module.Row_C_MENU rcm = (MESDataObject.Module.Row_C_MENU)tcm.NewRow();
+                //DataTable dt = GetInformation.SelectC_Userbyempno(SEMP_NO, SFCDB, this.DBTYPE);
+                //EMP_ID = dt.Rows[0]["ID"].ToString();
+                //string insql = "";
+                //if (dt.Rows.Count > 0)
+                //{
                     foreach (string item in Data["ID_ITEMS"])
-
                     {
                         string p_id = item.Trim('\'').Trim('\"');
-                        rcup.ID = tcup.GetNewID(BU, SFCDB);
-                        rcup.SYSTEM_NAME = SystemName;
-                        rcup.USER_ID = EMP_ID;
-                        rcup.PRIVILEGE_ID = p_id;
-                        rcup.EDIT_EMP = GEMP_NO;
-                        rcup.EDIT_TIME = DateTime.Now;
-                        insql += rcup.GetInsertString(this.DBTYPE) + ";\n";
-                        P_code += p_id + ",";
-                        do
-                        {
-                            MESDataObject.Module.T_C_PRIVILEGE t_c_privilege = new MESDataObject.Module.T_C_PRIVILEGE(SFCDB, this.DBTYPE);
-                            MESDataObject.Module.Row_C_PRIVILEGE rowPrivilege = t_c_privilege.getC_PrivilegebyID(p_id, SFCDB);
-                            rcm = tcm.getC_MenubyID(rowPrivilege.MENU_ID, SFCDB);
-                            //rcm = tcm.getC_MenubyID(p_id, SFCDB);
-                            if (rcm.PARENT_CODE != "0")
-                            {
-                                p_id = rcm.PARENT_CODE;                                
-                                if (P_code.IndexOf(rcm.PARENT_CODE) < 0 && tcup.getC_PrivilegebyIDemp(rcm.PARENT_CODE, SEMP_NO, SFCDB) == null)
-                                {
-                                    rcup.ID = tcup.GetNewID(BU, SFCDB);
-                                    rcup.SYSTEM_NAME = SystemName;
-                                    rcup.USER_ID = EMP_ID;
-                                    rcup.PRIVILEGE_ID = rcm.PARENT_CODE;
-                                    rcup.EDIT_EMP = GEMP_NO;
-                                    rcup.EDIT_TIME = DateTime.Now;
-                                    insql += rcup.GetInsertString(this.DBTYPE) + ";\n";
-                                    P_code += rcm.PARENT_CODE + ",";
-                                }
-                            }
-                        } while (rcm.PARENT_CODE != "0");
+                        tcup.Add(SEMP_NO, null, p_id, LoginUser.BU, SystemName, LoginUser.EMP_NO, ref Counter, SFCDB);
+
+                        //rcup.ID = tcup.GetNewID(BU, SFCDB);
+                        //rcup.SYSTEM_NAME = SystemName;
+                        //rcup.USER_ID = EMP_ID;
+                        //rcup.PRIVILEGE_ID = p_id;
+                        //rcup.EDIT_EMP = GEMP_NO;
+                        //rcup.EDIT_TIME = DateTime.Now;
+                        //insql += rcup.GetInsertString(this.DBTYPE) + ";\n";
+                        //P_code += p_id + ",";
+                        //do
+                        //{
+                        //    MESDataObject.Module.T_C_PRIVILEGE t_c_privilege = new MESDataObject.Module.T_C_PRIVILEGE(SFCDB, this.DBTYPE);
+                        //    MESDataObject.Module.Row_C_PRIVILEGE rowPrivilege = t_c_privilege.getC_PrivilegebyID(p_id, SFCDB);
+                        //    rcm = tcm.getC_MenubyID(rowPrivilege.MENU_ID, SFCDB);
+                        //    //rcm = tcm.getC_MenubyID(p_id, SFCDB);
+                        //    if (rcm.PARENT_CODE != "0")
+                        //    {
+                        //        p_id = rcm.PARENT_CODE;                                
+                        //        if (P_code.IndexOf(rcm.PARENT_CODE) < 0 && tcup.getC_PrivilegebyIDemp(rcm.PARENT_CODE, SEMP_NO, SFCDB) == null)
+                        //        {
+                        //            rcup.ID = tcup.GetNewID(BU, SFCDB);
+                        //            rcup.SYSTEM_NAME = SystemName;
+                        //            rcup.USER_ID = EMP_ID;
+                        //            rcup.PRIVILEGE_ID = rcm.PARENT_CODE;
+                        //            rcup.EDIT_EMP = GEMP_NO;
+                        //            rcup.EDIT_TIME = DateTime.Now;
+                        //            insql += rcup.GetInsertString(this.DBTYPE) + ";\n";
+                        //            P_code += rcm.PARENT_CODE + ",";
+                        //        }
+                        //    }
+                        //} while (rcm.PARENT_CODE != "0");
                     }
-                    SFCDB.ExecSQL("Begin\n" + insql + "End;");
+                //SFCDB.ExecSQL("Begin\n" + insql + "End;");
+                if (Counter > 0)
+                {
                     SFCDB.CommitTrain();
                     StationReturn.Status = StationReturnStatusValue.Pass;
                     StationReturn.Message = "保存成功！！";
@@ -388,7 +392,7 @@ namespace MESStation.MESUserManager
                 else
                 {
                     StationReturn.Status = StationReturnStatusValue.Fail;
-                    StationReturn.Message = "找不到用戶信息！";
+                    StationReturn.Message = "找不到用戶信息或權限已經存在！";
                     StationReturn.Data = "";
                 }
                 this.DBPools["SFCDB"].Return(SFCDB);
@@ -396,7 +400,7 @@ namespace MESStation.MESUserManager
             catch (Exception ex)
             {
                 StationReturn.Status = StationReturnStatusValue.Fail;
-                StationReturn.Message = "刪權限失敗！！";
+                StationReturn.Message = "添加權限失敗！！";
                 StationReturn.Data = ex.Message.ToString();
                 this.DBPools["SFCDB"].Return(SFCDB);
             }
@@ -569,33 +573,44 @@ namespace MESStation.MESUserManager
 
         }
 
+        /// <summary>
+        /// 刪除用戶指定的權限
+        /// </summary>
+        /// <param name="requestValue"></param>
+        /// <param name="Data"></param>
+        /// <param name="StationReturn"></param>
         public void DeleteEditPrivilege(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             MESDBHelper.OleExec SFCDB = _DBPools["SFCDB"].Borrow();
             string LoginUserEmp = Data["LoginUserEmp"].ToString().ToUpper();
             string EditEmp = Data["EditEmp"].ToString().ToUpper();
-            string deleteSQL = "";
+            //string deleteSQL = "";
+            Int32 Counter = 0;
             SFCDB.BeginTrain();
             try
             {
                 MESDataObject.Module.T_C_USER_PRIVILEGE tcp = new MESDataObject.Module.T_C_USER_PRIVILEGE(SFCDB, this.DBTYPE);
-                MESDataObject.Module.Row_C_USER_PRIVILEGE rcp = (MESDataObject.Module.Row_C_USER_PRIVILEGE)tcp.NewRow();
+                //MESDataObject.Module.Row_C_USER_PRIVILEGE rcp = (MESDataObject.Module.Row_C_USER_PRIVILEGE)tcp.NewRow();
                 foreach (string item in Data["PRS"])
                 {
-                    rcp = tcp.getC_PrivilegebyID(item, SFCDB);
-                    deleteSQL += rcp.GetDeleteString(this.DBTYPE) + ";\n";
+                    tcp.Delete(EditEmp, null, item, ref Counter, SFCDB);
+                    //rcp = tcp.getC_PrivilegebyID(item, SFCDB);
+                    //deleteSQL += rcp.GetDeleteString(this.DBTYPE) + ";\n";
                 }
-                SFCDB.ExecSQL("Begin\n" + deleteSQL + "End;");
-                SFCDB.CommitTrain();
-                StationReturn.Status = StationReturnStatusValue.Pass;
-                StationReturn.Message = "刪除權限成功！！！";
+                //SFCDB.ExecSQL("Begin\n" + deleteSQL + "End;");
+                if (Counter > 0)
+                {
+                    SFCDB.CommitTrain();
+                    StationReturn.Status = StationReturnStatusValue.Pass;
+                    StationReturn.Message = "刪除權限成功！！！";
+                }
                 this.DBPools["SFCDB"].Return(SFCDB);
             }
             catch (Exception ex)
             {
                 SFCDB.RollbackTrain();
                 StationReturn.Status = StationReturnStatusValue.Fail;
-                StationReturn.Message = "刪除權限失！";
+                StationReturn.Message = "刪除權限失敗！";
                 StationReturn.Data = ex.Message.ToString();
                 this.DBPools["SFCDB"].Return(SFCDB);
             }

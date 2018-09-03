@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 using MESDataObject;
 using System.Data;
 using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+
 using MESDBHelper;
 using SqlSugar;
+using MESPubLab.MESStation.MESReturnView.Station;
 
 namespace MESStation.Stations.StationActions.ActionRunners
 {
     public class HWD_LOT_ACTION
     {
-        public static void LOTNOINPUT(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LOTNOINPUT(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             OleExec DB = Station.SFCDB;
             string LOTNO = Input.Value.ToString().ToUpper();
@@ -53,7 +54,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
             Station.NextInput = Station.Inputs[1];
         }
-        public static void SNInputToLot(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNInputToLot(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             OleExec DB = Station.SFCDB;
             string strSql = "";
@@ -146,7 +147,7 @@ l.lot_no = d.lot_id  where sn = '{sn.SerialNo}' and l.lot_no like 'LOT-%' and d.
 
         }
 
-        public static void LotClose(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LotClose(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             OleExec DB = Station.SFCDB;
             string strSql = "";
@@ -180,7 +181,7 @@ l.lot_no = d.lot_id  where sn = '{sn.SerialNo}' and l.lot_no like 'LOT-%' and d.
             Station.NextInput = Station.Inputs[0];
         }
 
-        public static void OutLot(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void OutLot(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             OleExec DB = Station.SFCDB;
             string strSql = "";

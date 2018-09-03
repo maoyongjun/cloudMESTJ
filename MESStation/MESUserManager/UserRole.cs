@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.MESReturnView.Public;
-using MESStation.BaseClass;
+
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 using MESDataObject.Module;
@@ -182,6 +182,19 @@ namespace MESStation.MESUserManager
                 },
             Permissions = new List<MESPermission>()
         };
+
+        protected APIInfo FLoadUserRoleListByRole = new APIInfo()
+        {
+            FunctionName = "LoadUserRoleListByRole",
+            Description = "根据角色查询下面的用户列表",
+
+            Parameters = new List<APIInputInfo>()
+            {
+                new APIInputInfo() {InputName = "ROLENAME", InputType = "string", DefaultValue = "" }
+            },
+            Permissions = new List<MESPermission>()
+        };
+        
 
 
         protected APIInfo FSelectRolePrivilegeByEmpNo = new APIInfo()
@@ -523,8 +536,8 @@ namespace MESStation.MESUserManager
         public void AddRolePrivilege(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             OleExec sfcdb = null;
-            string InsertSql = "";
-            string  P_code = "";
+            //string InsertSql = "";
+            //string  P_code = "";
             T_C_ROLE_PRIVILEGE Roler;
             string ROLE_ID = Data["ROLE_ID"].ToString();
 
@@ -533,83 +546,91 @@ namespace MESStation.MESUserManager
                 sfcdb = this.DBPools["SFCDB"].Borrow();
                 sfcdb.BeginTrain();
                 Roler = new T_C_ROLE_PRIVILEGE(sfcdb, DBTYPE);
-                T_C_PRIVILEGE  CheckExistMenuID = new T_C_PRIVILEGE(sfcdb, DBTYPE);
-                T_C_MENU tcm = new T_C_MENU(sfcdb, DBTYPE);
-                Row_C_MENU rcm = (Row_C_MENU)tcm.NewRow();
-                T_C_ROLE_PRIVILEGE tcup = new T_C_ROLE_PRIVILEGE(sfcdb, DBTYPE);
-                Row_C_ROLE_PRIVILEGE rcup = (Row_C_ROLE_PRIVILEGE)tcup.NewRow();
+                //T_C_PRIVILEGE  CheckExistMenuID = new T_C_PRIVILEGE(sfcdb, DBTYPE);
+                //T_C_MENU tcm = new T_C_MENU(sfcdb, DBTYPE);
+                //Row_C_MENU rcm = (Row_C_MENU)tcm.NewRow();
+                //T_C_ROLE_PRIVILEGE tcup = new T_C_ROLE_PRIVILEGE(sfcdb, DBTYPE);
+                //Row_C_ROLE_PRIVILEGE rcup = (Row_C_ROLE_PRIVILEGE)tcup.NewRow();
+                Int32 Counter = 0;
 
                 foreach (string item in Data["PRIVILEGE_ID"])
                 {
                     string PRIVILEGE_ID = item.Trim('\'').Trim('\"');
-                    if (Roler.CheckPrivilegeData(ROLE_ID, PRIVILEGE_ID, sfcdb))
-                    {                       
-                        Row_C_ROLE_PRIVILEGE row = (Row_C_ROLE_PRIVILEGE)Roler.NewRow();
-                        row.ID = Roler.GetNewID(BU, sfcdb);
-                        row.ROLE_ID = ROLE_ID;
-                        row.PRIVILEGE_ID = PRIVILEGE_ID;
-                        row.EDIT_EMP = LoginUser.EMP_NO;
-                        row.SYSTEM_NAME = SystemName;
-                        row.EDIT_TIME = GetDBDateTime();
-                        InsertSql += row.GetInsertString(DBTYPE) + ";\n";
+                    Roler.Add(ROLE_ID, PRIVILEGE_ID, ref Counter, LoginUser.BU, LoginUser.EMP_NO, sfcdb);
+                    //    if (Roler.CheckPrivilegeData(ROLE_ID, PRIVILEGE_ID, sfcdb))
+                    //    {                       
+                    //        Row_C_ROLE_PRIVILEGE row = (Row_C_ROLE_PRIVILEGE)Roler.NewRow();
+                    //        row.ID = Roler.GetNewID(BU, sfcdb);
+                    //        row.ROLE_ID = ROLE_ID;
+                    //        row.PRIVILEGE_ID = PRIVILEGE_ID;
+                    //        row.EDIT_EMP = LoginUser.EMP_NO;
+                    //        row.SYSTEM_NAME = SystemName;
+                    //        row.EDIT_TIME = GetDBDateTime();
+                    //        InsertSql += row.GetInsertString(DBTYPE) + ";\n";
 
-                        Row_C_PRIVILEGE ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyID(PRIVILEGE_ID, sfcdb);
-                        if (ChRow.MENU_ID!=null|| ChRow.MENU_ID!="N/A")
-                        {
-                            P_code += ChRow.MENU_ID + ",";
-                            rcm = tcm.getC_MenubyID(ChRow.MENU_ID, sfcdb);
+                    //        Row_C_PRIVILEGE ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyID(PRIVILEGE_ID, sfcdb);
+                    //        if (ChRow.MENU_ID!=null|| ChRow.MENU_ID!="N/A")
+                    //        {
+                    //            P_code += ChRow.MENU_ID + ",";
+                    //            rcm = tcm.getC_MenubyID(ChRow.MENU_ID, sfcdb);
 
-                            if (rcm.PARENT_CODE != "0")
-                            {
-                                if (P_code.IndexOf(rcm.PARENT_CODE) < 0 && tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.MENU_ID, sfcdb) == null && Roler.CheckPrivilegeData(ROLE_ID, rcm.PARENT_CODE, sfcdb))
-                                {
-                                    rcup.ID = tcup.GetNewID(BU, sfcdb);
-                                    rcup.SYSTEM_NAME = SystemName;
-                                    rcup.ROLE_ID = ROLE_ID;
-                                    rcup.PRIVILEGE_ID = rcm.PARENT_CODE;
-                                    rcup.EDIT_EMP = LoginUser.EMP_NO;
-                                    rcup.EDIT_TIME = DateTime.Now;
-                                    InsertSql += rcup.GetInsertString(this.DBTYPE) + ";\n";
-                                    P_code += rcm.PARENT_CODE + ",";
-                                }
-                                do
-                                {
-                                    rcm = tcm.getC_MenubyID(rcm.PARENT_CODE, sfcdb);
-                                    if (rcm.PARENT_CODE != "0")
-                                    {
-                                        if (P_code.IndexOf(rcm.PARENT_CODE) < 0 && tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.MENU_ID, sfcdb) == null && Roler.CheckPrivilegeData(ROLE_ID, rcm.PARENT_CODE, sfcdb))
-                                        {
-                                            rcup.ID = tcup.GetNewID(BU, sfcdb);
-                                            rcup.SYSTEM_NAME = SystemName;
-                                            rcup.ROLE_ID = ROLE_ID;
-                                            rcup.PRIVILEGE_ID = rcm.PARENT_CODE;
-                                            rcup.EDIT_EMP = LoginUser.EMP_NO;
-                                            rcup.EDIT_TIME = DateTime.Now;
-                                            InsertSql += rcup.GetInsertString(this.DBTYPE) + ";\n";
-                                            P_code += rcm.PARENT_CODE + ",";
-                                        }
-                                    }
-                                } while (rcm.PARENT_CODE != "0");
-                            }
-                        }
+                    //            if (rcm!=null && rcm.PARENT_CODE != "0")
+                    //            {
+                    //                if (P_code.IndexOf(rcm.PARENT_CODE) < 0 && tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.MENU_ID, sfcdb) == null && Roler.CheckPrivilegeData(ROLE_ID, rcm.PARENT_CODE, sfcdb))
+                    //                {
+                    //                    rcup.ID = tcup.GetNewID(BU, sfcdb);
+                    //                    rcup.SYSTEM_NAME = SystemName;
+                    //                    rcup.ROLE_ID = ROLE_ID;
+                    //                    rcup.PRIVILEGE_ID = rcm.PARENT_CODE;
+                    //                    rcup.EDIT_EMP = LoginUser.EMP_NO;
+                    //                    rcup.EDIT_TIME = DateTime.Now;
+                    //                    InsertSql += rcup.GetInsertString(this.DBTYPE) + ";\n";
+                    //                    P_code += rcm.PARENT_CODE + ",";
+                    //                }
+                    //                do
+                    //                {
+                    //                    rcm = tcm.getC_MenubyID(rcm.PARENT_CODE, sfcdb);
+                    //                    if (rcm!=null && rcm.PARENT_CODE != "0")
+                    //                    {
+                    //                        if (P_code.IndexOf(rcm.PARENT_CODE) < 0 && tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.MENU_ID, sfcdb) == null && Roler.CheckPrivilegeData(ROLE_ID, rcm.PARENT_CODE, sfcdb))
+                    //                        {
+                    //                            rcup.ID = tcup.GetNewID(BU, sfcdb);
+                    //                            rcup.SYSTEM_NAME = SystemName;
+                    //                            rcup.ROLE_ID = ROLE_ID;
+                    //                            rcup.PRIVILEGE_ID = rcm.PARENT_CODE;
+                    //                            rcup.EDIT_EMP = LoginUser.EMP_NO;
+                    //                            rcup.EDIT_TIME = DateTime.Now;
+                    //                            InsertSql += rcup.GetInsertString(this.DBTYPE) + ";\n";
+                    //                            P_code += rcm.PARENT_CODE + ",";
+                    //                        }
+                    //                    }
+                    //                } while (rcm.PARENT_CODE != "0");
+                    //            }
+                    //        }
 
-                    }
-                    else
-                    {
-                        StationReturn.Status = StationReturnStatusValue.Fail;
-                        StationReturn.Message = "該角色已包含該權限ID";
-                        StationReturn.Data = "";
-                        this.DBPools["SFCDB"].Return(sfcdb);
-                        return;
-                    }
+                    //    }
+                    //    else
+                    //    {
+                    //        StationReturn.Status = StationReturnStatusValue.Fail;
+                    //        StationReturn.Message = "該角色已包含該權限ID";
+                    //        StationReturn.Data = "";
+                    //        this.DBPools["SFCDB"].Return(sfcdb);
+                    //        return;
+                    //    }
+                    //}
+
+                    //InsertSql = "begin\n" + InsertSql + "end;";
+
+                    //sfcdb.ExecSQL(InsertSql);
+                    //sfcdb.CommitTrain();
+                    
                 }
 
-                InsertSql = "begin\n" + InsertSql + "end;";
-
-                sfcdb.ExecSQL(InsertSql);
-                sfcdb.CommitTrain();
-                StationReturn.Status = StationReturnStatusValue.Pass;
-                StationReturn.Message = "添加成功";
+                if (Counter > 0)
+                {
+                    StationReturn.Status = StationReturnStatusValue.Pass;
+                    StationReturn.Message = "添加成功";
+                }
                 sfcdb.CommitTrain();
                 this.DBPools["SFCDB"].Return(sfcdb);
 
@@ -684,41 +705,43 @@ namespace MESStation.MESUserManager
         }
 
         /// <summary>
-        /// 刪除角色權限 
+        /// 刪除角色權限
         /// </summary>
         public void DeleteRolePrivilege(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
-
             OleExec  sfcdb = this.DBPools["SFCDB"].Borrow();
-            string DeleteSql = "", P_code="";
-            string strid = "";
-            string MenuID = "";
+            //string DeleteSql = "", P_code="";
+            //string strid = "";
+            //string MenuID = "";
 
-            T_C_PRIVILEGE CheckExistMenuID = new T_C_PRIVILEGE(sfcdb, DBTYPE);
-            Row_C_PRIVILEGE ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.NewRow();
-            T_C_MENU tcm = new T_C_MENU(sfcdb, DBTYPE);
-            DataTable rcm = new DataTable();
-            DataTable TTcm = new DataTable();
-            List<c_role_privilegeinfobyemp> RolePrivilegeList = new List<c_role_privilegeinfobyemp>();
-            List<string> DeletePrivilege = new List<string>();
-            List<MENUS> GetMenuList = new List<MENUS>();
+            //T_C_PRIVILEGE CheckExistMenuID = new T_C_PRIVILEGE(sfcdb, DBTYPE);
+            //Row_C_PRIVILEGE ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.NewRow();
+            //T_C_MENU tcm = new T_C_MENU(sfcdb, DBTYPE);
+            //DataTable rcm = new DataTable();
+            //DataTable TTcm = new DataTable();
+            //List<c_role_privilegeinfobyemp> RolePrivilegeList = new List<c_role_privilegeinfobyemp>();
+            //List<string> DeletePrivilege = new List<string>();
+            //List<MENUS> GetMenuList = new List<MENUS>();
             T_C_ROLE_PRIVILEGE tcup = new T_C_ROLE_PRIVILEGE(sfcdb, DBTYPE);
-            Row_C_ROLE_PRIVILEGE rcup = (Row_C_ROLE_PRIVILEGE)tcup.NewRow();
-            T_C_MENU Tmenu = new T_C_MENU(sfcdb, DBTYPE);
+            //Row_C_ROLE_PRIVILEGE rcup = (Row_C_ROLE_PRIVILEGE)tcup.NewRow();
+            //T_C_MENU Tmenu = new T_C_MENU(sfcdb, DBTYPE);
             string ROLE_ID = Data["ROLE_ID"].ToString();
+            Int32 Counter = 0;
             try
             {
-                 
+
                 //sfcdb.BeginTrain();
                 //foreach (string  item in Data["PRIVILEGE_ID"])
                 //{
                 //    DeletePrivilege.Add(item.Trim('\'').Trim('\"'));
                 //}
-                
+
 
                 foreach (string item in Data["PRIVILEGE_ID"])
                 {
+
                     string PRIVILEGE_ID = item.Trim('\'').Trim('\"');
+                    tcup.Delete(ROLE_ID, PRIVILEGE_ID, ref Counter, sfcdb);
 
                     //RolePrivilegeList = tcup.QueryRolePrivilege(ROLE_ID, sfcdb);
 
@@ -768,89 +791,95 @@ namespace MESStation.MESUserManager
 
 
                     // by SDL  CHECK要刪除的權限要是存在下級菜單則不允許刪除
-                    rcup = tcup.GetC_Role_Privilege_ID(ROLE_ID, PRIVILEGE_ID, sfcdb);
-                    strid = rcup.ID.ToString();
-                    rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(strid, sfcdb);
-                    DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
+                    //    rcup = tcup.GetC_Role_Privilege_ID(ROLE_ID, PRIVILEGE_ID, sfcdb); //根據 Role Id 和 Privilege ID 獲取到 C_ROLE_PRIVILEGE 對象
+                    //    strid = rcup.ID.ToString(); //獲取 C_ROLE_PRIVILEGE 對象的 ID 屬性
+                    //    rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(strid, sfcdb); //根據 ID 屬性獲取到 ROW_C_ROLE_PRIVILEGE 對象
+                    //    DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n"; // 構建刪除語句
 
-                    ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyID(PRIVILEGE_ID, sfcdb);
-                    if (ChRow.MENU_ID != null || ChRow.MENU_ID != "N/A")
+                    //    ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyID(PRIVILEGE_ID, sfcdb); // 獲取傳入的 PRIVILEGE_ID 到 ROW_C_PRIVILEGE 對象
+                    //    if (ChRow.MENU_ID != null || ChRow.MENU_ID != "N/A") //如果 ROW_C_PRIVILEGE 對象的 MENU_ID 不爲空
+                    //    {
+                    //        rcm = tcm.getC_MenubyPARENT_CODE(ChRow.MENU_ID, sfcdb); //查詢該菜單下面的子菜單
+
+                    //        if (rcm.Rows.Count != 0) //如果該菜單下面存在子菜單
+                    //        {
+
+                    //            for (int i = 0; i < rcm.Rows.Count - 1; i++)
+                    //            {
+
+                    //                MenuID = rcm.Rows[i]["ID"].ToString(); //獲取子菜單的 ID 
+
+                    //                ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyMenuID(MenuID, sfcdb); //查詢子菜單的 ID 對應的權限 C_PRIVILEGE 對象
+                    //                rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.ID, sfcdb); // 根據 Role_ID 和 Privilge_ID
+                    //                if (P_code.IndexOf(MenuID) < 0 && rcup != null)
+                    //                { //如果該角色存在該子菜單對應的權限，那麽將級聯刪除該權限
+                    //                    rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(rcup.ID, sfcdb);
+                    //                    DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
+                    //                    P_code += MenuID + ",";
+                    //                }
+                    //                TTcm = tcm.getC_MenubyPARENT_CODE(MenuID, sfcdb); //查詢子菜單下面是否存在有子菜單
+
+                    //                if (TTcm.Rows.Count != 0) //如果存在子子菜單
+                    //                {
+                    //                    for (int j = 0; j < TTcm.Rows.Count - 1; j++)
+                    //                    {
+                    //                        MenuID = TTcm.Rows[j]["ID"].ToString();
+                    //                        ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyMenuID(MenuID, sfcdb);//根據子子菜單的Menu_ID獲取對應的 C_PRIVILEGE 對象
+                    //                        if (ChRow != null)
+                    //                        {
+                    //                            rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.ID, sfcdb);//查看該角色是否存在該權限
+                    //                            if (P_code.IndexOf(MenuID) < 0 && rcup != null)
+                    //                            {//如果存在，級聯刪除該權限
+                    //                                rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(rcup.ID, sfcdb);
+                    //                                DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
+                    //                                P_code += MenuID + ",";
+                    //                            }
+                    //                        }
+
+                    //                        //在下一層，如果該角色依舊存在子子子權限，那麽也級聯刪除
+                    //                        DataTable HHcm = tcm.getC_MenubyPARENT_CODE(MenuID, sfcdb);
+
+                    //                        if (HHcm.Rows.Count != 0)
+                    //                        {
+                    //                            for (int z = 0; z < HHcm.Rows.Count - 1; z++)
+                    //                            {
+                    //                                MenuID = HHcm.Rows[z]["ID"].ToString();
+                    //                                ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyMenuID(MenuID, sfcdb);
+                    //                                if (ChRow != null)
+                    //                                {
+                    //                                    rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.ID, sfcdb);
+                    //                                    if (P_code.IndexOf(MenuID) < 0 && rcup != null)
+                    //                                    {//
+                    //                                        rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(rcup.ID, sfcdb);
+                    //                                        DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
+                    //                                        P_code += MenuID + ",";
+                    //                                    }
+                    //                                }
+
+                    //                            }
+                    //                        }
+
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+
+                    //    }
+
+                    //}
+
+                    //DeleteSql = "begin\n" + DeleteSql + "end;";
+                    //sfcdb.ExecSQL(DeleteSql);
+                    //sfcdb.CommitTrain();
+                    if (Counter > 0)
                     {
-                        rcm = tcm.getC_MenubyPARENT_CODE(ChRow.MENU_ID, sfcdb);
-
-                        if (rcm.Rows.Count != 0)
-                        {
-
-                            for (int i = 0; i < rcm.Rows.Count - 1; i++)
-                            {
-
-                                MenuID = rcm.Rows[i]["ID"].ToString();
-
-                                ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyMenuID(MenuID, sfcdb);
-                                rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.ID, sfcdb);
-                                if (P_code.IndexOf(MenuID) < 0 && rcup != null)
-                                {
-                                    rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(rcup.ID, sfcdb);
-                                    DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
-                                    P_code += MenuID + ",";
-                                }
-                                TTcm = tcm.getC_MenubyPARENT_CODE(MenuID, sfcdb);
-
-                                if (TTcm.Rows.Count != 0)
-                                {
-                                    for (int j = 0; j < TTcm.Rows.Count - 1; j++)
-                                    {
-                                        MenuID = TTcm.Rows[j]["ID"].ToString();
-                                        ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyMenuID(MenuID, sfcdb);
-                                        if (ChRow != null)
-                                        {
-                                            rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.ID, sfcdb);
-                                            if (P_code.IndexOf(MenuID) < 0 && rcup != null)
-                                            {
-                                                rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(rcup.ID, sfcdb);
-                                                DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
-                                                P_code += MenuID + ",";
-                                            }
-                                        }
-
-                                        DataTable HHcm = tcm.getC_MenubyPARENT_CODE(MenuID, sfcdb);
-
-                                        if (HHcm.Rows.Count != 0)
-                                        {
-                                            for (int z = 0; z < HHcm.Rows.Count - 1; z++)
-                                            {
-                                                MenuID = HHcm.Rows[z]["ID"].ToString();
-                                                ChRow = (Row_C_PRIVILEGE)CheckExistMenuID.getC_PrivilegebyMenuID(MenuID, sfcdb);
-                                                if (ChRow != null)
-                                                {
-                                                    rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetC_Role_Privilege_ID(ROLE_ID, ChRow.ID, sfcdb);
-                                                    if (P_code.IndexOf(MenuID) < 0 && rcup != null)
-                                                    {
-                                                        rcup = (Row_C_ROLE_PRIVILEGE)tcup.GetObjByID(rcup.ID, sfcdb);
-                                                        DeleteSql += rcup.GetDeleteString(DBTYPE) + ";\n";
-                                                        P_code += MenuID + ",";
-                                                    }
-                                                }
-
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-
+                        StationReturn.Status = StationReturnStatusValue.Pass;
+                        StationReturn.Message = "刪除成功";
+                        sfcdb.CommitTrain();
+                        
                     }
-
+                    this.DBPools["SFCDB"].Return(sfcdb);
                 }
-
-                DeleteSql = "begin\n" + DeleteSql + "end;";
-                sfcdb.ExecSQL(DeleteSql);
-                sfcdb.CommitTrain();
-                StationReturn.Status = StationReturnStatusValue.Pass;
-                StationReturn.Message = "刪除成功";
-                sfcdb.CommitTrain();
-                this.DBPools["SFCDB"].Return(sfcdb);
             }
             catch (Exception e)
             {
@@ -867,65 +896,69 @@ namespace MESStation.MESUserManager
         public void AddUserRolePrivilege(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             OleExec sfcdb = null;
-            string InsertSql = "", UpdateSql = "";
+            //string InsertSql = "", UpdateSql = "";
             T_c_user_role UserRoler;
-            T_c_user EmpLevel;
+            //T_c_user EmpLevel;
             string EMP_NO = Data["EMP_NO"].ToString();
             string LEVEL_FLAG = Data["LEVEL_FLAG"].ToString();
+            int i = 0;
             //    string[] ROLE_ID = Data["ROLE_ID"].ToString().Trim('[').Trim(']').Split(',');
             try
             {
                 sfcdb = this.DBPools["SFCDB"].Borrow();
                 sfcdb.BeginTrain();
                 UserRoler = new T_c_user_role(sfcdb, DBTYPE);
-                EmpLevel = new T_c_user(sfcdb, DBTYPE);
-                string USER_ID = UserRoler.GetUserID(EMP_NO, sfcdb);
+               // EmpLevel = new T_c_user(sfcdb, DBTYPE);
+               // string USER_ID = UserRoler.GetUserID(EMP_NO, sfcdb);
 
                 foreach (string item in Data["ROLE_ID"])
                 {
                     string strroleid = item.Trim('\'').Trim('\"');
-                    if (UserRoler.CheckUserRole(USER_ID, strroleid, sfcdb))
-                    {
-                        Row_c_user_role row = (Row_c_user_role)UserRoler.NewRow();
-                        row.ID = UserRoler.GetNewID(BU, sfcdb);
-                        row.USER_ID = USER_ID;
-                        row.ROLE_ID = strroleid;
-                        row.EDIT_EMP = LoginUser.EMP_NO;
-                        row.SYSTEM_NAME = SystemName;
-                        row.EDIT_TIME = GetDBDateTime();
-                        InsertSql += row.GetInsertString(DBTYPE) + ";\n";
-                    }
-                    else
-                    {
-                        sfcdb.RollbackTrain();
-                        StationReturn.Status = StationReturnStatusValue.Fail;
-                        StationReturn.Message = "該用戶已擁有該角色";
-                        StationReturn.Data = "";
-                        this.DBPools["SFCDB"].Return(sfcdb);
-                        return;
-                    }
+                    i+=UserRoler.Add(EMP_NO, strroleid, LEVEL_FLAG, LoginUser.BU, LoginUser.EMP_NO, SystemName, sfcdb);
+                    //if (UserRoler.CheckUserRole(USER_ID, strroleid, sfcdb))
+                    //{
+                    //    Row_c_user_role row = (Row_c_user_role)UserRoler.NewRow();
+                    //    row.ID = UserRoler.GetNewID(BU, sfcdb);
+                    //    row.USER_ID = USER_ID;
+                    //    row.ROLE_ID = strroleid;
+                    //    row.EDIT_EMP = LoginUser.EMP_NO;
+                    //    row.SYSTEM_NAME = SystemName;
+                    //    row.EDIT_TIME = GetDBDateTime();
+                    //    InsertSql += row.GetInsertString(DBTYPE) + ";\n";
+                    //}
+                    //else
+                    //{
+                    //    sfcdb.RollbackTrain();
+                    //    StationReturn.Status = StationReturnStatusValue.Fail;
+                    //    StationReturn.Message = "該用戶已擁有該角色";
+                    //    StationReturn.Data = "";
+                    //    this.DBPools["SFCDB"].Return(sfcdb);
+                    //    return;
+                    //}
 
                 }
 
-                InsertSql = "begin\n" + InsertSql + "end;";
-                sfcdb.ExecSQL(InsertSql);
+                //InsertSql = "begin\n" + InsertSql + "end;";
+                //sfcdb.ExecSQL(InsertSql);
 
-                if (EmpLevel.CheckEmpLevel(USER_ID, LEVEL_FLAG, sfcdb))
+                //if (EmpLevel.CheckEmpLevel(USER_ID, LEVEL_FLAG, sfcdb))
+                //{
+                //    Row_c_user RowLevel = (Row_c_user)EmpLevel.GetObjByID(USER_ID, sfcdb);
+                //    RowLevel.ID = USER_ID;
+                //    RowLevel.EMP_LEVEL = LEVEL_FLAG;
+                //    RowLevel.EDIT_EMP = LoginUser.EMP_NO;
+                //    RowLevel.EDIT_TIME = GetDBDateTime();
+
+                //    UpdateSql = RowLevel.GetUpdateString(DBTYPE);
+                //    sfcdb.ExecSQL(UpdateSql);
+                //}
+
+                if (i > 0)
                 {
-                    Row_c_user RowLevel = (Row_c_user)EmpLevel.GetObjByID(USER_ID, sfcdb);
-                    RowLevel.ID = USER_ID;
-                    RowLevel.EMP_LEVEL = LEVEL_FLAG;
-                    RowLevel.EDIT_EMP = LoginUser.EMP_NO;
-                    RowLevel.EDIT_TIME = GetDBDateTime();
-
-                    UpdateSql = RowLevel.GetUpdateString(DBTYPE);
-                    sfcdb.ExecSQL(UpdateSql);
+                    StationReturn.Status = StationReturnStatusValue.Pass;
+                    StationReturn.Message = "添加成功";
+                    sfcdb.CommitTrain();
                 }
-
-                sfcdb.CommitTrain();
-                StationReturn.Status = StationReturnStatusValue.Pass;
-                StationReturn.Message = "添加成功";
-                sfcdb.CommitTrain();
                 this.DBPools["SFCDB"].Return(sfcdb);
 
             }
@@ -943,29 +976,34 @@ namespace MESStation.MESUserManager
         public void DeleteUserRolePrivilege(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             OleExec sfcdb = null;
-            string DeleteSql = "";
-            T_c_user_role GetUserRole;
+            //string DeleteSql = "";
+            T_c_user_role UserRole;
             string EMP_NO = Data["EMP_NO"].ToString();
+            int i = 0;
             //   string[] ROLE_ID = Data["ROLE_ID"].ToString().Split(',');
 
             try
             {
                 sfcdb = this.DBPools["SFCDB"].Borrow();
-                GetUserRole = new T_c_user_role(sfcdb, DBTYPE);
-                string USER_ID = GetUserRole.GetUserID(EMP_NO, sfcdb);
+                UserRole = new T_c_user_role(sfcdb, DBTYPE);
+                //string USER_ID = GetUserRole.GetUserID(EMP_NO, sfcdb);
                 sfcdb.BeginTrain();
                 foreach (string item in Data["ROLE_ID"])
                 {
                     string strroleid = item.Trim('\'').Trim('\"');
-                    Row_c_user_role row = (Row_c_user_role)GetUserRole.GetObjByUserIDRoleID(USER_ID, strroleid, sfcdb, this.DBTYPE);
-                    DeleteSql += row.GetDeleteString(DBTYPE) + ";\n";
+                    i+=UserRole.Delete(EMP_NO, strroleid, sfcdb);
+                    //Row_c_user_role row = (Row_c_user_role)GetUserRole.GetObjByUserIDRoleID(USER_ID, strroleid, sfcdb, this.DBTYPE);
+                    //DeleteSql += row.GetDeleteString(DBTYPE) + ";\n";
                 }
-                DeleteSql = "begin\n" + DeleteSql + "end;";
-                sfcdb.ExecSQL(DeleteSql);
-                sfcdb.CommitTrain();
-                StationReturn.Status = StationReturnStatusValue.Pass;
-                StationReturn.Message = "刪除成功";
-                sfcdb.CommitTrain();
+                //DeleteSql = "begin\n" + DeleteSql + "end;";
+                //sfcdb.ExecSQL(DeleteSql);
+                //sfcdb.CommitTrain();
+                if (i > 0)
+                {
+                    StationReturn.Status = StationReturnStatusValue.Pass;
+                    StationReturn.Message = "刪除成功";
+                    sfcdb.CommitTrain();
+                }
                 this.DBPools["SFCDB"].Return(sfcdb);
             }
             catch (Exception e)
@@ -1000,6 +1038,33 @@ namespace MESStation.MESUserManager
                 sfcdb.RollbackTrain();
                 this.DBPools["SFCDB"].Return(sfcdb);
                 throw e;
+            }
+        }
+
+        public void LoadUserRoleListByRole(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
+        {
+            OleExec sfcdb = null;
+            string ROLENAME = Data["ROLENAME"].ToString().Trim();
+            try
+            {
+                sfcdb = this.DBPools["SFCDB"].Borrow();
+                var UserRoleInfoList = sfcdb.ORM
+                    .Queryable<C_USER, c_user_role, C_ROLE>((cu, cur, cr) =>
+                        cr.ID == cur.ROLE_ID && cur.USER_ID == cu.ID && cr.ROLE_NAME.Contains(ROLENAME))
+                    .Select((cu, cur, cr) =>
+                        new {cu.FACTORY, cu.BU_NAME, cu.EMP_NO, cu.EMP_NAME, cu.DPT_NAME, cr.ROLE_NAME}).ToList()
+                    .Distinct().ToList();
+                StationReturn.Status = StationReturnStatusValue.Pass;
+                StationReturn.Message = "獲取成功";
+                StationReturn.Data = UserRoleInfoList;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                this.DBPools["SFCDB"].Return(sfcdb);
             }
         }
 

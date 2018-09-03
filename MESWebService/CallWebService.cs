@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 using MESDataObject.Module;
@@ -11,10 +11,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.IO;
+using MESPubLab.MESStation.LogicObject;
+using MESPubLab.MESStation.MESReturnView.Station;
 
 namespace MESWebService
 {
-    public class CallWebService : MESStation.BaseClass.MesAPIBase
+    public class CallWebService : MESPubLab.MESStation.MesAPIBase
     {
         public CallWebService(OleExecPool SfcDb, OleExecPool ApDb)
         {
@@ -27,7 +29,7 @@ namespace MESWebService
                 DBPools.Add("APDB", ApDb);
             }
         }
-        public MESStationReturn InitStation(MESStation.BaseClass.MESStationReturn StationReturn, StationPara sp)
+        public MESStationReturn InitStation(MESPubLab.MESStation.MESStationReturn StationReturn, StationPara sp)
         {
             MESReturnMessage.SetSFCDBPool(this.DBPools["SFCDB"]);
             //string Token = requestValue["Token"]?.ToString();
@@ -45,13 +47,13 @@ namespace MESWebService
                 retStation.IP = this.IP;
                 
                 //add by 張官軍 2018-1-4 不添加的話，後面獲取該信息的時候回傳空
-                MESStation.LogicObject.User User = new MESStation.LogicObject.User();
+                User User = new User();
                 User.EMP_NO = "Webservice";
                 User.EMP_NAME = "Webservice";
                 retStation.LoginUser = User;
                 //給工站對象賦公共值               
-                retStation.Init(sp.Station, sp.Line, BU, SFCDB);
-                MESStation.MESReturnView.Station.CallStationReturn ret = new MESStation.MESReturnView.Station.CallStationReturn();
+                retStation.Init(sp.Station, sp.Line, sp.Bu, SFCDB);
+                MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 ret.Station = retStation;
                 //用以執行InitInput.Run()  2018/01/30 SDL
                 retStation.SFCDB = SFCDB;
@@ -96,7 +98,7 @@ namespace MESWebService
             MESStationInput CurrInput = null;
             OleExec SFCDB = this.DBPools["SFCDB"].Borrow();
             OleExec APDB = this.DBPools["APDB"].Borrow();
-            MESStation.MESReturnView.Station.CallStationReturn ret = (MESStation.MESReturnView.Station.CallStationReturn)StationReturn.Data;
+            MESPubLab.MESStation.MESReturnView.Station.CallStationReturn ret = (MESPubLab.MESStation.MESReturnView.Station.CallStationReturn)StationReturn.Data;
             MESStationBase Station = ret.Station;
             Station.StationMessages.Clear();
             Station.NextInput = null;
@@ -131,7 +133,7 @@ namespace MESWebService
                 //    }
                 //}
 
-                ret = new MESStation.MESReturnView.Station.CallStationReturn();
+                ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 ret.ScanType = CurrScanType;
                 //add by ZGJ 2018-03-19 清空之前的輸入動作執行後輸出到前台的消息
                 CurrInput.Station.StationMessages.Clear();
@@ -212,9 +214,9 @@ namespace MESWebService
                 Station.MakeOutput();
                 Station.SFCDB = null;
                 Station.APDB = null;
-                ret = new MESStation.MESReturnView.Station.CallStationReturn();
+                ret = new MESPubLab.MESStation.MESReturnView.Station.CallStationReturn();
                 ret.Station = Station;
-                Station.StationMessages.Add(new MESStation.MESReturnView.Station.StationMessage() { Message = ee.Message, State = MESStation.MESReturnView.Station.StationMessageState.Fail });
+                Station.StationMessages.Add(new StationMessage() { Message = ee.Message, State = StationMessageState.Fail });
                 Station.NextInput = CurrInput;
                 StationReturn.Data = ret;
                 StationReturn.Status = StationReturnStatusValue.Pass;
@@ -231,5 +233,6 @@ namespace MESWebService
     {
         public string Station;
         public string Line;
+        public string Bu;
     }
 }

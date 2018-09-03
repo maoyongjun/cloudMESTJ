@@ -174,6 +174,27 @@ namespace MESDataObject.Module
             return res;
         }
 
+        /// <summary>
+        /// 獲取卡通內被鎖定的SN集合
+        /// </summary>
+        /// <param name="cartonNo"></param>
+        /// <param name="sfcdb"></param>
+        /// <returns></returns>
+        public List<R_SN_LOCK> GetLockListByCartonNo(string cartonNo, OleExec sfcdb)
+        {
+            string sql = $@"select D.* from R_PACKING A,R_SN_PACKING B, R_SN C, R_SN_LOCK D WHERE A.ID = B.PACK_ID
+                            AND B.SN_ID = C.ID   AND D.SN = C.SN   AND A.PACK_NO = '{cartonNo}'   AND D.LOCK_STATUS = '1'  ";
+            List<R_SN_LOCK> lockList = new List<R_SN_LOCK>();
+            DataSet ds = sfcdb.ExecSelect(sql);
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                Row_R_SN_LOCK rowLock = (Row_R_SN_LOCK)this.NewRow();
+                rowLock.loadData(row);
+                lockList.Add(rowLock.GetDataObject());
+            }
+            return lockList;
+        }
+
         public void LockSnInOba(string lotNo,OleExec DB)
         {
             try

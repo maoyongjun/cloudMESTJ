@@ -1,0 +1,243 @@
+﻿<script src="../../../lib/layui/layui.js"></script>
+<script>
+    layui.link('../../../lib/layui/css/layui.css');
+</script>
+<style>
+    .layui-form-label {
+        padding: 9px 0px;
+    }
+
+    legend {
+        width: auto !important;
+        padding: 0 !important;
+        margin-bottom: unset !important;
+        border-bottom: unset !important;
+    }
+
+    td .layui-table-cell {
+        height: 38px;
+        padding: 0 !important;
+        overflow: auto;
+    }
+
+        td .layui-table-cell select,
+        td .layui-table-cell input {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+    .layui-table-view .layui-table td {
+        padding: 0px;
+    }
+</style>
+<div class="layui-row" style="margin:20px">
+    <div class="layui-form" lay-filter="EchartConfig">
+        <div style="width:300px; float:left">
+            <input class="layui-hide" lay-filter="ConfigObjectID" name="ConfigObjectID" value="" />
+            <input class="layui-hide" lay-filter="ConfigObjectType" name="ConfigObjectType" value="" />
+            <div class="layui-form-item">
+                <label class="layui-form-label">標題</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" placeholder="請輸入標題" autocomplete="off" class="layui-input" lay-filter="title" lay-submit>
+                </div>
+            </div>
+            <div class="layui-inline layui-form-item">
+                <label class="layui-form-label">尺寸</label>
+                <div class="layui-input-inline" style="width: 50px; margin-left: 30px;">
+                    <input type="text" name="width" placeholder="width" autocomplete="off" class="layui-input" lay-filter="width" value="900" lay-verify="required|number" lay-submit>
+                </div>
+                <div class="layui-form-mid">*</div>
+                <div class="layui-input-inline" style="width: 50px;">
+                    <input type="text" name="height" placeholder="height" autocomplete="off" class="layui-input" lay-filter="height" value="400" lay-verify="required|number" lay-submit>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">數據源</label>
+                <div class="layui-input-block">
+                    <select name="DataSource" lay-filter="DataSource">
+                        <option value="0">Data1</option>
+                        <option value="1">Data2</option>
+                    </select>
+                </div>
+            </div>
+            <fieldset class="layui-elem-field">
+                <legend>X軸</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">X軸標題</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="xAxisTitle" placeholder="請輸入標題" autocomplete="off" class="layui-input" lay-filter="xAxisTitle" lay-submit>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">X軸類型</label>
+                        <div class="layui-input-block">
+                            <select name="xAxisType" lay-filter="xAxisType"></select>
+                        </div>
+                    </div>
+
+                </div>
+            </fieldset>
+            <fieldset class="layui-elem-field">
+                <legend>Y軸</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Y軸標題</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="yAxisTitle" placeholder="請輸入標題" autocomplete="off" class="layui-input" lay-filter="yAxisTitle" lay-submit>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Y軸類型</label>
+                        <div class="layui-input-block">
+                            <select name="yAxisType" lay-filter="yAxisType"></select>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div style="width:calc(100% - 320px); float:left; margin-left:20px;">
+            <div id="ChartTemp"></div>
+            <fieldset class="layui-elem-field" style=" clear:left;">
+                <legend>數據系列</legend>
+                <div class="layui-field-box">
+                    <table id="series" lay-filter="series"></table>
+                    <script type="text/html" id="TplDataColumn">
+                        <select name="DataColumn" lay-filter="DataColumn" rel-serialid="{{ d.id }}" lay-ignore>
+                            {{#  if(Datasource.Data.length > 0){ }}
+                            {{#  for(var i=0; i < Datasource.Data[0].length ;i++){ }}
+                            <option value="{{ Datasource.Data[0][i] }}" {{ d.DataColumn==Datasource.Data[0][i]?'selected':''}}>{{ Datasource.Data[0][i] }}</option>
+                            {{#  } }}
+                            {{#  } }}
+                        </select>
+                    </script>
+                    <script type="text/html" id="TplseriesName">
+                        <input type="text" name="name" width="120" placeholder="請輸入系列名" autocomplete="off" lay-filter="name" value="{{d.name}}" rel-serialid="{{ d.id }}" lay-ignore>
+                    </script>
+                    <script type="text/html" id="TplChartsType">
+                        <select name="type" lay-filter="type" rel-serialid="{{ d.id }}" lay-ignore>
+                            {{#  for (var i = 0; i < ChartsOptionData.ChartsType.length; i++) { }}
+                            <option value="{{ ChartsOptionData.ChartsType[i].value }}" {{ d.type==ChartsOptionData.ChartsType[i].value?'selected':''}}>{{ ChartsOptionData.ChartsType[i].label }}</option>
+                            {{#  } }}
+                        </select>
+                    </script>
+                    <script type="text/html" id="TplseriesLayoutBy">
+                        <select name="seriesLayoutBy" lay-filter="seriesLayoutBy" rel-serialid="{{ d.id }}" lay-ignore>
+                            {{#  for (var i = 0; i < ChartsOptionData.seriesLayoutBy.length; i++) { }}
+                            <option value="{{ ChartsOptionData.seriesLayoutBy[i] }}" {{ d.seriesLayoutBy==ChartsOptionData.seriesLayoutBy[i]?'selected':''}}>{{ ChartsOptionData.seriesLayoutBy[i] }}</option>
+                            {{#  } }}
+                        </select>
+                    </script>
+                    <script type="text/html" id="TplOperation">
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" rel-serialid="{{ d.id }}" style="margin-top: 10px;">删除</a>
+                    </script>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script>
+    Datasource = {};
+    ChartsOptionData = {};
+    layui.config({
+        base: '../../../lib/'
+    }).extend({
+        common: 'common',
+        bootstrap: 'Bootstrap/js/bootstrap',
+        bootstrapTable: 'bootstrap-table/bootstrap-table',
+        echarts: 'echarts/echarts',
+        ChartDefaultOption: 'ChartDefaultOption'
+    }).use(['common', 'jquery', 'table', 'form', 'element', 'echarts', 'ChartDefaultOption'], function () {
+        var elid = layui.common.getQueryString('elid');
+        var type = layui.common.getQueryString('type');
+        var $ = layui.$
+        var table = layui.table;
+        var form = layui.form;
+        var element = layui.element;
+        var option = JSON.parse(localStorage.getItem(elid));
+        var charts = layui.echarts.init($('#ChartTemp')[0], layui.EchartsTheme, { width: 900, height: 400 });
+        charts.setOption(option);
+
+        Datasource['Data'] = data1;
+
+        var xAxisType = $('[lay-filter=xAxisType]');
+        var yAxisType = $('[lay-filter=yAxisType]');
+        xAxisType.empty();
+        yAxisType.empty();
+        ChartsOptionData = OptionData;
+        for (var i = 0; i < OptionData.AxisType.length; i++) {
+            xAxisType.append($('<option value="' + OptionData.AxisType[i] + '">' + OptionData.AxisType[i] + '</option>'));
+            yAxisType.append($('<option value="' + OptionData.AxisType[i] + '">' + OptionData.AxisType[i] + '</option>'));
+        }
+
+        table.render({
+            elem: '#series',
+            width:800,
+            cols: [[
+                { title: '序號', type: 'numbers', width: 50 },
+                { field: 'DataColumn', type: '', title: '數據列', width: 180, templet: '#TplDataColumn' },
+                { field: 'seriesName', title: '系列名', width: 240, templet: '#TplseriesName' },
+                { field: 'type', title: 'Charts類型', width: 140, templet: '#TplChartsType' },
+                { field: 'seriesLayoutBy', title: '渲染方式', width: 100, templet: '#TplseriesLayoutBy' },
+                { fixed: 'right', title: '操作', width: 80, align: 'center', toolbar: '#TplOperation' }
+            ]],
+            data: option.series,
+            done: function (res, curr, count) {
+                form.render();
+                element.render();
+            }
+        });
+        
+        $('[name=title]').on('change', function (e) {
+            option.title.text = this.value;
+            charts.setOption(option);
+        });
+
+        $('[name=width]').on('change', function (e) {
+            charts.resize({ width: this.value });
+        });
+
+        $('[name=height]').on('change', function (e) {
+            charts.resize({ height: this.value });
+        });
+
+        $('[name=xAxisTitle]').on('change', function (e) {
+            option.xAxis.name = this.value;
+            charts.setOption(option);
+        });
+
+        $('[name=yAxisTitle]').on('change', function (e) {
+            option.yAxis.name = this.value;
+            charts.setOption(option);
+        });
+        
+        $('[rel-serialid]').on('change', function (e) {
+            var id = $(this).attr('rel-serialid');
+            var name = this.name;
+            for (var i = 0; i < option.series.length; i++) {
+                if (option.series[i].id === id) {
+                    option.series[i][name] = $(this).val();
+                    charts.setOption(option);
+                    break;
+                }
+            }
+        });
+
+        form.on('select(DataSource)', function (data) {            
+            option.dataset.source = Datasource[data.value];
+            charts.setOption(option);
+        });
+
+        form.on('select(xAxisType)', function (data) {
+            option.xAxis.type = data.value;
+            charts.setOption(option);
+        });
+
+        form.on('select(yAxisType)', function (data) {
+            option.yAxis.type = data.value;
+            charts.setOption(option);
+        });
+    });
+</script>

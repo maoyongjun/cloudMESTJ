@@ -95,6 +95,7 @@
     <Compile Include="BaseReport\SystemStatusTracking.cs" />
     <Compile Include="BaseReport\WoReport.cs" />
     <Compile Include="BaseReport\WoWipByBuReport.cs" />
+    <Compile Include="BaseReport\ZGJ_WOReport.cs" />
     <Compile Include="Common\ConverDate.cs" />
     <Compile Include="Common\SNMaker.cs" />
     <Compile Include="HWD\HWDStockReport.cs" />
@@ -119,6 +120,10 @@
     <ProjectReference Include="..\MESDBHelper\MESDBHelper.csproj">
       <Project>{c8bdb8fc-44f6-4109-a779-34ee99903270}</Project>
       <Name>MESDBHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MESPubLab\MESPubLab.csproj">
+      <Project>{fa7c2f99-a446-47d3-9344-faa3fa8cc40c}</Project>
+      <Name>MESPubLab</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqlSugar\SqlSugar.csproj">
       <Project>{489bb790-226c-4fad-8d1e-51d72a7ff8e5}</Project>

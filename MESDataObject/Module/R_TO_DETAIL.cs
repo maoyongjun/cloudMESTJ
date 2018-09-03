@@ -30,12 +30,24 @@ namespace MESDataObject.Module
         public R_TO_DETAIL GetDataObject()
         {
             R_TO_DETAIL DataObject = new R_TO_DETAIL();
+            DataObject.ID = this.ID;
             DataObject.CREATETIME = this.CREATETIME;
             DataObject.DN_CUSTOMER = this.DN_CUSTOMER;
             DataObject.DN_NO = this.DN_NO;
             DataObject.TO_ITEM_NO = this.TO_ITEM_NO;
             DataObject.TO_NO = this.TO_NO;
             return DataObject;
+        }
+        public string ID
+        {
+            get
+            {
+                return (string)this["ID"];
+            }
+            set
+            {
+                this["ID"] = value;
+            }
         }
         public DateTime? CREATETIME
         {
@@ -95,6 +107,7 @@ namespace MESDataObject.Module
     }
     public class R_TO_DETAIL
     {
+        public string ID{ get; set; }
         public DateTime? CREATETIME{ get; set; }
         public string DN_CUSTOMER{ get; set; }
         public string DN_NO{ get; set; }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
 
 namespace MESStation.Test
 {
-    public class SkuTest: MESStation.BaseClass.MesAPIBase
+    public class SkuTest: MESPubLab.MESStation.MesAPIBase
     {
         private static DB_TYPE_ENUM DB_TYPE = DB_TYPE_ENUM.Oracle;
         private System.Web.Script.Serialization.JavaScriptSerializer JsonConvert = new System.Web.Script.Serialization.JavaScriptSerializer();

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using MESDataObject;
 using System.Data;
 using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
-using MESStation.MESReturnView.Station;
+using MESPubLab.MESStation.MESReturnView.Station;
+
 using MESDBHelper;
 
 namespace MESStation.Stations.StationActions.ActionRunners
@@ -21,7 +22,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNInputAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNInputAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             R_SN SN = null;
             WorkOrder WorkOrder = null;
@@ -97,7 +98,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void LotSNInputAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LotSNInputAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strStartSN = "";
             string strEndSN = "";
@@ -266,7 +267,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RecordYieldRateAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void RecordYieldRateAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string StationName = string.Empty;
             string WorkOrderNo = string.Empty;
@@ -333,7 +334,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
             StationName = Station.StationName;
             WorkOrderNo = ((WorkOrder)WoSession.Value).WorkorderNo;
-
+             
             SnTable = new T_R_SN(Station.SFCDB, Station.DBType);
             SnTable.RecordYieldRate(WorkOrderNo, LinkQty, Sn, Status, Station.Line, StationName, Station.LoginUser.EMP_NO, Station.BU, Station.SFCDB);
             Station.AddMessage("MES00000150", new string[] { Sn, "Yield Rate" }, StationMessageState.Pass);
@@ -345,7 +346,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RecordUPHAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void RecordUPHAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string StationName = string.Empty;
             string WorkOrderNo = string.Empty;
@@ -423,7 +424,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNPassStationAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNPassStationAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SnObject = null;
             T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
@@ -482,7 +483,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RecordPassStationDetailAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void RecordPassStationDetailAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
             string SerialNo = string.Empty;
@@ -518,13 +519,14 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
         }
 
+  
         /// <summary>
         /// 產品掃描MRB過站Action,2018/01/10 肖倫      
         /// </summary>
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNMrbPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNMrbPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             int result = 0;
             string ZCPP_FLAG = "";//add by fgg 2018.04.10 用於標誌是組裝退料還是從工單入MRB 
@@ -767,7 +769,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void ReworkPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void ReworkPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             int result = 0;
             SN SnObject = null;
@@ -889,7 +891,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNSaveRepairAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNSaveRepairAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SnObject = null;
             Object ReplaceIDObject;
@@ -1153,7 +1155,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNSaveRepairActionNew(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNSaveRepairActionNew(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SnObject = null;           
             string UpdateSql = null;
@@ -1425,7 +1427,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNRepairFinishAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNRepairFinishAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             SN SnObject = null;
             string UpdateSql = "";
@@ -1527,7 +1529,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNFQCLotUnlockAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNFQCLotUnlockAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_LOT_DETAIL Ulotdetail = new T_R_LOT_DETAIL(Station.SFCDB, Station.DBType);
 
@@ -1562,7 +1564,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             }
         }
 
-        public static void SNStockInPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNStockInPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string DeviceName = "";
             MESStationSession SessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -1596,7 +1598,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void VertivSNStockInPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void VertivSNStockInPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string DeviceName = "";
             MESStationSession SessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -1636,7 +1638,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             Station.AddMessage("MES00000063", new string[] { SNObj.SerialNo }, StationMessageState.Pass); //回饋消息到前台
         }
 
-        public static void SNPreSCRAPPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNPreSCRAPPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string DeviceName = "";
             MESStationSession SessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -1666,7 +1668,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             Station.AddMessage("MES00000063", new string[] { SNObj.SerialNo }, StationMessageState.Pass); //回饋消息到前台
         }
 
-        public static void CounterAddAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CounterAddAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -1692,7 +1694,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNUnlinkAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNUnlinkAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
 
             if (Paras.Count != 2)
@@ -1757,7 +1759,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNUnlinkFinishallAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNUnlinkFinishallAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             int result = 0;
             R_MRB New_R_MRB = new R_MRB();
@@ -1880,7 +1882,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void ReplaceSnAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void ReplaceSnAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string NewSn = string.Empty;
@@ -1900,6 +1902,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
             R_REPLACE_SN ReplaceSnObj = new R_REPLACE_SN();
             T_R_PANEL_SN RPanelSn = new T_R_PANEL_SN(Station.SFCDB, Station.DBType);
             T_R_MRB RMrb = new T_R_MRB(Station.SFCDB, Station.DBType);
+            T_R_SN_KP t_r_sn_kp = new T_R_SN_KP(Station.SFCDB, Station.DBType);
 
             MESStationSession OldSnSession = Station.StationSession.Find(t => t.MESDataType.Equals(Paras[0].SESSION_TYPE) && t.SessionKey.Equals(Paras[0].SESSION_KEY));
             if (OldSnSession == null)
@@ -1940,6 +1943,8 @@ namespace MESStation.Stations.StationActions.ActionRunners
 
             try
             {
+                Station.SFCDB.ThrowSqlExeception = true;
+                Station.APDB.ThrowSqlExeception = true;
                 //Station.SFCDB.BeginTrain();
                 APDB = Station.APDB;
 
@@ -1960,7 +1965,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
                 ReplaceSnObj.EDIT_TIME = Station.GetDBDateTime();
                 ReplaceSnObj.EDIT_EMP = Station.LoginUser.EMP_NO;
                 ReplaceSn.AddReplaceSNRecord(ReplaceSnObj, Station.BU, Station.SFCDB, Station.DBType);
-
+                t_r_sn_kp.ReplaceSnKP(NewSn,OldSn,Station.SFCDB);
 
                 sql = $@"UPDATE MES4.R_SN_LINK R SET R.P_SN='{NewSn}' WHERE R.P_SN='{OldSn}'";
                 result = APDB.ExecSqlNoReturn(sql, null);
@@ -2005,7 +2010,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RMAPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void RMAPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             T_R_SN Table_RSn = new T_R_SN(Station.SFCDB, Station.DBType);
             T_C_ROUTE Table_CRoute = new T_C_ROUTE(Station.SFCDB, Station.DBType);
@@ -2077,7 +2082,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNSILoadingPassAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNSILoadingPassAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 4)
             {
@@ -2212,7 +2217,7 @@ namespace MESStation.Stations.StationActions.ActionRunners
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void UpdateRSNKPAction(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void UpdateRSNKPAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 3)
             {
@@ -2277,12 +2282,12 @@ namespace MESStation.Stations.StationActions.ActionRunners
         }
 
         /// <summary>
-        /// 記錄SN抽檢信息
+        /// SN 出货
         /// </summary>
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RecordSnObaSampleInfo(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void RecordSnObaSampleInfo(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string LotNo = Station.DisplayOutput.Find(t => t.Name == "LOTNO").Value.ToString();
             MESStationSession snSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -2396,5 +2401,146 @@ namespace MESStation.Stations.StationActions.ActionRunners
             #endregion
 
         }
+
+        /// <summary>
+        /// JOBSTOCK STATION PASS ACTION
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void JobStockInAction(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 2)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000057"));
+            }
+            MESStationSession sessionWO = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionWO == null || sessionWO.Value.ToString() == "")
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE }));
+            }
+            MESStationSession sessionSn = Station.StationSession.Find(t => t.MESDataType == Paras[1].SESSION_TYPE && t.SessionKey == Paras[1].SESSION_KEY);
+            if (sessionSn == null || sessionSn.Value.ToString() == "")
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[1].SESSION_TYPE }));
+            }
+           
+            try
+            {
+                WorkOrder objWorkorder = new WorkOrder();
+                objWorkorder = (WorkOrder)sessionWO.Value;
+                SN objSN = new SN();
+                objSN = (SN)sessionSn.Value;
+                Station.SFCDB.ThrowSqlExeception = true;               
+                T_R_STOCK t_r_stock = new T_R_STOCK(Station.SFCDB, Station.DBType);
+                if (t_r_stock.IsStockIn(objSN.SerialNo,objWorkorder.WorkorderNo,Station.SFCDB))
+                {                    
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180619154230", new string[] { objSN.SerialNo }));
+                }
+
+                if (objWorkorder.STOCK_LOCATION.ToString() == "")
+                {                    
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180803114047", new string[] { objWorkorder.WorkorderNo }));
+                }
+
+                if (!(objSN.StockStatus == "1" && objSN.StockTime != null))
+                {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180804105812", new string[] { objSN.SerialNo }));
+                }
+                objSN.JobStockPass(objWorkorder,objSN,Station, "0");
+                Station.AddMessage("MES00000063", new string[] { sessionSn.Value.ToString() }, StationMessageState.Pass);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void ReturnSNAction(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 2)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000057"));
+            }
+            MESStationSession sessionSn = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (sessionSn == null || sessionSn.Value.ToString() == "")
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE }));
+            }
+            MESStationSession sessionStation = Station.StationSession.Find(t => t.MESDataType == Paras[1].SESSION_TYPE && t.SessionKey == Paras[1].SESSION_KEY);
+            if (sessionStation == null || sessionStation.Value.ToString() == "")
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[1].SESSION_TYPE }));
+            }
+
+            List<string> stationList = new List<string>();
+            Double Station_SEQ = 0.0;
+
+            Double SN_SEQ = 0.0;
+            int result = 0;
+            try
+            {                
+                SN objSN = (SN)sessionSn.Value;
+                if (objSN.ShippedFlag=="1") {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808103413", new string[] { Paras[0].SESSION_TYPE }));
+                }
+                if (objSN.RepairFailedFlag=="1") {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808104007", new string[] { Paras[0].SESSION_TYPE }));
+                }
+                if (objSN.CompletedFlag=="1") {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808104922", new string[] { Paras[0].SESSION_TYPE }));
+                }
+                string station_name = sessionStation.Value.ToString();
+
+                if (station_name.Equals("BIP")) {
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808104922", new string[] { Paras[0].SESSION_TYPE }));
+                }
+
+                T_C_ROUTE_DETAIL RouteDetailTable = new T_C_ROUTE_DETAIL(Station.SFCDB, Station.DBType);
+                List<C_ROUTE_DETAIL> RouteDetails = RouteDetailTable.GetByRouteIdOrderBySEQASC(objSN.RouteID, Station.SFCDB);
+                if (RouteDetails.Count > 0)
+                {
+                    foreach (C_ROUTE_DETAIL c in RouteDetails)
+                    {
+                        if (station_name == c.STATION_NAME)
+                        {
+                            Station_SEQ = (Double)c.SEQ_NO;
+                        }
+                        if (objSN.CurrentStation == c.STATION_NAME)
+                        {
+                            SN_SEQ = (Double)c.SEQ_NO;
+                        }
+                    }
+                    if (Station_SEQ>=SN_SEQ) {
+
+                        throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808112641", new string[] { Paras[0].SESSION_TYPE }));
+                    }
+                }
+                else {
+                  
+                    throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180808113358", new string[] { Paras[1].SESSION_TYPE }));
+                }
+
+                T_R_SN_KP TRKP = new T_R_SN_KP(Station.SFCDB, Station.DBType);
+                List<R_SN_KP> snkp = TRKP.GetKPRecordBySnIDStation(objSN.ID, objSN.CurrentStation, Station.SFCDB);
+
+                if (snkp.Count > 0) {
+                     result = TRKP.RetrunUpdateKPSNBySnId(objSN.ID,objSN.CurrentStation,Station.LoginUser.EMP_NO,Station.SFCDB);
+                }
+                if (result < 0) {
+                    throw new MESDataObject.MESReturnMessage(MESDataObject.MESReturnMessage.GetMESReturnMessage("MES00000083", new string[] { "R_SN_KP:" + objSN.SerialNo, "ADD" }));
+                }
+                T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
+                string ErrMessage = string.Empty;
+                string DeviceName = string.Empty;
+                table.ReturnPassStation(objSN.SerialNo, Station.Line, station_name, objSN.CurrentStation, Station.BU, objSN.ProductStatus, Station.LoginUser.EMP_NO, Station.SFCDB);
+                Station.SFCDB.ThrowSqlExeception = true;                
+                Station.AddMessage("MES00000063", new string[] { sessionSn.Value.ToString() }, StationMessageState.Pass);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
-}
+    }

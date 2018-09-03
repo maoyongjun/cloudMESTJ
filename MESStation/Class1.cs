@@ -8,6 +8,6 @@ namespace MESStation
 {
     public class Class1
     {
-        string a = MESStation.BaseClass.StationReturnStatusValue.Pass;
+        string a = MESPubLab.MESStation.StationReturnStatusValue.Pass;
     }
 }

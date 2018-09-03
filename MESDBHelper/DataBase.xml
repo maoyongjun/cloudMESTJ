@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<connData>
+<TConnString ConnName="SFCDB" ConnString="Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.64.32.96)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=SFCTEST)));Persist Security Info=True;User ID=SFCBASE;Password=SFCTEST;" IsCrypt="false"/>
+<TConnString ConnName="APDB" ConnString="Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.117.0.64)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=CPE2APS)));Persist Security Info=True;User ID=AP2;Password=AP2;" IsCrypt="false"/>
+</connData>

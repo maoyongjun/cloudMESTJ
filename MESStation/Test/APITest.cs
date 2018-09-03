@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.MESReturnView.Public;
-using MESStation.BaseClass;
+
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject;
 
 
 namespace MESStation.Test
 {
-    public class APITest : MESStation.BaseClass.MesAPIBase
+    public class APITest : MESPubLab.MESStation.MesAPIBase
     {
         protected APIInfo FDBTEST = new APIInfo()
         {

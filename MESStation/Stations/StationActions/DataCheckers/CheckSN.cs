@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MESDataObject;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 using MESStation.HateEmsGetDataService;
@@ -21,7 +21,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void PanelSNInputRuleChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void PanelSNInputRuleChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string PanelSNNO = Input.Value.ToString();
             if (Paras.Count != 1)
@@ -50,22 +50,22 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 ////判斷是否投入使用                
                 if (TR_PanelSN.CheckPanelExist(PanelSNNO, Station.SFCDB))
                 {
-                    //Station.AddMessage("MES00000040", new string[] { "PanelSN:" + PanelSNNO }, MESReturnView.Station.StationMessageState.Fail);
+                    //Station.AddMessage("MES00000040", new string[] { "PanelSN:" + PanelSNNO }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000040", new string[] { "PanelSN:" + PanelSNNO }));
                 }
                 else
                 {
-                    Station.AddMessage("MES00000029", new string[] { "PanelSN", PanelSNNO }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000029", new string[] { "PanelSN", PanelSNNO }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 }
             }
             else
             {
-                //Station.AddMessage("MES00000022", new string[] { "PanelSN:" + PanelSNNO }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000022", new string[] { "PanelSN:" + PanelSNNO }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000022", new string[] { "PanelSN:" + PanelSNNO }));
             }
         }
         //SN狀態檢查
-        public static void SNInputStatusChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNInputStatusChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             WorkOrder Wo;
             //int Linkqty;
@@ -138,7 +138,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             //{
             //    throw new Exception("Input_qty  + Linkqty > WORKORDER_QTY !");
             //}
-            Station.AddMessage("MES00000001", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000001", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
         /// <summary>
         /// 檢查投入SN是否重碼,　SN 不能存在R_SN Table中,,PanelSN不能存在r_panel_sn table中
@@ -147,7 +147,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">{SESSION_TYPE:"NEWSN",SSION_KEY:"1",VALUE:""}{SESSION_TYPE:"WO",SESSION_KEY:"1",VALUE:""}</param>
-        public static void InputSNDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void InputSNDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strNewSN;
             bool isUsed = false;
@@ -191,17 +191,17 @@ namespace MESStation.Stations.StationActions.DataCheckers
 
             if (isUsed)
             {
-                //Station.AddMessage("MES00000040", new string[] { strNewSN }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000040", new string[] { strNewSN }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000040", new string[] { strNewSN }));
             }
             else
             {
-                Station.AddMessage("MES00000001", new string[] { strNewSN }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { strNewSN }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 //throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000040", new string[] { strNewSN }));
             }
         }
 
-        public static void CheckDuplicateByInputSN(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CheckDuplicateByInputSN(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strNewSN;
             bool isUsed = false;
@@ -233,13 +233,13 @@ namespace MESStation.Stations.StationActions.DataCheckers
 
             if (isUsed)
             {
-                //Station.AddMessage("MES00000040", new string[] { strNewSN }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000040", new string[] { strNewSN }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 string ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000040", new string[] { strNewSN });
                 throw new MESReturnMessage(ErrMessage);
             }
             else
             {
-                Station.AddMessage("MES00000001", new string[] { strNewSN }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { strNewSN }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
         /// <summary>
@@ -249,7 +249,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">{SESSION_TYPE:"NEWSN",SSION_KEY:"1",VALUE:""}{SESSION_TYPE:" ",SSION_KEY:"",VALUE:"0"}</param>
-        public static void WoSNRangeDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void WoSNRangeDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strNewSN = "";
             WorkOrder wo;
@@ -296,11 +296,11 @@ namespace MESStation.Stations.StationActions.DataCheckers
             bool isInWoRange = TR_WO_REGION.CheckSNInWoRange(strNewSN, wo.WorkorderNo, Station.SFCDB);
             if (isInWoRange)
             {
-                Station.AddMessage("MES00000001", new string[] { strNewSN }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { strNewSN }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             else
             {
-                Station.AddMessage("MES00000056", new string[] { strNewSN, wo.WorkorderNo }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000056", new string[] { strNewSN, wo.WorkorderNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000056", new string[] { strNewSN, wo.WorkorderNo }));
             }
         }
@@ -314,7 +314,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">{SESSION_TYPE:"NEWSN",SSION_KEY:"1",VALUE:""}{SESSION_TYPE:" ",SSION_KEY:"",VALUE:"0"}</param>
-        public static void WoLotSNRangeDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void WoLotSNRangeDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strStartSN = "";
             string strEndSN = "";
@@ -417,7 +417,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">{SESSION_TYPE:"NEWSN",SSION_KEY:"1",VALUE:""}{SESSION_TYPE:" ",SSION_KEY:"",VALUE:"0"}</param>
-        public static void SNRange34HQtyDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNRange34HQtyDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strStartSN = "";
             string strEndSN = "";
@@ -565,7 +565,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">{SESSION_TYPE:"NEWSN",SSION_KEY:"1",VALUE:""}{SESSION_TYPE:" ",SSION_KEY:"",VALUE:"0"}</param>
-        public static void SNRange10HQtyDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNRange10HQtyDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string strStartSN = "";
             string strEndSN = "";
@@ -707,7 +707,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNMrbchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNMrbchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             if (Paras.Count != 2)
@@ -794,7 +794,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 }
             }
 
-            Station.AddMessage("MES00000067", new string[] { ObjSN.SerialNo }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000067", new string[] { ObjSN.SerialNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
 
 
         }
@@ -805,7 +805,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNMrbWoRequest(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNMrbWoRequest(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             MESStationSession SessionSN = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -850,7 +850,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNFailchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNFailchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string RepairFlag = string.Empty;
@@ -887,7 +887,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     }
                 }
 
-                Station.AddMessage("MES00000067", new string[] { ObjSN.SerialNo }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000067", new string[] { ObjSN.SerialNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
 
             }
         }
@@ -898,7 +898,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNLotStatuschecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNLotStatuschecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string RepairFlag = string.Empty;
@@ -962,7 +962,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     }
                 }
 
-                Station.AddMessage("MES00000067", new string[] { ObjSN.SerialNo }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000067", new string[] { ObjSN.SerialNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -974,7 +974,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNFQCLotLockchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNFQCLotLockchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string SnOrLotno = string.Empty;
@@ -1050,7 +1050,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
 
             SessionSNorLotNo.Value = SnOrLotno;
-            Station.AddMessage("MES00000067", new string[] { SnOrLotno }, MESReturnView.Station.StationMessageState.Pass);
+            Station.AddMessage("MES00000067", new string[] { SnOrLotno }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
         }
 
 
@@ -1064,7 +1064,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Paras"></param>
         /// 1.	當前狀態要為MRB
         ///2.	SN 工單不能與當前重工工單一致
-        public static void SNReworkchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SNReworkchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -1076,7 +1076,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             //MESStationSession SnInput = Station.StationSession.Find(t => t.MESDataType == "SN" && t.SessionKey == "1");
             //if (SnInput == null)
             //{
-            //    //Station.AddMessage("MES00000076", new string[] { "Sn", Sn }, MESReturnView.Station.StationMessageState.Fail);
+            //    //Station.AddMessage("MES00000076", new string[] { "Sn", Sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //}
             //else
             //{
@@ -1094,7 +1094,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             MESStationSession WoInput = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             if (WoInput == null)
             {
-                Station.AddMessage("MES00000050", new string[] { }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000050", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 return;
             }
             else
@@ -1107,12 +1107,12 @@ namespace MESStation.Stations.StationActions.DataCheckers
             // add by fgg 2018.05.03 RMA 入RMA后掃重工
             if (Sn_Satation != "MRB" && Sn_Satation != "RMA")
             {
-                //Station.AddMessage("MES00000076", new string[] { Sn }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000076", new string[] { Sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000076", new string[] { Sn }));
             }
             else if (Sn_Wo == Rework_WO)
             {
-                //  Station.AddMessage("MES00000077", new string[] { Sn }, MESReturnView.Station.StationMessageState.Fail);
+                //  Station.AddMessage("MES00000077", new string[] { Sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000077", new string[] { Sn }));
             }
             else
@@ -1124,7 +1124,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 //    Station.StationSession.Add(SNRework);
                 //}
                 //SNRework.Value = Sn;
-                Station.AddMessage("MES00000101", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000101", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -1140,7 +1140,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">SESSION_TYPE:"SN",SESSION_TYPE:"WO"</param>
-        public static void InputWoVerSNVerchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void InputWoVerSNVerchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -1152,7 +1152,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             //MESStationSession WoFromSn = Station.StationSession.Find(t => t.MESDataType == "SN" && t.SessionKey == "1");//配WoFromSNDataloader方法，取WorkOrder對象
             //if (WoFromSn == null)
             //{
-            //    //Station.AddMessage("MES00000076", new string[] { "SnInput", SnInput }, MESReturnView.Station.StationMessageState.Fail);
+            //    //Station.AddMessage("MES00000076", new string[] { "SnInput", SnInput }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //}
             //else
             //{
@@ -1167,7 +1167,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             MESStationSession WoInput = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);//配WoDataloader方法，取WorkOrder對象
             if (WoInput == null)
             {
-                Station.AddMessage("MES00000050", new string[] { }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000050", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 return;
             }
             else
@@ -1178,11 +1178,11 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             if (WoFromSn_Ver == null || WoInput_Ver == null)
             {
-                Station.AddMessage("MES00000006", new string[] { "SKU_VER" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000006", new string[] { "SKU_VER" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else if (WoFromSn_Ver != WoInput_Ver)
             {
-                Station.AddMessage("MES00000084", new string[] { "Input workorder", "Input sn" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000084", new string[] { "Input workorder", "Input sn" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else
             {
@@ -1193,7 +1193,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     Station.StationSession.Add(WoFromSn);
                 }
                 WoFromSn.Value = Sn;
-                Station.AddMessage("MES00000085", new string[] { "Input workorder", "Input sn" }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000085", new string[] { "Input workorder", "Input sn" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -1208,7 +1208,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">SESSION_TYPE:"SN",SESSION_TYPE:"WO"</param>
-        public static void InputSNSkuWoSkuchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void InputSNSkuWoSkuchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -1220,7 +1220,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             //MESStationSession WoFromSn = Station.StationSession.Find(t => t.MESDataType == "SN" && t.SessionKey == "1");//配WoFromSNDataloader方法，取WorkOrder對象
             //if (WoFromSn == null)
             //{
-            //    //Station.AddMessage("MES00000076", new string[] { "SnInput", SnInput }, MESReturnView.Station.StationMessageState.Fail);
+            //    //Station.AddMessage("MES00000076", new string[] { "SnInput", SnInput }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             //}
             //else
             //{
@@ -1237,7 +1237,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             MESStationSession WoInput = Station.StationSession.Find(t => t.MESDataType == "WO" && t.SessionKey == "1");//配WoDataloader方法，取WorkOrder對象
             if (WoInput == null)
             {
-                //Station.AddMessage("MES00000050", new string[] { }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000050", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000050", new string[] { }));
 
             }
@@ -1249,11 +1249,11 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             if (WoFromSn_Skuno == null || WoInput_Skuno == null)
             {
-                //Station.AddMessage("MES00000006", new string[] { "SKUNO" }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000006", new string[] { "SKUNO" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else if (WoFromSn_Skuno != WoInput_Skuno)
             {
-                //Station.AddMessage("MES00000095", new string[] { "Input workorder", "Input sn" }, MESReturnView.Station.StationMessageState.Fail);
+                //Station.AddMessage("MES00000095", new string[] { "Input workorder", "Input sn" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000095", new string[] { ((WorkOrder)WoInput.Value).WorkorderNo, R_SN.SN }));
             }
             else
@@ -1265,7 +1265,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 //    Station.StationSession.Add(WoFromSn);
                 //}
                 //WoFromSn.Value = Sn;
-                //Station.AddMessage("MES00000096", new string[] { "Input workorder", "Input sn" }, MESReturnView.Station.StationMessageState.Pass);
+                //Station.AddMessage("MES00000096", new string[] { "Input workorder", "Input sn" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -1286,7 +1286,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void ReworkWOchecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void ReworkWOchecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -1300,7 +1300,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             MESStationSession WoInput = Station.StationSession.Find(t => t.MESDataType == "WO" && t.SessionKey == "1");
             if (WoInput == null)
             {
-                Station.AddMessage("MES00000050", new string[] { }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000050", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 return;
             }
             else
@@ -1315,15 +1315,15 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             if (wo_type != "REWORK")
             {
-                Station.AddMessage("MES00000098", new string[] { "REWORK" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000098", new string[] { "REWORK" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else if (inputqty >= workorderqty)
             {
-                Station.AddMessage("MES00000099", new string[] { }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000099", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else if (closed_flag != "0")
             {
-                Station.AddMessage("MES00000100", new string[] { "" }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000100", new string[] { "" }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
             }
             else
             {
@@ -1334,7 +1334,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     Station.StationSession.Add(WoChecked);
                 }
                 // WoChecked.Value = Wo;
-                Station.AddMessage("MES00000101", new string[] { }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000101", new string[] { }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -1354,11 +1354,11 @@ namespace MESStation.Stations.StationActions.DataCheckers
             {
                 if (list[0].IN_TIME != null && list[0].OUT_TIME == null && list[0].CLOSED_FLAG == "0")
                 {
-                    Station.AddMessage("MES00000046", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Pass);
+                    Station.AddMessage("MES00000046", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                 }
                 else
                 {
-                    Station.AddMessage("MES00000007", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Fail);
+                    Station.AddMessage("MES00000007", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000007",
                                     new string[] { Re_sn });
                     throw new MESReturnMessage(ErrMessage);
@@ -1366,7 +1366,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             else
             {
-                Station.AddMessage("MES00000007", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000007", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000007",
                                 new string[] { Re_sn });
                 throw new MESReturnMessage(ErrMessage);
@@ -1395,11 +1395,11 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     R_REPAIR_MAIN Re_main = listmain.Find(s => s.CLOSED_FLAG == "1" && s.ID == list[0].REPAIR_MAIN_ID);
                     if (Re_main != null)
                     {
-                        Station.AddMessage("MES00000046", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Pass);
+                        Station.AddMessage("MES00000046", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                     }
                     else
                     {
-                        Station.AddMessage("MES00000007", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Fail);
+                        Station.AddMessage("MES00000007", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                         ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000007",
                                         new string[] { Re_sn });
                         throw new MESReturnMessage(ErrMessage);
@@ -1407,7 +1407,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 }
                 else
                 {
-                    Station.AddMessage("MES00000007", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Fail);
+                    Station.AddMessage("MES00000007", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                     ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000007",
                                     new string[] { Re_sn });
                     throw new MESReturnMessage(ErrMessage);
@@ -1415,7 +1415,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             else
             {
-                Station.AddMessage("MES00000007", new string[] { Re_sn }, MESReturnView.Station.StationMessageState.Fail);
+                Station.AddMessage("MES00000007", new string[] { Re_sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Fail);
                 ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000007",
                                 new string[] { Re_sn });
                 throw new MESReturnMessage(ErrMessage);
@@ -1470,7 +1470,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                     if (result.operation.ToUpper().Trim().Equals(SettingStation))
                     {
                         Station.AddMessage("MES00000109", new string[] { result.emsOrderId.ToUpper().Trim() },
-                            MESReturnView.Station.StationMessageState.Pass);
+                            MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
                     }
                     else
                     {
@@ -1488,7 +1488,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             else
             {
                 Station.AddMessage("MES00000109", new string[] { },
-                            MESReturnView.Station.StationMessageState.Pass);
+                            MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -1601,7 +1601,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             CheckRuleFlag = SNObj.CheckSNRule(StrSN, SNRuleName, Station.SFCDB, DB_TYPE_ENUM.Oracle);
         }
 
-        public static void HWDSNStockINChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void HWDSNStockINChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             MESStationSession SNSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             if (SNSession == null)
@@ -1631,7 +1631,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void VertivSNStockINChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void VertivSNStockINChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             MESStationSession SNSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             if (SNSession == null)
@@ -1661,7 +1661,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNNoCompleteChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNNoCompleteChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             MESStationSession SNSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             if (SNSession == null)
@@ -1681,7 +1681,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNLastStationPassChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNLastStationPassChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string StrSN = "";
             T_R_SN_STATION_DETAIL Table_R_SN_STATION_DETAIL = new T_R_SN_STATION_DETAIL(Station.SFCDB, Station.DBType);
@@ -1704,7 +1704,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
         }
 
-        public static void LotDetailSNStatusChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void LotDetailSNStatusChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = string.Empty;
             string StrStation = Station.StationName;
@@ -1748,7 +1748,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
         }
 
-        public static void SNRMAChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNRMAChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -1775,7 +1775,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNTestChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNTestChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string stationName = Station.StationName;
             MESDBHelper.OleExec sfcdb = Station.SFCDB;
@@ -1819,7 +1819,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNTestFailChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNTestFailChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string stationName = Station.StationName;
             MESDBHelper.OleExec sfcdb = Station.SFCDB;
@@ -1852,7 +1852,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
         }
 
-        public static void SNIsExistCheck(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNIsExistCheck(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string sn;
             if (Paras.Count != 1)
@@ -1884,7 +1884,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             }
             else
             {
-                Station.AddMessage("MES00000001", new string[] { sn }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { sn }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
         }
 
@@ -1894,14 +1894,14 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckPackSnStatus(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CheckPackSnStatus(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
-            Station.Inputs.Find(t => t.DisplayName == Paras[0].SESSION_TYPE).Value = "";
             MESStationSession PackNoSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
             T_R_SN_PACKING T_RSnPacking = new T_R_SN_PACKING(Station.SFCDB, Station.DBType);
             if (!T_RSnPacking.CheckPackSnStatus(Station.SFCDB, Paras[1].VALUE, PackNoSession.Value.ToString()))
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180528095410", new string[] { PackNoSession.Value.ToString(), Paras[1].VALUE }));
         }
+  
 
         /// <summary>
         /// 檢查SN對象集合中是否已綁定Keypart
@@ -1909,7 +1909,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckSNObjectListIsLink(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CheckSNObjectListIsLink(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 2)
             {
@@ -1961,7 +1961,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                         throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180529094344", new string[] { r_sn.SN }));
                     }
                 }
-                Station.AddMessage("MES00000001", new string[] { sessionInputString.Value.ToString() }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000001", new string[] { sessionInputString.Value.ToString() }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {
@@ -1975,7 +1975,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckSNInLot(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CheckSNInLot(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             DisplayOutPut Dis_LotNo = Station.DisplayOutput.Find(t => t.Name == "LOTNO");
             MESStationSession snSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -1996,7 +1996,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void CheckSnStatusInOba(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CheckSnStatusInOba(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             DisplayOutPut Dis_LotNo = Station.DisplayOutput.Find(t => t.Name == "LOTNO");
             MESStationSession snSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
@@ -2007,7 +2007,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180529172003", new string[] { rLotDetail.Find(t => t.SN.Equals(snSession.Value.ToString())).SN, rLotDetail.Find(t => t.SN.Equals(snSession.Value.ToString())).STATUS.Equals("1")?"PASS":"FAIL" }));
         }
 
-        public static void CheckSNInFQCLot(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void CheckSNInFQCLot(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 2)
             {
@@ -2041,7 +2041,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void SNNextStationChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void SNNextStationChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             if (Paras.Count != 1)
             {
@@ -2063,5 +2063,185 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000136", new string[] { snObject.NextStation }));
             }
         }
+
+        /// <summary>
+        /// 檢查SN當前工站的上一個工站是否有過站記錄
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void SNLastStationDetailChecker(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 1)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000057"));
+            }
+
+            MESStationSession snSession = Station.StationSession.Find(t => t.MESDataType.Equals(Paras[0].SESSION_TYPE) && t.SessionKey.Equals(Paras[0].SESSION_KEY));
+            if (snSession == null)
+            {               
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE + Paras[0].SESSION_KEY }));
+            }
+            var sessionObj = snSession.Value;
+            SN snObj = null;
+            R_SN r_sn = null;
+            string sn;
+            bool isPass;
+            T_R_SN_STATION_DETAIL t_r_sn_station_detail = new T_R_SN_STATION_DETAIL(Station.SFCDB, Station.DBType);
+            if (sessionObj is string)
+            {                
+                sn = sessionObj.ToString();               
+            }
+            else if (typeof(SN) == sessionObj.GetType())
+            {
+                snObj = (SN)sessionObj;
+                sn = snObj.SerialNo;
+            }
+            else if (typeof(R_SN) == sessionObj.GetType())
+            {
+                r_sn = (R_SN)sessionObj;
+                sn = r_sn.SN;
+            }
+            else
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180607163531", new string[] { sessionObj.ToString() }));
+            }
+            isPass = t_r_sn_station_detail.TheLastStationIsPass(sn, Station.StationName, Station.SFCDB);
+            if (!isPass)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180810135622", new string[] { sn, Station.StationName }));
+            }
+        }
+
+        /// <summary>
+        /// 檢查SN是否有寫過站記錄
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void WriteIntoDetailChecker(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            if (Paras.Count != 1)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000057"));
+            }
+
+            MESStationSession snSession = Station.StationSession.Find(t => t.MESDataType.Equals(Paras[0].SESSION_TYPE) && t.SessionKey.Equals(Paras[0].SESSION_KEY));
+            if (snSession == null)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE + Paras[0].SESSION_KEY }));
+            }
+            var sessionObj = snSession.Value;
+            SN snObj = null;
+            R_SN r_sn = null;
+            string sn;
+            bool isPass;
+            T_R_SN_STATION_DETAIL t_r_sn_station_detail = new T_R_SN_STATION_DETAIL(Station.SFCDB, Station.DBType);
+            if (sessionObj is string)
+            {
+                sn = sessionObj.ToString();
+            }
+            else if (typeof(SN) == sessionObj.GetType())
+            {
+                snObj = (SN)sessionObj;
+                sn = snObj.SerialNo;
+            }
+            else if (typeof(R_SN) == sessionObj.GetType())
+            {
+                r_sn = (R_SN)sessionObj;
+                sn = r_sn.SN;
+            }
+            else
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180607163531", new string[] { sessionObj.ToString() }));
+            }
+            isPass = t_r_sn_station_detail.HadWriteIntoDetail(sn, Station.StationName, Station.SFCDB);
+            if (!isPass)
+            {
+                throw new MESReturnMessage(MESReturnMessage.GetMESReturnMessage("MSGCODE20180813114004", new string[] { sn, Station.StationName }));
+            }
+        }
+
+        /// <summary>
+        /// 處理SN狀態/記錄過站記錄/統計良率 for TCQS
+        /// </summary>
+        /// <param name="Station"></param>
+        /// <param name="Input"></param>
+        /// <param name="Paras"></param>
+        public static void CheckTCQSTest(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        {
+            SN SnObject = null;
+            T_R_SN table = new T_R_SN(Station.SFCDB, Station.DBType);
+            T_R_TCQS_YIELD_RATE_DETAIL TRTCQS = new T_R_TCQS_YIELD_RATE_DETAIL(Station.SFCDB, Station.DBType);
+            R_TCQS_YIELD_RATE_DETAIL RTYRD = new R_TCQS_YIELD_RATE_DETAIL();
+            string ErrMessage = string.Empty;
+            string DeviceName = string.Empty;
+            //獲取DB時間,所有數據更新使用同一時間
+            DateTime DT = Station.GetDBDateTime();
+
+            if (Paras.Count != 4)
+            {
+                //參數不正確：配置表中参数不够，应该为 {0} 个，实际只有 {1} 个！
+                ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000051", new string[] { "3", Paras.Count.ToString() });
+                throw new MESReturnMessage(ErrMessage);
+            }
+
+            //獲取到 SN 對象
+            MESStationSession SNSession = Station.StationSession.Find(t => t.MESDataType == Paras[0].SESSION_TYPE && t.SessionKey == Paras[0].SESSION_KEY);
+            if (SNSession == null)
+            {
+                //无法获取到 {0} 的数据，请检查工站配置！
+                ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000052", new string[] { Paras[0].SESSION_TYPE + Paras[0].SESSION_KEY });
+                throw new MESReturnMessage(ErrMessage);
+            }
+            SnObject = (SN)SNSession.Value;
+
+            //STATUS,方便過站處理/寫良率和UPH使用
+            MESStationSession StatusSession = Station.StationSession.Find(t => t.MESDataType == Paras[1].SESSION_TYPE && t.SessionKey == Paras[1].SESSION_KEY);
+            if (StatusSession == null)
+            {
+                //如果沒有，則創建一個該工站的StatusSession,且SN狀態默認為該Action中設定的狀態Value = Paras[1].VALUE
+                StatusSession = new MESStationSession() { MESDataType = Paras[1].SESSION_TYPE, InputValue = Input.Value.ToString(), Value = Paras[1].VALUE, SessionKey = Paras[1].SESSION_KEY, ResetInput = Input };
+                Station.StationSession.Add(StatusSession);
+                //如果該工站沒有設定默認狀態，則默認為PASS
+                if (StatusSession.Value == null ||
+                    (StatusSession.Value != null && StatusSession.Value.ToString() == ""))
+                {
+                    StatusSession.Value = "PASS";
+                }
+            }
+
+            //Device:站點名稱
+            MESStationSession DeviceSession = Station.StationSession.Find(t => t.MESDataType == Paras[2].SESSION_TYPE && t.SessionKey == Paras[2].SESSION_KEY);
+            if (DeviceSession != null)
+            {
+                DeviceName = DeviceSession.Value.ToString();
+            }
+            else //如果站點名稱不存在,則默認為工站名稱
+            {
+                DeviceName = Station.StationName;
+            }
+
+            //TCQSRecord:TCQS良率統計記錄
+            MESStationSession TCQSSession = Station.StationSession.Find(t => t.MESDataType == Paras[3].SESSION_TYPE && t.SessionKey == Paras[1].SESSION_KEY);
+            if (TCQSSession == null)
+            {
+                TCQSSession = new MESStationSession() { MESDataType = Paras[3].SESSION_TYPE, SessionKey = Paras[3].SESSION_KEY, InputValue = Input.Value.ToString() };
+                Station.StationSession.Add(TCQSSession);
+            }
+
+            
+            //處理SN狀態/記錄過站記錄/統計良率
+            try
+            {
+                RTYRD=TRTCQS.CheckTCQSTest(SnObject.SerialNo, SnObject.SkuNo, SnObject.WorkorderNo, Station.Line, Station.StationName, DeviceName, Station.BU, StatusSession.Value.ToString(), Station.LoginUser.EMP_NO, DT, Station.SFCDB);
+                TCQSSession.Value = RTYRD;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

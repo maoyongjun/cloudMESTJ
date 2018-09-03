@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MESDataObject;
 using MESDBHelper;
 using MESDataObject.Module;
 
@@ -81,7 +82,7 @@ namespace MESInterface.VERTIV
             #region By dn寫入DB
             foreach (var sdToDetail in dnBase.sdToDetailList)
             {
-                if (dnBase.isShipOut(sdToDetail.VBELN))
+                if (!dnBase.isShipOut(sdToDetail.VBELN))
                     continue;
                 dnBase.DownDnDataToMes(sdToDetail.VBELN, sdToDetail.TKNUM);
             }
@@ -116,6 +117,7 @@ namespace MESInterface.VERTIV
                     db.Insertable<R_TO_HEAD>(
                         new R_TO_HEAD()
                         {
+                            ID = MesDbBase.GetNewID(db,bu, "R_TO_HEAD"),
                             TO_NO = sdToHead.FirstOrDefault().TKNUM,
                             PLAN_STARTIME = DateTime.Parse($@"{RFCDate(sdToHead.FirstOrDefault().DPREG)} {sdToHead.FirstOrDefault().UPREG}"),
                             PLAN_ENDTIME = DateTime.Parse($@"{RFCDate(sdToHead.FirstOrDefault().DPABF)} {sdToHead.FirstOrDefault().UPABF}"),
@@ -130,6 +132,7 @@ namespace MESInterface.VERTIV
                     db.Insertable<R_TO_DETAIL>(
                         new R_TO_DETAIL()
                         {
+                            ID = MesDbBase.GetNewID(db, bu, "R_TO_DETAIL"),
                             TO_NO = sdToDetail.FirstOrDefault().TKNUM,
                             TO_ITEM_NO = sdToDetail.FirstOrDefault().TPNUM,
                             DN_NO = dn,
@@ -167,6 +170,7 @@ namespace MESInterface.VERTIV
                         {
                             db.Insertable<R_DN_STATUS>(new R_DN_STATUS()
                             {
+                                ID = MesDbBase.GetNewID(db, bu, "R_DN_STATUS"),
                                 DN_NO = dn,
                                 DN_LINE = item.POSNR,
                                 PO_NO = dnBase.sdCustmerSoList.Where(x => x.VBELN == dn && x.POSNR == item.POSNR).Single().BSTKD,

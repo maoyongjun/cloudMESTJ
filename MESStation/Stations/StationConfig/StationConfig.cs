@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using MESDataObject.Module;
 using MESDataObject;
@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MESStation.Stations.StationConfig
 {
-    public class StationConfig : MESStation.BaseClass.MesAPIBase
+    public class StationConfig : MESPubLab.MESStation.MesAPIBase
     {
         private APIInfo addstation = new APIInfo()
         {

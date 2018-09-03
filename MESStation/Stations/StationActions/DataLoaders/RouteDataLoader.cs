@@ -1,5 +1,5 @@
 ﻿using MESDataObject.Module;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESStation.LogicObject;
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void RouteDetailDataloader(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void RouteDetailDataloader(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             List<string> NoCheckStation = new List<string>();
@@ -75,7 +75,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
                     snStationList.Remove(NoCheckSession[i].VALUE.ToString());
                 }
                 StationSave.Value = snStationList;
-                Station.AddMessage("MES00000029", new string[] { "RouteID :", ObjWo.RouteID }, MESReturnView.Station.StationMessageState.Pass);
+                Station.AddMessage("MES00000029", new string[] { "RouteID :", ObjWo.RouteID }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Pass);
             }
             catch (Exception ex)
             {

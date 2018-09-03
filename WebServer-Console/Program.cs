@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using WebSocketSharp.Server;
 using WebServer.SocketService;
 using System.Threading;
-
-
+using MESPubLab.MESStation.LogicObject;
 
 namespace WebServer_Console
 {
@@ -169,7 +168,7 @@ namespace WebServer_Console
 
         static void showLogusers()
         {
-            List<MESStation.LogicObject.User> u = Report.LoginUsers.Values.ToList();
+            List<User> u = Report.LoginUsers.Values.ToList();
             List<string> K = Report.LoginUsers.Keys.ToList();
             for (int i = 0; i < K.Count; i++)
             {

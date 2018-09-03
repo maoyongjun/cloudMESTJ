@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MESDataObject;
 using MESDataObject.Module;
 using MESStation;
-using MESStation.BaseClass;
+using MESPubLab.MESStation;
 using MESDBHelper;
 using System.Data;
 using System.Timers;

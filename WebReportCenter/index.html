@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>主頁</title>
+    <link href="lib/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <table style="margin-top:300px;">
+        <tbody>
+            <tr>
+                <td style=" width:200px; height:50px; background-color:antiquewhite;">
+                    <div style="position:absolute; background-color:aqua;">0000000000000000</div>
+                    <div>2222222222222222</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="lib/layui/layui.js"></script>
+    <script>
+        //一般直接写在一个js文件中
+        layui.config({
+            base:'lib/'
+        }).extend({
+            Page:'Report/Base.Page'
+        }).use(['layer', 'Page'], function () {
+            var layer = layui.layer;
+            var ThisPage = new layui.Page();
+            var option = {
+            };
+            ThisPage.init(option);
+            layer.msg('Hello World');
+        });
+    </script>
+</body>
+</html>

@@ -38,6 +38,7 @@ namespace MESStation.LogicObject
         public double? ReworkCount { get { return baseSN.REWORK_COUNT; } }    // 重工次數 
         public string ValidFlag { get { return baseSN.VALID_FLAG; } }    // 是否有效 
         public string StockStatus { get { return baseSN.STOCK_STATUS; } }    //是否入庫  
+        public DateTime? StockTime { get { return baseSN.STOCK_IN_TIME; } }  //入庫時間
         //public string EDIT_EMP;    // 最後編輯人 
         //public DateTime EDIT_TIME;    // 最後編輯時間 
 
@@ -285,7 +286,7 @@ namespace MESStation.LogicObject
         /// <param name="Station"></param>
         /// <param name="sfcdbType"></param>
         /// <param name=""></param>
-        public void InsertR_SN_KP(WorkOrder woObject, R_SN r_sn, OleExec sfcdb, BaseClass.MESStationBase Station, MESDataObject.DB_TYPE_ENUM sfcdbType)
+        public void InsertR_SN_KP(WorkOrder woObject, R_SN r_sn, OleExec sfcdb, MESPubLab.MESStation.MESStationBase Station, MESDataObject.DB_TYPE_ENUM sfcdbType)
         {
             T_C_KP_LIST t_c_kp_list = new T_C_KP_LIST(sfcdb, sfcdbType);
             T_C_KP_List_Item t_c_kp_list_item = new T_C_KP_List_Item(sfcdb, sfcdbType);
@@ -372,7 +373,7 @@ namespace MESStation.LogicObject
             }
         }
 
-        public void UpdateSNKP(WorkOrder woObject, List<R_SN> snList,BaseClass.MESStationBase Station)
+        public void UpdateSNKP(WorkOrder woObject, List<R_SN> snList,MESPubLab.MESStation.MESStationBase Station)
         {
             T_C_KP_LIST t_c_kp_list = new T_C_KP_LIST(Station.SFCDB, Station.DBType);
             T_C_KP_List_Item t_c_kp_list_item = new T_C_KP_List_Item(Station.SFCDB, Station.DBType);
@@ -466,6 +467,90 @@ namespace MESStation.LogicObject
             {
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// JOBSTOCK STATION PASS ACTION
+        /// </summary>
+        /// <param name="objWorkorder">wo obj</param>
+        /// <param name="objSN">sn obj</param>
+        /// <param name="Station">Station</param>
+        /// <param name="confirmed_flag">confirmed_flag</param>
+        public void JobStockPass(WorkOrder objWorkorder, SN objSN, MESPubLab.MESStation.MESStationBase Station,string confirmed_flag)
+        {           
+            T_R_STOCK t_r_stock = new T_R_STOCK(Station.SFCDB, Station.DBType);
+            T_R_SN t_r_sn = new T_R_SN(Station.SFCDB, Station.DBType);
+            T_R_WO_BASE t_r_wo_base = new T_R_WO_BASE(Station.SFCDB, Station.DBType);
+            T_R_STOCK_GT t_r_stock_gt = new T_R_STOCK_GT(Station.SFCDB, Station.DBType);
+            T_C_SAP_STATION_MAP t_c_sap_station_map = new T_C_SAP_STATION_MAP(Station.SFCDB,Station.DBType);
+            string gt_id = "";
+
+            #region  write r_stock,r_stock_gt           
+
+            List<C_SAP_STATION_MAP> sapCodeList = t_c_sap_station_map.GetSAPStationMapBySkuOrderBySAPCodeASC(objWorkorder.SkuNO, Station.SFCDB);
+            if (sapCodeList.Count == 0)
+            {
+                throw new MESDataObject.MESReturnMessage(MESDataObject.MESReturnMessage.GetMESReturnMessage("MES00000224", new string[] { objWorkorder.SkuNO }));
+            }
+            Row_R_STOCK_GT rowStockGT;
+            R_STOCK_GT objGT = t_r_stock_gt.GetNotGTbjByWO(objWorkorder.WorkorderNo, confirmed_flag, Station.SFCDB);
+            if (objGT == null)
+            {
+                gt_id = t_r_stock_gt.GetNewID(Station.BU, Station.SFCDB);
+                rowStockGT = (Row_R_STOCK_GT)t_r_stock_gt.NewRow();
+                rowStockGT.ID = gt_id;
+                rowStockGT.WORKORDERNO = objWorkorder.WorkorderNo;
+                rowStockGT.SKUNO = objWorkorder.SkuNO;
+                rowStockGT.TOTAL_QTY = 1;
+                rowStockGT.FROM_STORAGE = objWorkorder.WorkorderNo;
+                rowStockGT.TO_STORAGE = objWorkorder.STOCK_LOCATION;
+                rowStockGT.SAP_FLAG = "0";
+                rowStockGT.CONFIRMED_FLAG = confirmed_flag;
+                rowStockGT.SAP_STATION_CODE = sapCodeList.Last().SAP_STATION_CODE;
+                rowStockGT.EDIT_EMP = Station.LoginUser.EMP_NO;
+                rowStockGT.EDIT_TIME = Station.GetDBDateTime();
+                Station.SFCDB.ExecSQL(rowStockGT.GetInsertString(Station.DBType));
+            }
+            else
+            {
+                rowStockGT = (Row_R_STOCK_GT)t_r_stock_gt.GetObjByID(objGT.ID, Station.SFCDB);
+                gt_id = rowStockGT.ID;
+                rowStockGT.TOTAL_QTY = rowStockGT.TOTAL_QTY + 1;
+                rowStockGT.EDIT_EMP = Station.LoginUser.EMP_NO;
+                rowStockGT.EDIT_TIME = Station.GetDBDateTime();
+                Station.SFCDB.ExecSQL(rowStockGT.GetUpdateString(Station.DBType));
+            }
+
+            Row_R_STOCK rowStock = (Row_R_STOCK)t_r_stock.NewRow();
+            rowStock.ID = t_r_stock.GetNewID(Station.BU, Station.SFCDB);
+            rowStock.SN = objSN.SerialNo;
+            rowStock.WORKORDERNO = objWorkorder.WorkorderNo;
+            rowStock.SKUNO = objWorkorder.SkuNO;
+            rowStock.NEXT_STATION = objSN.NextStation;
+            rowStock.FROM_STORAGE = objWorkorder.WorkorderNo;
+            rowStock.TO_STORAGE = objWorkorder.STOCK_LOCATION;
+            rowStock.CONFIRMED_FLAG = confirmed_flag;
+            rowStock.SAP_FLAG = "0";
+            rowStock.EDIT_EMP = Station.LoginUser.EMP_NO;
+            rowStock.EDIT_TIME = Station.GetDBDateTime();
+            rowStock.GT_ID = gt_id;
+            Station.SFCDB.ExecSQL(rowStock.GetInsertString(Station.DBType));
+            #endregion
+
+            #region update status
+            Row_R_SN rowSN = (Row_R_SN)t_r_sn.GetObjByID(objSN.ID, Station.SFCDB);
+            rowSN.NEXT_STATION = "JOBFINISH";
+            rowSN.STOCK_STATUS = "1";
+            rowSN.COMPLETED_FLAG = "1";
+            rowSN.COMPLETED_TIME = Station.GetDBDateTime();
+            rowSN.STOCK_IN_TIME = Station.GetDBDateTime();
+            rowSN.EDIT_EMP = Station.LoginUser.EMP_NO;
+            rowSN.EDIT_TIME = Station.GetDBDateTime();
+            Station.SFCDB.ExecSQL(rowSN.GetUpdateString(Station.DBType));
+
+            t_r_sn.RecordPassStationDetail(rowSN.SN,Station.Line,Station.StationName,Station.StationName,Station.BU,Station.SFCDB);
+            t_r_wo_base.UpdateFinishQty(objWorkorder.WorkorderNo, 1, Station.SFCDB);
+            #endregion
         }
     }
 }

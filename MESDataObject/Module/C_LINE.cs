@@ -18,7 +18,7 @@ namespace MESDataObject.Module
         public T_C_LINE(OleExec DB, DB_TYPE_ENUM DBType)
         {
             RowType = typeof(Row_C_LINE);
-            TableName = "C_LINE".ToUpper();
+            TableName = "C_LINE".ToUpper().Trim();
             DataInfo = GetDataObjectInfo(TableName, DB, DBType);
         }
         /// <summary>
