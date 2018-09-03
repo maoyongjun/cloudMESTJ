@@ -42,6 +42,72 @@ namespace MESDataObject.Module
                 throw new MESReturnMessage(errMsg);
             }
         }
+        public string getWOIdByWO(string _WO, OleExec DB) {
+            string strsql = "";
+            if (DBType == DB_TYPE_ENUM.Oracle)
+            {
+                strsql = $@"select ID from r_wo_base where workorderno='{_WO.Replace("'", "''")}'";
+                string ID = DB.ExecSelectOneValue(strsql)?.ToString();
+                return ID;
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+        }
+        public void deleteWOByWo(string _WO, OleExec DB) {
+            string strsql = "";
+            if (DBType == DB_TYPE_ENUM.Oracle)
+            {
+                strsql = $@"delete from r_wo_base where workorderno='{_WO.Replace("'", "''")}'";
+                DB.ExecSQL(strsql);
+            }
+            else
+            {
+                string errMsg = MESReturnMessage.GetMESReturnMessage("MES00000019", new string[] { DBType.ToString() });
+                throw new MESReturnMessage(errMsg);
+            }
+        }
+
+        public void addWOByWOHeader(string BU, string user,string routeid, Row_R_WO_HEADER_TJ r_WO_HEADER_TJ, OleExec DB) {
+            T_R_WO_BASE t_R_WO_BASE = new T_R_WO_BASE(DB,this.DBType);
+            Row_R_WO_BASE row_r_wo_base =  (Row_R_WO_BASE)t_R_WO_BASE.NewRow();
+            row_r_wo_base.ID = t_R_WO_BASE.GetNewID(BU,DB);
+            row_r_wo_base.WORKORDERNO = r_WO_HEADER_TJ.AUFNR;
+            row_r_wo_base.PLANT =r_WO_HEADER_TJ.WERKS;
+            row_r_wo_base.RELEASE_DATE =DateTime.Now;
+            row_r_wo_base.DOWNLOAD_DATE =DateTime.Now;
+            row_r_wo_base.PRODUCTION_TYPE ="";
+            row_r_wo_base.WO_TYPE ="";
+            row_r_wo_base.SKUNO = r_WO_HEADER_TJ.MATNR;
+            row_r_wo_base.SKU_VER =r_WO_HEADER_TJ.REVLV;
+            row_r_wo_base.SKU_SERIES ="";
+            row_r_wo_base.SKU_NAME ="";
+            row_r_wo_base.SKU_DESC = r_WO_HEADER_TJ.MAKTX;
+            row_r_wo_base.CUST_PN ="";
+            row_r_wo_base.CUST_PN_VER ="";
+            row_r_wo_base.CUSTOMER_NAME ="";
+            row_r_wo_base.ROUTE_ID = routeid;
+            row_r_wo_base.START_STATION ="";
+            row_r_wo_base.KP_LIST_ID ="";
+            row_r_wo_base.CLOSED_FLAG ="0";
+            row_r_wo_base.CLOSE_DATE = DateTime.Parse("1990-01-01 00:00:00.000");
+            row_r_wo_base.WORKORDER_QTY =double.Parse(r_WO_HEADER_TJ.GAMNG);
+            row_r_wo_base.INPUT_QTY =0;
+            row_r_wo_base.FINISHED_QTY =0;
+            row_r_wo_base.SCRAPED_QTY =0;
+            row_r_wo_base.STOCK_LOCATION ="";
+            row_r_wo_base.PO_NO ="";
+            row_r_wo_base.CUST_ORDER_NO ="";
+            row_r_wo_base.ROHS ="";
+            row_r_wo_base.EDIT_EMP = user;
+            row_r_wo_base.EDIT_TIME =DateTime.Now;
+            string sql = row_r_wo_base.GetInsertString(this.DBType);
+            string result = DB.ExecSQL(sql);
+
+        }
+
         public R_WO_BASE GetWoByWoNo(string _WO, OleExec DB)
         {
             string strsql = "";

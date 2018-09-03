@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MESPubLab.MESStation;
+using MESStation.BaseClass;
 using MESDBHelper;
-using MESPubLab.MESStation.MESReturnView.Station;
+using MESStation.MESReturnView.Station;
 using MESDataObject.Module;
 using MESStation.LogicObject;
 using MESDataObject;
@@ -21,7 +21,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void WoDataCheck(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void WoDataCheck(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             if (Paras.Count != 1)
@@ -46,10 +46,10 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 s.InputValue = Input.Value.ToString();
                 s.ResetInput = Input;
 
-                //modify by LLF 2018-02-02
-                //Station.AddMessage("MES00000029", new string[] { "Workorder", WO}, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
-                ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000029", new string[] { "Workorder", WO });
-                throw new MESReturnMessage(ErrMessage);
+                
+                Station.AddMessage("MES00000029", new string[] { "Workorder", WO}, MESReturnView.Station.StationMessageState.Message);
+                //ErrMessage = MESReturnMessage.GetMESReturnMessage("MES00000029", new string[] { "Workorder", WO });
+                //throw new MESReturnMessage(ErrMessage);
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras">1個參數,WO保存的位置</param>
-        public static void SkuFromWODataChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
+        public static void SkuFromWODataChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             string ErrMessage = "";
             if (Paras.Count != 1)
@@ -144,7 +144,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         }
 
         //工單狀態檢查
-        public static void WoStateDatachecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void WoStateDatachecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             ////ADD BY  SDL  20180316
             if (Paras.Count != 1)
@@ -212,7 +212,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 WoLoadPoint.ResetInput = Input;
                 WoLoadPoint.SessionKey = "1";
                 WoLoadPoint.MESDataType = "WO";
-                Station.AddMessage("MES00000029", new string[] { "Workorder", WO }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000029", new string[] { "Workorder", WO }, MESReturnView.Station.StationMessageState.Message);
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void WOInputDataChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void WOInputDataChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             string stationName = Station.StationName;
             OleExec sfcdb = Station.SFCDB;
@@ -285,7 +285,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
                 sessionInputQty.Value = objWorkorder.INPUT_QTY;
                 sessionExtQty.Value = objWorkorder.WORKORDER_QTY - objWorkorder.INPUT_QTY;
 
-                Station.AddMessage("MES00000029", new string[] { "Workorder", objWorkorder.WorkorderNo }, MESPubLab.MESStation.MESReturnView.Station.StationMessageState.Message);
+                Station.AddMessage("MES00000029", new string[] { "Workorder", objWorkorder.WorkorderNo }, MESReturnView.Station.StationMessageState.Message);
             }
             catch(Exception ex)
             {
@@ -300,7 +300,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
         /// <param name="Station"></param>
         /// <param name="Input"></param>
         /// <param name="Paras"></param>
-        public static void WOTypeDataChecker(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void WOTypeDataChecker(MESStation.BaseClass.MESStationBase Station, MESStation.BaseClass.MESStationInput Input, List<R_Station_Action_Para> Paras)
         {
             OleExec sfcdb = Station.SFCDB;
             if (Paras.Count != 1)

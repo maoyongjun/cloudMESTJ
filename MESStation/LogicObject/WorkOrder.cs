@@ -23,6 +23,8 @@ namespace MESStation.LogicObject
             {
                 return BaseWo.WORKORDERNO;
             }
+            set
+            { BaseWo.WORKORDERNO = value; }
         }
 
         public string PLANT
@@ -71,6 +73,8 @@ namespace MESStation.LogicObject
             {
                 return BaseWo.SKUNO;
             }
+            set
+            { BaseWo.SKUNO = value; }
         }
 
         public string SKU_VER
@@ -145,6 +149,8 @@ namespace MESStation.LogicObject
         {
             get
             { return BaseWo.KP_LIST_ID; }
+            set
+            {  BaseWo.KP_LIST_ID = value; }
         }
 
         public string CLOSED_FLAG

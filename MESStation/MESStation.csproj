@@ -117,6 +117,7 @@
     <Compile Include="Interface\SAPRFC\ZRFC_SFC_NSG_0011.cs" />
     <Compile Include="Interface\SAPRFC\ZRFC_SFC_NSG_0020.cs" />
     <Compile Include="Interface\SAPRFC\ZRFC_GET_PRO_DETAIL.cs" />
+    <Compile Include="Interface\StartPackno.cs" />
     <Compile Include="Interface\StartWO.cs" />
     <Compile Include="KeyPart\KPListBase.cs" />
     <Compile Include="KeyPart\KPScan.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Stations\StationActions\DataCheckers\CheckRepairFail.cs" />
     <Compile Include="Stations\StationActions\DataCheckers\SkuCheckers.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\APInfoDataloader.cs" />
+    <Compile Include="Stations\StationActions\DataLoaders\BoxLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\CustomLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\DataInputLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\PackingDataLoader.cs" />

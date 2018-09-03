@@ -168,6 +168,22 @@ namespace MESDataObject.Module
             int result = DB.ExecuteNonQuery(strSql, CommandType.Text, paramet);
             return result;
         }
+        public string getNextStation(string routeId, string currentStation, OleExec DB)
+        {
+            string sql = $@"    SELECT STATION_NAME
+                              FROM(SELECT *
+                                      FROM C_ROUTE_DETAIL
+                                     WHERE ROUTE_ID = '{routeId}'
+                                       AND SEQ_NO > (SELECT SEQ_NO
+                                                       FROM C_ROUTE_DETAIL
+                                                      WHERE ROUTE_ID = '{routeId}'
+                                                        AND STATION_NAME = '{currentStation}')
+                                     ORDER BY SEQ_NO)
+                             WHERE ROWNUM = 1";
+           string nextStation =  (string)DB.ExecSelectOneValue(sql);
+
+           return nextStation;
+        }
 
         public Dictionary<string,object> GetNextStations(string RouteId,string CurrentStation,OleExec DB)
         {

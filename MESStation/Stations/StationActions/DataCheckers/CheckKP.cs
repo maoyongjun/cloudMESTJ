@@ -28,7 +28,7 @@ namespace MESStation.Stations.StationActions.DataCheckers
             if (kpwait.Count > 0)
             {
                 Station.AddKPScan(sn.SerialNo, sn.WorkorderNo, Station.StationName);
-                throw new Exception($@"{sn.SerialNo} 缺少Keypart");
+                //throw new Exception($@"{sn.SerialNo} 缺少Keypart");
             }
 
 

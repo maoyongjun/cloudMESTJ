@@ -1225,6 +1225,16 @@ namespace MESDataObject.Module
             return mappings;
         }
 
+
+        public string getRouteIdBySkuName(string SKUNO, OleExec sfcdb)
+        {
+
+            string sql = $@"SELECT F2.ROUTE_ID FROM C_SKU F1,R_SKU_ROUTE F2 
+                WHERE F1.Id= f2.sku_id AND F1.SKUNO ='{SKUNO}'";
+            string id = sfcdb.ExecSelectOneValue(sql)?.ToString();
+            return id;
+        }
+
         /// <summary>
         /// 刪除機種路由對應關係
         /// </summary>
