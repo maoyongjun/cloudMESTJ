@@ -7,13 +7,13 @@ using System.Net;
 using MESDataObject;
 using MESDataObject.Module;
 using MESStation;
-using MESStation.BaseClass;
 using MESDBHelper;
 using System.Data;
 using System.Timers;
 using MESStation.Interface;
 using MESStation.Interface.SAPRFC;
 using MESInterface.SAP_RFC;
+using MESPubLab.MESStation;
 
 namespace MESStation.Interface
 {
