@@ -166,48 +166,56 @@ namespace MESStation.Interface
 
 
             T_R_WO_ITEM_TJ T_R_WO_ITEM_TJ = new T_R_WO_ITEM_TJ(sfcdb, DB_TYPE_ENUM.Oracle);
-
-            Row_R_WO_ITEM_TJ rowRWODetail = (Row_R_WO_ITEM_TJ)T_R_WO_ITEM_TJ.NewRow();
-            string sql = $@"DELETE FROM R_WO_ITEM_TJ WHERE AUFNR = '{StrWo}'";
-            if (woDetail.Rows.Count > 0)
+            Sfcdb.BeginTrain();
+            try
             {
-                sfcdb.ExecSQL(sql);
+                Row_R_WO_ITEM_TJ rowRWODetail = (Row_R_WO_ITEM_TJ)T_R_WO_ITEM_TJ.NewRow();
+                string sql = $@"DELETE FROM R_WO_ITEM_TJ WHERE AUFNR = '{StrWo}'";
+                if (woDetail.Rows.Count > 0)
+                {
+                    sfcdb.ExecSQL(sql);
+                }
+
+                foreach (DataRow R_woDetail in woDetail.Rows)
+                {
+                    rowRWODetail.ID = T_R_WO_ITEM_TJ.GetNewID(BU, sfcdb);
+                    rowRWODetail.AUFNR = R_woDetail["AUFNR"].ToString();
+                    rowRWODetail.POSNR = R_woDetail["POSNR"].ToString();
+                    rowRWODetail.WERKS = R_woDetail["WERKS"].ToString();
+                    rowRWODetail.MATNR = R_woDetail["MATNR"].ToString();
+                    rowRWODetail.BDMNG = R_woDetail["BDMNG"].ToString();
+                    rowRWODetail.ENMNG = R_woDetail["ENMNG"].ToString();
+                    rowRWODetail.KDMAT = R_woDetail["KDMAT"].ToString();
+                    rowRWODetail.MEINS = R_woDetail["MEINS"].ToString();
+                    rowRWODetail.MATKL = R_woDetail["MATKL"].ToString();
+                    rowRWODetail.ALPGR = R_woDetail["ALPGR"].ToString();
+                    rowRWODetail.MAKTX = R_woDetail["MAKTX"].ToString();
+                    rowRWODetail.DUMPS = R_woDetail["DUMPS"].ToString();
+                    rowRWODetail.SOBSL = R_woDetail["SOBSL"].ToString();
+                    rowRWODetail.REVLV = R_woDetail["REVLV"].ToString();
+                    rowRWODetail.SHKZG = R_woDetail["SHKZG"].ToString();
+                    rowRWODetail.LGORT = R_woDetail["LGORT"].ToString();
+                    rowRWODetail.QUANTITY = R_woDetail["QUANTITY"].ToString();
+                    rowRWODetail.BAUGR = R_woDetail["BAUGR"].ToString();
+                    rowRWODetail.MENGE = R_woDetail["MENGE"].ToString();
+                    rowRWODetail.CHARG = R_woDetail["CHARG"].ToString();
+                    rowRWODetail.MOD_NO = R_woDetail["MOD_NO"].ToString();
+                    rowRWODetail.POSTP = R_woDetail["POSTP"].ToString();
+                    rowRWODetail.SORTF = R_woDetail["SORTF"].ToString();
+                    rowRWODetail.LIFNR = R_woDetail["LIFNR"].ToString();
+                    rowRWODetail.POTX1 = R_woDetail["POTX1"].ToString();
+                    rowRWODetail.POTX2 = R_woDetail["POTX2"].ToString();
+
+
+                    sql = rowRWODetail.GetInsertString(DB_TYPE_ENUM.Oracle);
+                    sfcdb.ExecSQL(sql);
+
+                }
+                sfcdb.CommitTrain();
             }
-
-            foreach (DataRow R_woDetail in woDetail.Rows)
-            {
-                rowRWODetail.ID = T_R_WO_ITEM_TJ.GetNewID(BU, sfcdb);
-                rowRWODetail.AUFNR = R_woDetail["AUFNR"].ToString();
-                rowRWODetail.POSNR = R_woDetail["POSNR"].ToString();
-                rowRWODetail.WERKS = R_woDetail["WERKS"].ToString();
-                rowRWODetail.MATNR = R_woDetail["MATNR"].ToString();
-                rowRWODetail.BDMNG = R_woDetail["BDMNG"].ToString();
-                rowRWODetail.ENMNG = R_woDetail["ENMNG"].ToString();
-                rowRWODetail.KDMAT = R_woDetail["KDMAT"].ToString();
-                rowRWODetail.MEINS = R_woDetail["MEINS"].ToString();
-                rowRWODetail.MATKL = R_woDetail["MATKL"].ToString();
-                rowRWODetail.ALPGR = R_woDetail["ALPGR"].ToString();
-                rowRWODetail.MAKTX = R_woDetail["MAKTX"].ToString();
-                rowRWODetail.DUMPS = R_woDetail["DUMPS"].ToString();
-                rowRWODetail.SOBSL = R_woDetail["SOBSL"].ToString();
-                rowRWODetail.REVLV = R_woDetail["REVLV"].ToString();
-                rowRWODetail.SHKZG = R_woDetail["SHKZG"].ToString();
-                rowRWODetail.LGORT = R_woDetail["LGORT"].ToString();
-                rowRWODetail.QUANTITY = R_woDetail["QUANTITY"].ToString();
-                rowRWODetail.BAUGR = R_woDetail["BAUGR"].ToString();
-                rowRWODetail.MENGE = R_woDetail["MENGE"].ToString();
-                rowRWODetail.CHARG = R_woDetail["CHARG"].ToString();
-                rowRWODetail.MOD_NO = R_woDetail["MOD_NO"].ToString();
-                rowRWODetail.POSTP = R_woDetail["POSTP"].ToString();
-                rowRWODetail.SORTF = R_woDetail["SORTF"].ToString();
-                rowRWODetail.LIFNR = R_woDetail["LIFNR"].ToString();
-                rowRWODetail.POTX1 = R_woDetail["POTX1"].ToString();
-                rowRWODetail.POTX2 = R_woDetail["POTX2"].ToString();
-
-
-                sql = rowRWODetail.GetInsertString(DB_TYPE_ENUM.Oracle);
-                sfcdb.ExecSQL(sql);
-
+            catch (Exception e) {
+                sfcdb.RollbackTrain();
+                throw e;
             }
 
 

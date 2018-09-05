@@ -16,8 +16,8 @@ namespace MESStation.Interface.SAPRFC
         {
             ClearValues();
 
-            SetValue("vbeln0", DN);
-            SetValue("plant0", PLANT);
+            SetValue("VBELN0", DN);
+            SetValue("PLANT0", PLANT);
 
 
         }

@@ -17,7 +17,7 @@ namespace MESStation.Interface.SAPRFC
             ClearValues();
 
             SetValue("TKNUM0", TPO);
-            SetValue("plant0", PLANT);
+            SetValue("PLANT0", PLANT);
 
 
         }

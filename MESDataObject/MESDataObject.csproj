@@ -199,6 +199,8 @@
     <Compile Include="Module\SD_REPORT_DETAIL.cs" />
     <Compile Include="Module\SD_TO_DETAIL.cs" />
     <Compile Include="Module\SD_TO_HEAD.cs" />
+    <Compile Include="Module\R_ZRFC_GET_SALES_DETAIL.cs" />
+    <Compile Include="Module\R_ZRFC_GET_SALES_HEADER2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TableExpandBase.cs" />
   </ItemGroup>
