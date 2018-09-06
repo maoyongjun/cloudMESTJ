@@ -18,7 +18,7 @@ namespace MESInterface
         DataTable MainDT;
         Dictionary<DataRow, TaskInfo> TasksByDR = new Dictionary<DataRow, TaskInfo>();
         Dictionary<ProcessManagedItem, DataRow> ViewsByPM = new Dictionary<ProcessManagedItem, DataRow>();
-        string configName = @".\config.ini";
+        string configName = @".\config_TJ.ini";
         TaskInfo CurrentItem;
         public frmMain()
         {

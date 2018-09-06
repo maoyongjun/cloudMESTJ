@@ -145,6 +145,20 @@
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0022.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0023T.cs" />
     <Compile Include="taskBase.cs" />
+    <Compile Include="TJ\DownDN.cs" />
+    <Compile Include="TJ\DownDN_UI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TJ\DownDN_UI.Designer.cs">
+      <DependentUpon>DownDN_UI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TJ\DownSO.cs" />
+    <Compile Include="TJ\DownSO_UI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TJ\DownSO_UI.Designer.cs">
+      <DependentUpon>DownSO_UI.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools.cs" />
     <Compile Include="VERTIV\DownloadWO.cs" />
     <Compile Include="VERTIV\DownloadWO_UI.cs">
@@ -195,12 +209,19 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TJ\DownDN_UI.resx">
+      <DependentUpon>DownDN_UI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TJ\DownSO_UI.resx">
+      <DependentUpon>DownSO_UI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VERTIV\DownloadWO_UI.resx">
       <DependentUpon>DownloadWO_UI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VERTIV\VertivDownloadDn_UI.resx">
       <DependentUpon>VertivDownloadDn_UI.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="config_TJ.ini" />
     <None Include="config.ini" />
     <None Include="config_vertiv.ini" />
     <None Include="Properties\Settings.settings">
