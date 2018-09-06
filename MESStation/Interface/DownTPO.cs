@@ -33,28 +33,29 @@ namespace MESStation.Interface
         public void Download_TPO(Newtonsoft.Json.Linq.JObject requestValue, Newtonsoft.Json.Linq.JObject Data, MESStationReturn StationReturn)
         {
             OleExec Sfcdb = this.DBPools["SFCDB"].Borrow();
-            string TPO = Data["TPO"].ToString();
-            string PLANT = Data["PLANT"].ToString();
             Sfcdb.BeginTrain();
-            Download(TPO, PLANT);
-            Sfcdb.CommitTrain();
+            try
+            {
+                string TPO = Data["TPO"].ToString();
+                string PLANT = Data["PLANT"].ToString();
+                Download(Sfcdb, TPO, PLANT);
+                Sfcdb.CommitTrain();
+            }
+            catch (Exception e)
+            {
+                Sfcdb.RollbackTrain();
+                throw e;
+            }
             StationReturn.Status = StationReturnStatusValue.Pass;
             StationReturn.Message = MESReturnMessage.GetMESReturnMessage("MES00000102");
 
         }
 
-        public void Download(string TPO, string Plant)
+        public void Download(OleExec sfcdb,string TPO, string Plant)
         {
 
-            OleExec sfcdb;
             DataTable RFC_Table = new DataTable();
-
-
             Dictionary<string, string> DicPara = new Dictionary<string, string>();
-
-            sfcdb = this.DBPools["SFCDB"].Borrow();
-
-
             ZP2SF01 zp2SF01 = new ZP2SF01();
             zp2SF01.SetValues(TPO, Plant);
             zp2SF01.CallRFC();

@@ -37,25 +37,27 @@ namespace MESStation.Interface
             string SO = Data["SO"].ToString();
             string PLANT = Data["PLANT"].ToString();
             Sfcdb.BeginTrain();
-            Download(SO, PLANT);
-            DownloadDetail(SO, PLANT);
-            Sfcdb.CommitTrain();
+            try
+            {
+                Download(Sfcdb, SO, PLANT);
+                DownloadDetail(Sfcdb, SO, PLANT);
+                Sfcdb.CommitTrain();
+            }
+            catch (Exception e)
+            {
+                Sfcdb.RollbackTrain();
+                throw e;
+            }
+
             StationReturn.Status = StationReturnStatusValue.Pass;
-            StationReturn.Message = MESReturnMessage.GetMESReturnMessage("MES00000102");
+            StationReturn.Message = MESReturnMessage.GetMESReturnMessage("MSGCODE20180906102929");
 
         }
 
-        public void DownloadDetail(string SO, string Plant)
+        public void DownloadDetail(OleExec sfcdb,string SO, string Plant)
         {
-            OleExec sfcdb;
             DataTable RFC_Table = new DataTable();
-
-
             Dictionary<string, string> DicPara = new Dictionary<string, string>();
-
-            sfcdb = this.DBPools["SFCDB"].Borrow();
-
-
             ZRFC_GET_SALES_DETAIL zrfc_GET_SALES_DETAIL = new ZRFC_GET_SALES_DETAIL();
             zrfc_GET_SALES_DETAIL.SetValues(SO, Plant);//NHGZ,WDN1//WDN1,WSL3
             zrfc_GET_SALES_DETAIL.CallRFC();
@@ -68,6 +70,9 @@ namespace MESStation.Interface
 
             if (result.Rows.Count > 0)
             {
+                string sql = $@"DELETE FROM R_ZRFC_GET_SALES_DETAIL WHERE VBELN = '{SO}'";
+                sfcdb.ExecSQL(sql);
+
                 foreach (DataRow R_so_detail in result.Rows)
                 {
                     so_row_detail.ID = so_detail.GetNewID(BU, sfcdb);
@@ -105,7 +110,7 @@ namespace MESStation.Interface
                     so_row_detail.EMPST = R_so_detail["EMPST"].ToString();
                     so_row_detail.ROUTE = R_so_detail["ROUTE"].ToString();
                     so_row_detail.EDATU = R_so_detail["EDATU"].ToString();
-                    string sql = so_row_detail.GetInsertString(DB_TYPE_ENUM.Oracle);
+                    sql = so_row_detail.GetInsertString(DB_TYPE_ENUM.Oracle);
                     sfcdb.ExecSQL(sql);
                 }
                 
@@ -116,18 +121,11 @@ namespace MESStation.Interface
             }
         }
 
-        public void Download(string SO, string Plant)
+        public void Download(OleExec sfcdb,string SO, string Plant)
         {
 
-            OleExec sfcdb;
             DataTable RFC_Table = new DataTable();
-   
-
             Dictionary<string, string> DicPara = new Dictionary<string, string>();
-
-            sfcdb = this.DBPools["SFCDB"].Borrow();
-
-
             ZRFC_GET_SALES_HEADER2 zrfc_GET_SALES_HEADER2 = new ZRFC_GET_SALES_HEADER2();
             zrfc_GET_SALES_HEADER2.SetValues(SO, Plant);//NHGZ,WDN1//WDN1,WSL3
             zrfc_GET_SALES_HEADER2.CallRFC();
@@ -140,6 +138,9 @@ namespace MESStation.Interface
 
             if (result.Rows.Count > 0)
             {
+                string sql = $@"DELETE FROM R_ZRFC_GET_SALES_HEADER2 WHERE VBELN = '{SO}'";
+                sfcdb.ExecSQL(sql);
+                so_row_header.ID = so_header.GetNewID(BU, sfcdb);
                 so_row_header.VBELN = result.Rows[0]["VBELN"].ToString();
                 so_row_header.WERKS = result.Rows[0]["WERKS"].ToString();
                 so_row_header.SVBELN = result.Rows[0]["SVBELN"].ToString();
@@ -212,7 +213,8 @@ namespace MESStation.Interface
                 so_row_header.BSTDK = result.Rows[0]["BSTDK"].ToString();
                 so_row_header.AUGRU = result.Rows[0]["AUGRU"].ToString();
                 so_row_header.BEZEI = result.Rows[0]["BEZEI"].ToString();
-
+                sql = so_row_header.GetInsertString(DB_TYPE_ENUM.Oracle);
+                sfcdb.ExecSQL(sql);
 
             }
 

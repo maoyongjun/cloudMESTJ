@@ -54,7 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Common\ConvertToJson.cs" />
     <Compile Include="DataObjectBase.cs" />
     <Compile Include="DataObjectItem.cs" />
@@ -62,6 +61,8 @@
     <Compile Include="MesDbBase.cs" />
     <Compile Include="MESReturnMessage.cs" />
     <Compile Include="Module\AP_DLL.cs" />
+    <Compile Include="Module\R_ZRFC_GET_SHIP_HEADER.cs" />
+    <Compile Include="Module\R_ZRFC_GET_SHIP_DETAIL.cs" />
     <Compile Include="Module\C_ACTION_CODE.cs" />
     <Compile Include="Module\C_AQLTYPE.cs" />
     <Compile Include="Module\C_CODE_MAPPING.cs" />
