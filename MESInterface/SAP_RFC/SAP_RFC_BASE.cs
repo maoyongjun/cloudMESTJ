@@ -57,9 +57,9 @@ namespace MESInterface.SAP_RFC
             RfcPara.Clear();
             RfcPara = new RfcConfigParameters();
             //從App.Config中取得BU對應的SAP連接方式
-            if (false)
+            if (true)
             {
-                if (BU.Substring(0, 3) == "MBD")
+                if (BU.Length>3&&BU.Substring(0, 3) == "MBD")
                 {
                     //SystemNumber=10
                     //RfcPara.Add(RfcConfigParameters.SystemNumber,
@@ -114,7 +114,7 @@ namespace MESInterface.SAP_RFC
                     //RfcPara.Add(RfcConfigParameters.MessageServerHost,
                     //    System.Configuration.ConfigurationSettings.AppSettings[BU + "_SAP_MessageServerHost"]);
                     RfcPara.Add(RfcConfigParameters.GatewayHost,
-                        "10.134.108.122");
+                         System.Configuration.ConfigurationSettings.AppSettings[BU + "_SAP_AppServerHost"]);
                 }    
             }
             else

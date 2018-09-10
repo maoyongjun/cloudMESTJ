@@ -137,6 +137,10 @@
     <Compile Include="SAP_RFC\SAP_RFC_BASE.cs" />
     <Compile Include="SAP_RFC\ZCMM_NSBG_0051.cs" />
     <Compile Include="SAP_RFC\ZCPP_NSBG_0091.cs" />
+    <Compile Include="SAP_RFC\ZRFC_GET_SALES_DETAIL.cs" />
+    <Compile Include="SAP_RFC\ZRFC_GET_SALES_HEADER2.cs" />
+    <Compile Include="SAP_RFC\ZRFC_GET_SHIP_DETAIL.cs" />
+    <Compile Include="SAP_RFC\ZRFC_GET_SHIP_HEADER.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0001B.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0003.cs" />
     <Compile Include="SAP_RFC\ZRFC_SFC_NSG_0009.cs" />
