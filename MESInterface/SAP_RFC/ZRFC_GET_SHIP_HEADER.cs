@@ -22,5 +22,11 @@ namespace MESStation.Interface.SAPRFC
 
 
         }
+        public void SetLastTime(string ERDAT, string ERZET)
+        {
+            ClearValues();
+            SetValue("ERDAT", ERDAT);
+            SetValue("ERZET", ERZET);
+        }
     }
 }

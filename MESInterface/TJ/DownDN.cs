@@ -31,7 +31,8 @@ namespace MESInterface.TJ
             {
                 ZRFC_GET_SHIP_HEADER zrfc_GET_SHIP_HEADER = new ZRFC_GET_SHIP_HEADER("TJ");
 
-                zrfc_GET_SHIP_HEADER.SetValues("3500581409", "GHUE");//NHGZ,WDN1//WDN1,WSL3
+                //zrfc_GET_SHIP_HEADER.SetValues("3500581409", "GHUE");//NHGZ,WDN1//WDN1,WSL3
+                zrfc_GET_SHIP_HEADER.SetLastTime("09/11/2018", "07:00:00");
                 zrfc_GET_SHIP_HEADER.CallRFC();
 
                 DataTable result = zrfc_GET_SHIP_HEADER.GetTableValue("SHIPORDERHEADER");
