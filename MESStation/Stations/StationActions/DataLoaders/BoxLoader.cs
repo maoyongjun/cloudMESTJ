@@ -11,7 +11,7 @@ namespace MESStation.Stations.StationActions.DataLoaders
 {
     class BoxLoader
     {
-        public static void loaderBox(MESStationBase Station, MESStationInput Input, List<R_Station_Action_Para> Paras)
+        public static void loaderBox(MESPubLab.MESStation.MESStationBase Station, MESPubLab.MESStation.MESStationInput Input, List<MESDataObject.Module.R_Station_Action_Para> Paras)
         {
             if (Paras.Count == 0)
             {
@@ -32,9 +32,10 @@ namespace MESStation.Stations.StationActions.DataLoaders
                 {
 
                     PackNoSession = new MESStationSession() { MESDataType = Paras[0].SESSION_TYPE, InputValue = Input.Value.ToString(), SessionKey = Paras[0].SESSION_KEY, ResetInput = Input, Value = list[0] };
+                    Station.StationSession.Add(PackNoSession);
                 }
 
-                Station.StationSession.Add(PackNoSession);
+                
             }
 
         }
