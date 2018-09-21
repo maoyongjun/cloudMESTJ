@@ -161,6 +161,7 @@
     <Compile Include="Stations\StationActions\ActionRunners\PassAction.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\RepairActions.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\SNActions.cs" />
+    <Compile Include="Stations\StationActions\ActionRunners\TBoxAction.cs" />
     <Compile Include="Stations\StationActions\ActionRunners\TestAction.cs" />
     <Compile Include="Stations\StationActions\DataCheckers\CheckAPData.cs" />
     <Compile Include="Stations\StationActions\DataCheckers\CheckEmp.cs" />
