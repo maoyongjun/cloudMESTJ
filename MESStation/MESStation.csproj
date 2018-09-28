@@ -178,6 +178,7 @@
     <Compile Include="Stations\StationActions\DataLoaders\BoxLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\CustomLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\DataInputLoader.cs" />
+    <Compile Include="Stations\StationActions\DataLoaders\DNLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\PackingDataLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\PackLoader.cs" />
     <Compile Include="Stations\StationActions\DataLoaders\PanelDataLoaders.cs" />
